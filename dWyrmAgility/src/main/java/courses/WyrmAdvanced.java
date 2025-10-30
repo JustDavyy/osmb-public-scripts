@@ -1,0 +1,111 @@
+package courses;
+
+import com.osmb.api.location.area.Area;
+import com.osmb.api.location.area.impl.RectangleArea;
+import com.osmb.api.location.position.types.WorldPosition;
+import com.osmb.api.utils.RandomUtils;
+import main.Course;
+import main.ObstacleHandleResponse;
+import main.dWyrmAgility;
+
+import static main.dWyrmAgility.task;
+
+public class WyrmAdvanced implements Course {
+
+    private final dWyrmAgility core;
+
+    public WyrmAdvanced(dWyrmAgility core) {
+        this.core = core;
+    }
+
+    private static final RectangleArea START_AREA = new RectangleArea(1642, 2927, 11, 10, 0);
+
+
+    private static final Area AREA_1 = new RectangleArea(1651, 2924, 9, 10, 1);
+    private static final Area AREA_2 = new RectangleArea(1647, 2908, 2, 3, 1);
+    private static final Area AREA_3 = new RectangleArea(1645, 2905, 7, 5, 2);
+    private static final Area AREA_4 = new RectangleArea(1631, 2904, 6, 5, 2);
+    private static final Area AREA_5 = new RectangleArea(1623, 2931, 2, 2, 2);
+
+    private static final WorldPosition OBS1_END_POS = new WorldPosition(1653, 2931, 1);
+    private static final WorldPosition OBS2_END_POS = new WorldPosition(1549, 2910, 1);
+    private static final WorldPosition OBS3_END_POS = new WorldPosition(1648, 2908, 2);
+    private static final WorldPosition OBS4_END_POS = new WorldPosition(1635, 2907, 2);
+    private static final WorldPosition COURSE_END_POS = new WorldPosition(1645, 2933, 0);
+
+    @Override
+    public int poll(dWyrmAgility dWyrmAgility) {
+        WorldPosition position = core.getWorldPosition();
+
+        if (AREA_1.contains(position)) {
+            task = "Obstacle 2";
+            ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "tightrope", "cross", AREA_2, 25000);
+            if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
+                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.getWalker().walkTo(AREA_1.getRandomPosition());
+            }
+            return 0;
+        } else if (AREA_2.contains(position)) {
+            task = "Obstacle 3";
+            ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "ladder", "climb", OBS3_END_POS, 15000);
+            if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
+                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.getWalker().walkTo(AREA_2.getRandomPosition());
+            }
+            return 0;
+        } else if (AREA_3.contains(position)) {
+            task = "Obstacle 4";
+            ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "edge", "jump", OBS4_END_POS, 15000);
+            if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
+                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.getWalker().walkTo(AREA_3.getRandomPosition());
+            }
+            return 0;
+        } else if (AREA_4.contains(position)) {
+            task = "Obstacle 5";
+            core.noMovementTimeout = RandomUtils.weightedRandom(4000, 6000); // override just for this run (avoid early exit due to timeout)
+            ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "tightrope", "cross", AREA_5, 25000);
+            if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
+                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.getWalker().walkTo(AREA_4.getRandomPosition());
+            }
+            return 0;
+        } else if (AREA_5.contains(position)) {
+            task = "Obstacle 6";
+            ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "zipline", "slide", COURSE_END_POS, 1, false, 15000);
+            if (response == ObstacleHandleResponse.SUCCESS) {
+                main.dWyrmAgility.lapCount++;
+            } else if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
+                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.getWalker().walkTo(AREA_5.getRandomPosition());
+            }
+            return 0;
+        } else {
+            task = "Obstacle 1";
+            ObstacleHandleResponse handleResponse = main.dWyrmAgility.handleObstacle(
+                    core,
+                    "ladder",
+                    "climb",
+                    OBS1_END_POS,
+                    1,
+                    true,
+                    15000,
+                    new WorldPosition(1652, 2931, 0)
+            );
+            if (handleResponse == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
+                core.getWalker().walkTo(START_AREA.getRandomPosition());
+            }
+            return 0;
+        }
+    }
+
+    @Override
+    public int[] regions() {
+        return new int[]{6445};
+    }
+
+    @Override
+    public String name() {
+        return "WyrmAdvanced";
+    }
+}

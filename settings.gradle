@@ -1,0 +1,10 @@
+rootProject.name = "osmb-scripts"
+
+file('.').listFiles()
+        .findAll { it.isDirectory()
+                && new File(it, "build.gradle").exists()
+                && !["API", ".idea", ".gradle"].contains(it.name) }
+        .each { dir ->
+            include(":${dir.name}")
+            project(":${dir.name}").projectDir = dir
+        }
