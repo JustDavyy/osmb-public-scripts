@@ -47,7 +47,7 @@ public class BreakManager extends Task {
             sendPauseOrResumeWebhook(true, "Birdhouse", birdhouseWait);
 
             script.log(getClass().getSimpleName(), "Waiting ~" + formatTime(waitTime) + " till next run at " + nextRunTime);
-            script.pollFramesHuman(() -> false, (int) waitTime, true, true);
+            script.pollFramesHuman(() -> false, (int) waitTime, true);
             sendPauseOrResumeWebhook(false, "Birdhouse", 0);
         } else {
             script.log(getClass(), "Seaweed run is due first. Time remaining: " + formatTime(seaweedWait));
@@ -70,7 +70,7 @@ public class BreakManager extends Task {
             sendPauseOrResumeWebhook(true, "Seaweed", seaweedWait);
 
             script.log(getClass().getSimpleName(), "Waiting ~" + formatTime(waitTime) + " till next run at " + nextRunTime);
-            script.pollFramesHuman(() -> false, (int) waitTime, true, true);
+            script.pollFramesHuman(() -> false, (int) waitTime, true);
             sendPauseOrResumeWebhook(false, "Seaweed", 0);
         }
 

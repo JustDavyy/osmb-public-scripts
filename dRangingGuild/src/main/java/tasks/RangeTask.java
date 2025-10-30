@@ -152,13 +152,13 @@ public class RangeTask extends Task {
         lastTaskRanAt = System.currentTimeMillis();
 
         // Step 2: Wait for target interface to disappear
-        if (!script.pollFramesHuman(() -> !targetInterface.isVisible(), script.random(1750, 2500), true, true)) {
+        if (!script.pollFramesHuman(() -> !targetInterface.isVisible(), script.random(1750, 2500), true)) {
             script.log(getClass().getSimpleName(), "❌ Target interface did not disappear.");
             return false;
         }
 
         // Step 3: Wait for it to reappear
-        if (!script.pollFramesHuman(() -> targetInterface.isVisible() || script.getWidgetManager().getDialogue().getDialogueType() != null, script.random(4000, 5000), true, true)) {
+        if (!script.pollFramesHuman(() -> targetInterface.isVisible() || script.getWidgetManager().getDialogue().getDialogueType() != null, script.random(4000, 5000), true)) {
             script.log(getClass().getSimpleName(), "❌ Target interface did not return — shot may have failed.");
             return false;
         }
