@@ -32,14 +32,17 @@ import static main.dAIOFisher.*;
 
 public class dkFish extends Task {
     private static final SearchablePixel[] FISHING_SPOT_PIXELS = new SearchablePixel[]{
-            new SearchablePixel(-11366999, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-7555094, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-8605987, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-3283474, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-6702368, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-12288621, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-12617586, new SingleThresholdComparator(2), ColorModel.HSL),
-            new SearchablePixel(-12420721, new SingleThresholdComparator(2), ColorModel.HSL)
+            new SearchablePixel(-14155777, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9726564, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9266012, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9068122, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9332063, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9924457, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-10252907, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9792353, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9529185, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9726823, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9200215, new SingleThresholdComparator(5), ColorModel.RGB),
     };
 
     private FishingSpot lastFishingSpot = null;
