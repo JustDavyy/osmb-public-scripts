@@ -19,6 +19,7 @@ public class ScriptUI {
     private static final String PREF_SELECTED_TREE = "dfossilwcer_selected_tree";
     private static final String PREF_MODE = "dfossilwcer_mode";
     private static final String PREF_KEEP_CLUES = "dfossilwcer_keep_clues";
+    private static final String PREF_TREE_COUNT = "dfossilwcer_tree_count";
 
     private static final String PREF_WEBHOOK_ENABLED = "dfossilwcer_webhook_enabled";
     private static final String PREF_WEBHOOK_URL = "dfossilwcer_webhook_url";
@@ -29,6 +30,7 @@ public class ScriptUI {
 
     private ComboBox<Integer> treeComboBox;
     private ComboBox<String> modeComboBox;
+    private ComboBox<Integer> treeCountComboBox;
 
     private CheckBox webhookEnabledCheckBox;
     private TextField webhookUrlField;
@@ -37,7 +39,10 @@ public class ScriptUI {
 
     private static final Integer[] TREE_OPTIONS = {
             ItemID.TEAK_LOGS,
-            ItemID.MAHOGANY_LOGS
+            ItemID.MAHOGANY_LOGS,
+            32904, // Camphor logs
+            32907, // Ironwood logs
+            32910, // Rosewood logs
     };
 
     public ScriptUI(Script script) {
@@ -68,7 +73,17 @@ public class ScriptUI {
         modeComboBox.getItems().addAll("Drop", "Bank");
         modeComboBox.getSelectionModel().select(prefs.get(PREF_MODE, "Bank")); // Default to Bank
 
-        mainBox.getChildren().addAll(treeLabel, treeComboBox, modeLabel, modeComboBox);
+        // Trees planted dropdown
+        Label treeCountLabel = new Label("Trees Planted");
+        treeCountComboBox = new ComboBox<>();
+        treeCountComboBox.getItems().addAll(1, 2, 3);
+
+        // Load saved value (default = 3)
+        treeCountComboBox.getSelectionModel().select(
+                Integer.valueOf(prefs.getInt(PREF_TREE_COUNT, 3))
+        );
+
+        mainBox.getChildren().addAll(treeLabel, treeComboBox, treeCountLabel, treeCountComboBox, modeLabel, modeComboBox);
         Tab mainTab = new Tab("Main", mainBox);
         mainTab.setClosable(false);
 
@@ -171,6 +186,7 @@ public class ScriptUI {
             prefs.putInt(PREF_SELECTED_TREE, selectedTree);
         }
         prefs.put(PREF_MODE, getMode());
+        prefs.putInt(PREF_TREE_COUNT, getTreeCount());
 
         prefs.putBoolean(PREF_WEBHOOK_ENABLED, isWebhookEnabled());
         prefs.put(PREF_WEBHOOK_URL, getWebhookUrl());
@@ -181,6 +197,12 @@ public class ScriptUI {
     }
 
     // Getters
+    public int getTreeCount() {
+        return treeCountComboBox != null && treeCountComboBox.getValue() != null
+                ? treeCountComboBox.getValue()
+                : 3;
+    }
+
     public Integer getSelectedTree() {
         return treeComboBox.getSelectionModel().getSelectedItem();
     }

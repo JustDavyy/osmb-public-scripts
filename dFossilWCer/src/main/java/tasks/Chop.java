@@ -24,9 +24,8 @@ import com.osmb.api.walker.WalkConfig;
 import utils.Task;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static main.dFossilWCer.*;
@@ -63,8 +62,55 @@ public class Chop extends Task {
             new SearchablePixel(-8679345, new SingleThresholdComparator(2), ColorModel.HSL)
     };
 
+    private static final SearchablePixel[] CAMPHOR_PIXEL_CLUSTER = new SearchablePixel[] {
+            new SearchablePixel(-12701654, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-11321288, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-11781325, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-10532032, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-10729410, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-10926277, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-12241361, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-11518411, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-11123655, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-11978448, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-10334912, new SingleThresholdComparator(2), ColorModel.RGB),
+    };
+
+    private static final SearchablePixel[] CAMPHOR_DEPLETED_PIXEL_CLUSTER = new SearchablePixel[] {
+            new SearchablePixel(-9150132, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-9018290, new SingleThresholdComparator(2), ColorModel.RGB),
+    };
+
+    private static final SearchablePixel[] IRONWOOD_PIXEL_CLUSTER = new SearchablePixel[] {
+            new SearchablePixel(-14868969, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-6645622, new SingleThresholdComparator(5), ColorModel.RGB),
+    };
+
+    private static final SearchablePixel[] ROSEWOOD_PIXEL_CLUSTER = new SearchablePixel[] {
+            new SearchablePixel(-12306890, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-11057852, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-11846853, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-13687258, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-11452352, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-12701136, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-13227221, new SingleThresholdComparator(5), ColorModel.RGB),
+            new SearchablePixel(-14278131, new SingleThresholdComparator(5), ColorModel.RGB),
+    };
+
+    private static final SearchablePixel[] ROSEWOOD_DEPLETED_PIXEL_CLUSTER = new SearchablePixel[] {
+            new SearchablePixel(-8696765, new SingleThresholdComparator(2), ColorModel.RGB),
+            new SearchablePixel(-10733261, new SingleThresholdComparator(2), ColorModel.RGB),
+    };
+
     private static final Area choppingArea = new RectangleArea(3699, 3830, 20, 10, 0);
     private static final Area bankingArea = new RectangleArea(3708, 3797, 42, 21, 0);
+
+    private final Map<WorldPosition, Long> depletedTrees = new HashMap<>();
+    private static final int TEAK_RESPAWN_MS      = 9_000;
+    private static final int MAHOGANY_RESPAWN_MS  = 8_400;
+    private static final int CAMPHOR_RESPAWN_MS  = 60_000;
+    private static final int IRONWOOD_RESPAWN_MS = 120_000;
+    private static final int ROSEWOOD_RESPAWN_MS = 123_000;
 
     public Chop(Script script) {
         super(script);
@@ -87,6 +133,11 @@ public class Chop extends Task {
             }
         }
 
+        SearchablePixel[] depletedCluster = null;
+
+        if (logsId == 32904) depletedCluster = CAMPHOR_DEPLETED_PIXEL_CLUSTER;
+        if (logsId == 32910) depletedCluster = ROSEWOOD_DEPLETED_PIXEL_CLUSTER;
+
         usedBasketAlready = false;
 
         // === Pick correct pixel cluster ===
@@ -95,6 +146,12 @@ public class Chop extends Task {
             clusterToUse = TEAK_PIXEL_CLUSTER;
         } else if (logsId == ItemID.MAHOGANY_LOGS) {
             clusterToUse = MAHOGANY_PIXEL_CLUSTER;
+        } else if (logsId == 32904) {
+            clusterToUse = CAMPHOR_PIXEL_CLUSTER;
+        } else if (logsId == 32907) {
+            clusterToUse = IRONWOOD_PIXEL_CLUSTER;
+        } else if (logsId == 32910) {
+            clusterToUse = ROSEWOOD_PIXEL_CLUSTER;
         } else {
             script.log(getClass(), "Invalid tree ID selected: " + logsId);
             return false;
@@ -102,9 +159,12 @@ public class Chop extends Task {
 
         // === New tree detection via RSObject + convex hull color check ===
         task = "Find tree";
-        RSObject treePatch = findTree(clusterToUse);
+        RSObject treePatch = findTree(clusterToUse, depletedCluster);
 
         if (treePatch == null) {
+            if (handleAllTreesDepleted()) {
+                return false; // let task repoll after wait
+            }
             clusterFailCount++;
             script.log(getClass(), "No valid tree patch found. Fail count = " + clusterFailCount);
 
@@ -133,6 +193,7 @@ public class Chop extends Task {
             script.log(getClass(), "Failed to interact with tree.");
             return false;
         } else {
+            lastXpGain.reset();
             targetTree = treePatch;
         }
 
@@ -199,9 +260,23 @@ public class Chop extends Task {
                 script.log(getClass(), "Detected log count drop (from " + lastCount + " to " + currentCount + "). Syncing.");
                 previousCount.set(currentCount);
             }
-            // === Tree presence check ===
+
+            // === Depletion detection (overlay-based trees) ===
+            if ((logsId == 32904 || logsId == 32910)
+                    && isTreeDepleted(
+                    targetTree,
+                    logsId == 32904
+                            ? CAMPHOR_DEPLETED_PIXEL_CLUSTER
+                            : ROSEWOOD_DEPLETED_PIXEL_CLUSTER
+            )) {
+
+                markTreeDepleted(targetTree, "depleted cluster detected");
+                return true;
+            }
+
+            // === Despawn-based trees (teak / mahogany / ironwood) ===
             if (!isTreeStillPresent(targetTree, cluster)) {
-                script.log(getClass(), "Chop stopped: tree despawned.");
+                markTreeDepleted(targetTree, "cluster gone");
                 return true;
             }
 
@@ -281,7 +356,10 @@ public class Chop extends Task {
         return true;
     }
 
-    private RSObject findTree(SearchablePixel[] cluster) {
+    private RSObject findTree(
+            SearchablePixel[] aliveCluster,
+            SearchablePixel[] depletedCluster
+    ){
         List<RSObject> patches = script.getObjectManager().getObjects(obj -> {
             if (obj.getName() == null || obj.getActions() == null) return false;
             return obj.getName().equalsIgnoreCase("Tree patch")
@@ -297,15 +375,19 @@ public class Chop extends Task {
             Polygon hull = patch.getConvexHull();
             if (hull == null) continue;
 
-            List<Point> matches = script.getPixelAnalyzer()
-                    .findPixelsOnGameScreen(hull, cluster);
+            WorldPosition pos = patch.getWorldPosition();
 
-            if (matches != null && !matches.isEmpty()) {
-                script.log(getClass(), "Tree at " + patch.getWorldPosition()
-                        + " has " + matches.size() + " color matches.");
+            // Skip already-known depleted trees
+            if (depletedTrees.containsKey(pos)) continue;
+
+            // === Alive check ===
+            List<Point> aliveMatches = script.getPixelAnalyzer()
+                    .findPixelsOnGameScreen(hull, aliveCluster);
+
+            if (aliveMatches != null && !aliveMatches.isEmpty()) {
                 return patch;
             }
-        }
+    }
 
         return null;
     }
@@ -325,6 +407,27 @@ public class Chop extends Task {
         return matches != null && !matches.isEmpty();
     }
 
+    private boolean isTreeDepleted(RSObject tree, SearchablePixel[] depletedCluster) {
+        Polygon hull = tree.getConvexHull();
+        if (hull == null) return false;
+
+        List<Point> matches = script.getPixelAnalyzer()
+                .findPixelsOnGameScreen(hull, depletedCluster);
+
+        return matches != null && !matches.isEmpty();
+    }
+
+    private void markTreeDepleted(RSObject tree, String reason) {
+        WorldPosition pos = tree.getWorldPosition();
+
+        if (!depletedTrees.containsKey(pos)) {
+            depletedTrees.put(pos, System.currentTimeMillis());
+            script.log(getClass(),
+                    "Tree depleted (" + reason + ") at " + pos
+            );
+        }
+    }
+
     private MenuHook getMenuHook() {
         return menuEntries -> {
             for (MenuEntry entry : menuEntries) {
@@ -335,5 +438,64 @@ public class Chop extends Task {
             }
             return null;
         };
+    }
+
+    private int getRespawnTimeMs() {
+        if (logsId == ItemID.TEAK_LOGS) return TEAK_RESPAWN_MS;
+        if (logsId == ItemID.MAHOGANY_LOGS) return MAHOGANY_RESPAWN_MS;
+        if (logsId == 32904) return CAMPHOR_RESPAWN_MS;
+        if (logsId == 32907) return IRONWOOD_RESPAWN_MS;
+        if (logsId == 32910) return ROSEWOOD_RESPAWN_MS;
+        return 0;
+    }
+
+    private boolean handleAllTreesDepleted() {
+        if (depletedTrees.size() < treeAmount) {
+            return false;
+        }
+
+        int respawnMs = getRespawnTimeMs();
+
+        long now = System.currentTimeMillis();
+
+        WorldPosition soonestTree = null;
+        long soonestReadyTime = Long.MAX_VALUE;
+
+        for (var entry : depletedTrees.entrySet()) {
+            long readyAt = entry.getValue() + respawnMs;
+            if (readyAt < soonestReadyTime) {
+                soonestReadyTime = readyAt;
+                soonestTree = entry.getKey();
+            }
+        }
+
+        long baseWaitMs = soonestReadyTime - now;
+        long randomExtraMs = script.random(0, 5_000);
+        long waitMs = baseWaitMs + randomExtraMs;
+        if (waitMs <= 0) {
+            depletedTrees.clear(); // safety
+            return false;
+        }
+
+        task = "Waiting for tree respawn (" + (waitMs / 1000) + "s)";
+        script.log(getClass(),
+                "All trees depleted (" + depletedTrees.size() + "/" + treeAmount +
+                        "). Waiting " + waitMs + "ms"
+        );
+
+        // === Move closer ONLY if multiple trees exist ===
+        if (treeAmount > 1 && soonestTree != null) {
+            script.getWalker().walkTo(soonestTree);
+        }
+
+        // === Human wait ===
+        script.pollFramesHuman(() -> false, (int) waitMs);
+
+        // Clear expired entries
+        depletedTrees.entrySet().removeIf(e ->
+                now - e.getValue() > respawnMs
+        );
+
+        return true;
     }
 }

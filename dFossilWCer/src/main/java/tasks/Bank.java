@@ -7,6 +7,8 @@ import com.osmb.api.location.area.impl.RectangleArea;
 import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
+import com.osmb.api.shape.Polygon;
+import com.osmb.api.ui.component.chatbox.ChatboxComponent;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.walker.WalkConfig;
 import utils.Task;
@@ -156,11 +158,8 @@ public class Bank extends Task {
 
         task = "Walk to bank and check Chest pieces";
 
-        // Search for Chest pieces object at (3742, 3805) with "Build" action
         List<RSObject> chests = script.getObjectManager().getObjects(obj -> {
-            if (obj.getName() == null || obj.getActions() == null) {
-                return false;
-            }
+            if (obj.getName() == null || obj.getActions() == null) return false;
             return obj.getName().equals("Chest pieces")
                     && Arrays.asList(obj.getActions()).contains("Build")
                     && obj.getWorldPosition().getX() == 3742
@@ -179,15 +178,34 @@ public class Bank extends Task {
             return false;
         }
 
-        // Walk to chest if not interactable on screen
-        if (!chest.isInteractableOnScreen()) {
-            script.log(getClass(), "Bank chest not on screen, walking closer...");
+        // Get full convex hull and compute inside-factor
+        Polygon hull = chest.getConvexHull();
+        if (hull == null) {
+            script.log(getClass(), "Chest convex hull is null, re-polling.");
+            return false;
+        }
+
+        double insideFactor = script.getWidgetManager().insideGameScreenFactor(
+                hull, List.of(ChatboxComponent.class));
+
+        // Walk closer if not fully visible (factor < 1.0)
+        if (insideFactor < 1.0) {
+            script.log(getClass(), String.format(
+                    "Bank chest not fully on screen (factor=%.2f). Walking closer...",
+                    insideFactor));
+
             WalkConfig config = new WalkConfig.Builder()
-                    .breakCondition(chest::isInteractableOnScreen)
+                    .breakCondition(() -> {
+                        Polygon h = chest.getConvexHull();
+                        return h != null &&
+                                script.getWidgetManager().insideGameScreenFactor(
+                                        h, List.of(ChatboxComponent.class)) >= 1.0;
+                    })
                     .enableRun(true)
                     .build();
+
             script.getWalker().walkTo(chest.getWorldPosition(), config);
-            return false; // Re-poll once it's on screen
+            return false;
         }
 
         script.pollFramesHuman(() -> false, script.random(600, 1200));
@@ -201,11 +219,8 @@ public class Bank extends Task {
         task = "Open bank";
         script.log(getClass(), "Searching for bank chest (Chest pieces)...");
 
-        // Search for Chest pieces object at (3742, 3805) with "Build" action
         List<RSObject> chests = script.getObjectManager().getObjects(obj -> {
-            if (obj.getName() == null || obj.getActions() == null) {
-                return false;
-            }
+            if (obj.getName() == null || obj.getActions() == null) return false;
             return obj.getName().equals("Chest pieces")
                     && Arrays.asList(obj.getActions()).contains("Build")
                     && obj.getWorldPosition().getX() == 3742
@@ -224,38 +239,58 @@ public class Bank extends Task {
             return false;
         }
 
-        // Walk to chest if not interactable on screen
-        if (!chest.isInteractableOnScreen()) {
-            script.log(getClass(), "Bank chest not on screen, walking closer...");
-            WalkConfig config = new WalkConfig.Builder()
-                    .breakCondition(chest::isInteractableOnScreen)
-                    .enableRun(true)
-                    .build();
-            script.getWalker().walkTo(chest.getWorldPosition(), config);
-            return false; // Re-poll once it's on screen
+        Polygon hull = chest.getConvexHull();
+        if (hull == null) {
+            script.log(getClass(), "Chest convex hull is null, re-polling.");
+            return false;
         }
 
-        // Interact with chest
-        if (!script.getFinger().tap(chest.getConvexHull(), "Use")) {
+        double insideFactor = script.getWidgetManager().insideGameScreenFactor(
+                hull, List.of(ChatboxComponent.class));
+
+        // Walk closer if not fully visible
+        if (insideFactor < 1.0) {
+            script.log(getClass(), String.format(
+                    "Bank chest not fully on screen (factor=%.2f). Walking closer...",
+                    insideFactor));
+
+            WalkConfig config = new WalkConfig.Builder()
+                    .breakCondition(() -> {
+                        Polygon h = chest.getConvexHull();
+                        return h != null &&
+                                script.getWidgetManager().insideGameScreenFactor(
+                                        h, List.of(ChatboxComponent.class)) >= 1.0;
+                    })
+                    .enableRun(true)
+                    .build();
+
+            script.getWalker().walkTo(chest.getWorldPosition(), config);
+            return false;
+        }
+
+        // Now safe to tap (insideFactor ≥ 1.0)
+        if (!script.getFinger().tap(hull, "Use")) {
             script.log(getClass(), "Failed to interact with bank chest.");
             return false;
         }
 
-        // Wait until bank is visible or position changes for > 4s (fail-safe)
+        // Wait until bank widget visible OR fail after 4 seconds idle
         AtomicReference<Timer> positionChangeTimer = new AtomicReference<>(new Timer());
         AtomicReference<WorldPosition> pos = new AtomicReference<>(null);
+
         script.pollFramesHuman(() -> {
             WorldPosition current = script.getWorldPosition();
             if (current == null) return false;
-            if (pos.get() == null || !current.equals(pos.get())) {
-                positionChangeTimer.get().reset();
+
+            if (!current.equals(pos.get())) {
                 pos.set(current);
+                positionChangeTimer.get().reset();
             }
+
             return script.getWidgetManager().getBank().isVisible()
                     || positionChangeTimer.get().timeElapsed() > 4000;
         }, 20000);
 
-        // Return whether bank is open
         boolean bankOpen = script.getWidgetManager().getBank().isVisible();
         script.log(getClass(), "Bank open status: " + bankOpen);
         return bankOpen;

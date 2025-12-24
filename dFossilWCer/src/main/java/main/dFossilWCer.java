@@ -36,11 +36,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dFossilWCer",
         description = "Cuts and drops/banks Teak or Mahogany logs on Fossil Island",
         skillCategory = SkillCategory.WOODCUTTING,
-        version = 2.2,
+        version = 2.3,
         author = "JustDavyy"
 )
 public class dFossilWCer extends Script {
-    public static final String scriptVersion = "2.2";
+    public static final String scriptVersion = "2.3";
     private final String scriptName = "FossilWCer";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -54,6 +54,7 @@ public class dFossilWCer extends Script {
     public static boolean usedBasketAlready = false;
     public static int logsId = -1;
     public static int logsChopped = 0;
+    public static int treeAmount = 3;
     public static Timer lastXpGain = new Timer();
 
     public static String task = "Initializing...";
@@ -108,6 +109,7 @@ public class dFossilWCer extends Script {
         bankMode = mode.equals("Bank");
         dropMode = mode.equals("Drop");
         logsId = ui.getSelectedTree();
+        treeAmount = ui.getTreeCount();
 
         webhookEnabled = ui.isWebhookEnabled();
         webhookUrl = ui.getWebhookUrl();
@@ -653,7 +655,7 @@ public class dFossilWCer extends Script {
 
             int code = conn.getResponseCode();
             if (code == 200) {
-                log("STATS", "✅ Stats reported: gp=" + gpEarned + ", runtime=" + (runtimeMs/1000) + "s");
+                log("STATS", "✅ Stats reported: xp=" + xpGained + ", runtime=" + (runtimeMs/1000) + "s");
             } else {
                 log("STATS", "⚠ Failed to report stats, HTTP " + code);
             }
