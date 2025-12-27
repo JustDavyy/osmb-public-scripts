@@ -125,7 +125,7 @@ public class Chop2 extends Task {
 
         // === Interact with tree ===
         task = "Chop tree";
-        if (!treePatch.interact(getMenuHook())) {
+        if (!treePatch.interact(getMenuHook(treePatch))) {
             script.log(getClass(), "Failed to interact with tree.");
             return false;
         } else {
@@ -500,12 +500,16 @@ public class Chop2 extends Task {
         return matches != null && !matches.isEmpty();
     }
 
-    private MenuHook getMenuHook() {
+    private MenuHook getMenuHook(RSObject tree) {
         return menuEntries -> {
             for (MenuEntry entry : menuEntries) {
                 String text = entry.getRawText().toLowerCase();
                 if (text.startsWith("chop down")) {
                     return entry;
+                }
+                if (text.startsWith("clear")) {
+                    markTreeDepleted(tree);
+                    return null;
                 }
             }
             return null;
