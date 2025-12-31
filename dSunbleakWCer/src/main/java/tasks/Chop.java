@@ -11,9 +11,11 @@ import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.shape.Polygon;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
+import com.osmb.api.ui.component.chatbox.ChatboxComponent;
 import com.osmb.api.visual.SearchablePixel;
 import com.osmb.api.visual.color.ColorModel;
 import com.osmb.api.visual.color.tolerance.impl.SingleThresholdComparator;
+import com.osmb.api.walker.WalkConfig;
 import utils.Task;
 
 import java.awt.*;
@@ -34,7 +36,7 @@ public class Chop extends Task {
             new WorldPosition(2211, 2320, 0)
     );
 
-    private final Map<WorldPosition, Long> depletedTrees = new HashMap<>();
+    public static Map<WorldPosition, Long> depletedTrees = new HashMap<>();
 
     public Chop(Script script) {
         super(script);
@@ -350,8 +352,34 @@ public class Chop extends Task {
     }
 
     private boolean tryChopIronwood(RSObject tree) {
+
+        if (!tree.isInteractableOnScreen()) {
+            script.log("CHOP",
+                    "Ironwood not fully on screen → walking closer to " +
+                            tree.getWorldPosition());
+
+            WalkConfig cfg = new WalkConfig.Builder()
+                    .breakCondition(() -> {
+                        Polygon h = tree.getConvexHull();
+                        return h != null &&
+                                script.getWidgetManager()
+                                        .insideGameScreenFactor(
+                                                h,
+                                                List.of(ChatboxComponent.class)
+                                        ) >= 1.0;
+                    })
+                    .enableRun(true)
+                    .build();
+
+            script.getWalker().walkTo(tree.getWorldPosition(), cfg);
+            return false;
+        }
+
         Polygon poly = tree.getConvexHull();
-        if (poly == null) return false;
+        if (poly == null) {
+            script.log("CHOP", "Ironwood convex hull is null, retrying...");
+            return false;
+        }
 
         AtomicReference<String> selected = new AtomicReference<>(null);
         AtomicReference<List<MenuEntry>> menuCache = new AtomicReference<>(null);
@@ -386,7 +414,6 @@ public class Chop extends Task {
                     "Ironwood stump detected → marking depleted @ " +
                             tree.getWorldPosition());
             markTreeDepleted(tree);
-            return false;
         }
 
         return false;

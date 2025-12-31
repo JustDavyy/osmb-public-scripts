@@ -24,6 +24,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,11 +34,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dSunbleakWCer",
         description = "Chops and optionally banks Ironwood logs on Sunbleak island",
         skillCategory = SkillCategory.WOODCUTTING,
-        version = 1.0,
+        version = 1.1,
         author = "JustDavyy"
 )
 public class dSunbleakWCer extends Script {
-    public static final String scriptVersion = "1.0";
+    public static final String scriptVersion = "1.1";
     private final String scriptName = "SunbleakWCer";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -124,6 +125,12 @@ public class dSunbleakWCer extends Script {
                 new Drop(this),
                 new Chop(this)
         );
+    }
+
+    @Override
+    public void onRelog() {
+        log("onRelog", "Resetting depleted tree hashmap.");
+        Chop.depletedTrees = new HashMap<>();
     }
 
     @Override
