@@ -44,12 +44,12 @@ import java.util.concurrent.atomic.AtomicReference;
 @ScriptDefinition(
         name = "dWyrmAgility",
         author = "JustDavyy",
-        version = 2.3,
+        version = 2.4,
         description = "Does the Wyrm basic or advanced agility course.",
         skillCategory = SkillCategory.AGILITY
 )
 public class dWyrmAgility extends Script {
-    public static final String scriptVersion = "2.3";
+    public static final String scriptVersion = "2.4";
     private final String scriptName = "WyrmAgility";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -121,8 +121,6 @@ public class dWyrmAgility extends Script {
     }
 
     public static ObstacleHandleResponse handleObstacle(dWyrmAgility core, String obstacleName, String menuOption, Object end, int interactDistance, boolean canReach, int timeout, WorldPosition objectBaseTile) {
-        // cache hp, we determine if we failed the obstacle via hp decrementing
-        Integer hitpoints = core.getWidgetManager().getMinimapOrbs().getHitpointsPercentage();
         Optional<RSObject> result = core.getObjectManager().getObject(gameObject -> {
 
             if (gameObject.getName() == null || gameObject.getActions() == null) return false;
@@ -155,13 +153,6 @@ public class dWyrmAgility extends Script {
                 WorldPosition currentPos = core.getWorldPosition();
                 if (currentPos == null) {
                     return false;
-                }
-                // check if we take damage
-                if (!(hitpoints == -1)) {
-                    Integer newHitpointsResult = core.getWidgetManager().getMinimapOrbs().getHitpointsPercentage();
-                    if (hitpoints > newHitpointsResult) {
-                        return true;
-                    }
                 }
                 // check for being stood still
                 if (previousPosition.get() != null) {
