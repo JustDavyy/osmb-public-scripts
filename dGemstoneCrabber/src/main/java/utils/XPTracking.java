@@ -59,7 +59,7 @@ public class XPTracking {
     public void checkXP() {
         boolean xpGainedThisTick = false;
 
-        // --- Built-in skill tracking (primary source) ---
+        // --- Built-in skill tracking ---
         Map<SkillType, XPTracker> liveTrackers = core.getXPTrackers();
         if (liveTrackers != null && !liveTrackers.isEmpty()) {
             for (SkillType skill : TRACKED_SKILLS) {
@@ -68,7 +68,6 @@ public class XPTracking {
 
                 double currentXp = live.getXp();
                 XPTracker cached = skillTrackers.get(skill);
-
                 if (cached == null) {
                     cached = new XPTracker(core, (int) Math.round(currentXp));
                     skillTrackers.put(skill, cached);
@@ -77,7 +76,6 @@ public class XPTracking {
 
                 double prevXp = cached.getXp();
                 double delta = currentXp - prevXp;
-
                 if (delta > 0 && delta <= 10_000) {
                     cached.incrementXp(delta);
                     combinedTracker.incrementXp(delta);
@@ -86,7 +84,7 @@ public class XPTracking {
             }
         }
 
-        // --- OCR total-XP tracking (secondary source, NO direct combined increment) ---
+        // --- OCR “total-XP” fallback ---
         if (checkXPCounterActive()) {
             Integer totalXpValue = getTotalXpCounter();
             if (totalXpValue != null) {
@@ -95,22 +93,11 @@ public class XPTracking {
                 } else {
                     double prev = totalSpriteTracker.getXp();
                     double delta = totalXpValue - prev;
-
                     if (delta > 0 && delta <= 100_000) {
                         totalSpriteTracker.incrementXp(delta);
+                        xpGainedThisTick = true;
                     }
                 }
-            }
-        }
-
-        // --- Reconcile totals: OCR may ONLY correct upwards ---
-        if (totalSpriteTracker != null) {
-            double skillTotal = combinedTracker.getXp();
-            double ocrTotal = totalSpriteTracker.getXp();
-
-            if (ocrTotal > skillTotal) {
-                combinedTracker.incrementXp(ocrTotal - skillTotal);
-                xpGainedThisTick = true;
             }
         }
 
