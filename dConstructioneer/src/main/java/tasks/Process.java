@@ -29,8 +29,8 @@ public class Process extends Task {
     public boolean activate() {
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(selectedBaseMaterialId));
         if (inventorySnapshot == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
-            script.log(getClass().getSimpleName(), "Opening inventory tab");
+            script.log("PROCESS", "Inventory not visible.");
+            script.log("PROCESS", "Opening inventory tab");
             script.getWidgetManager().getTabManager().openTab(Tab.Type.INVENTORY);
             return false;
         }
@@ -40,8 +40,12 @@ public class Process extends Task {
             amount = inventorySnapshot.getAmount(selectedBaseMaterialId);
         }
 
-        int needed = 0;
-        if (selectedType.equalsIgnoreCase("repair kits")) {
+        int needed;
+
+        // Ironwood & Rosewood planks → only 1 needed
+        if (selectedBaseMaterialId == 31435 || selectedBaseMaterialId == 31438) {
+            needed = 1;
+        } else if (selectedType.equalsIgnoreCase("repair kits")) {
             needed = 2;
         } else {
             needed = 5;
@@ -52,7 +56,7 @@ public class Process extends Task {
 
     @Override
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "PROCESS";
         if (!script.getWidgetManager().getInventory().unSelectItemIfSelected()) {
             return false;
         }
@@ -63,7 +67,7 @@ public class Process extends Task {
 
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(selectedBaseMaterialId, ItemID.HAMMER, ItemID.IMCANDO_HAMMER, ItemID.IMCANDO_HAMMER_OFFHAND, ItemID.SAW, ItemID.AMYS_SAW, ItemID.AMYS_SAW_OFFHAND, ItemID.CRYSTAL_SAW, ItemID.SWAMP_PASTE, ItemID.SWAMP_PASTE_22095, ItemID.LAMP, ItemID.BOOK_OF_KNOWLEDGE, ItemID.BRONZE_NAILS, ItemID.IRON_NAILS, ItemID.STEEL_NAILS, ItemID.MITHRIL_NAILS, ItemID.ADAMANTITE_NAILS, ItemID.RUNE_NAILS, 31406));
         if (inventorySnapshot == null) {
-            script.log(getClass(), "Inventory not visible.");
+            script.log("PROCESS", "Inventory not visible.");
             return false;
         }
 
@@ -74,18 +78,18 @@ public class Process extends Task {
         if (selectedType.equalsIgnoreCase("repair kits")) {
             if (!inventorySnapshot.containsAll(Set.of(selectedBaseMaterialId, selectedNail))) {
                 if (failCount >= 8) {
-                    script.log(getClass(), "We don't have the required planks, paste and nails to continue for 8 times in a row.");
+                    script.log("PROCESS", "We don't have the required planks, paste and nails to continue for 8 times in a row.");
                     script.stop();
                     return false;
                 }
-                script.log(getClass(), "Required planks, paste and nails not found in inventory, returning!");
+                script.log("PROCESS", "Required planks, paste and nails not found in inventory, returning!");
                 failCount++;
                 return false;
             }
         } else {
             if (!inventorySnapshot.contains(selectedBaseMaterialId)) {
                 if (failCount >= 8) {
-                    script.log(getClass(), "We don't have the required planks");
+                    script.log("PROCESS", "We don't have the required planks");
                     script.stop();
                     return false;
                 }
@@ -100,13 +104,13 @@ public class Process extends Task {
         task = "Find workbench object";
         RSObject benchObject = getClosestbenchObject();
         if (benchObject == null) {
-            script.log(getClass(), "No shipwrights workbench object found nearby.");
+            script.log("PROCESS", "No shipwrights workbench object found nearby.");
             return false;
         }
 
         task = "Interact with object";
         if (!benchObject.interact("Craft")) {
-            script.log(getClass(), "Failed to interact with workbench object. Retrying...");
+            script.log("PROCESS", "Failed to interact with workbench object. Retrying...");
             if (!benchObject.interact("Craft")) {
                 return false;
             }
@@ -131,11 +135,11 @@ public class Process extends Task {
             }
 
             if (!selected) {
-                script.log(getClass(), "Failed to select construction category in TEXT_OPTION.");
+                script.log("PROCESS", "Failed to select construction category in TEXT_OPTION.");
                 return false;
             }
 
-            script.log(getClass(), "Selected construction category successfully.");
+            script.log("PROCESS", "Selected construction category successfully.");
 
             BooleanSupplier waitItemOption = () ->
                     script.getWidgetManager().getDialogue().getDialogueType() == DialogueType.ITEM_OPTION;
@@ -145,20 +149,42 @@ public class Process extends Task {
             // Once that appear, select the correct option, then wait
             DialogueType afterCategory = script.getWidgetManager().getDialogue().getDialogueType();
             if (afterCategory != DialogueType.ITEM_OPTION) {
-                script.log(getClass(), "Expected ITEM_OPTION, but it did not appear.");
+                script.log("PROCESS", "Expected ITEM_OPTION, but it did not appear.");
                 return false;
             }
 
             selected = script.getWidgetManager().getDialogue().selectItem(selectedItemId);
 
             if (!selected) {
-                script.log(getClass(), "Failed to select: " + selectedItemId);
+                script.log("PROCESS", "Failed to select: " + selectedItemId);
                 return false;
+            }
+
+            // Check for dialogue that we don't have enough items
+            DialogueType diag = script.getWidgetManager().getDialogue().getDialogueType();
+            if (diag != null) {
+                task = "Dialogue detected";
+                if (diag.equals(DialogueType.TAP_HERE_TO_CONTINUE)) {
+                    task = "Continue dialogue detected";
+                    script.log("PROCESS", "Continue dialogue detected, out of resources?");
+                    task = "Get dialogue text";
+
+                    String text = script.getWidgetManager().getDialogue().getText().get();
+                    if (text != null && !text.isBlank()) {
+                        script.log("PROCESS", "Dialogue text detected: " + text.toLowerCase());
+
+                        if (text.toLowerCase().contains("you need")) {
+                            script.log("PROCESS", "You need dialogue detected, we are out of resources. Stopping script");
+                            script.stop();
+                            return false;
+                        }
+                    }
+                }
             }
 
             waitUntilFinishedProcessing();
         } else {
-            script.log(getClass(), "Expected TEXT_OPTION but did not receive it.");
+            script.log("PROCESS", "Expected TEXT_OPTION but did not receive it.");
             return false;
         }
 
@@ -210,18 +236,28 @@ public class Process extends Task {
                 return true;
             }
 
-            ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(selectedBaseMaterialId));
-            if (inventorySnapshot == null) {return false;}
+            ItemGroupResult inventorySnapshot = script.getWidgetManager()
+                    .getInventory()
+                    .search(Set.of(selectedBaseMaterialId));
+
+            if (inventorySnapshot == null) {
+                return false;
+            }
+
+            // Ironwood & Rosewood only need 1 plank
+            int threshold = (selectedBaseMaterialId == 31435 || selectedBaseMaterialId == 31438)
+                    ? 1
+                    : 2;
 
             if (inventorySnapshot.contains(selectedBaseMaterialId)) {
                 int amount = inventorySnapshot.getAmount(selectedBaseMaterialId);
-                return amount < 2;
+                return amount < threshold;
             } else {
                 return true;
             }
         };
 
-        script.log(getClass(), "Using human task to wait until processing finishes.");
+        script.log("PROCESS", "Using human task to wait until processing finishes.");
         script.pollFramesHuman(condition, script.random(66000, 70000));
     }
 

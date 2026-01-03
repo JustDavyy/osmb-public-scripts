@@ -30,23 +30,23 @@ public class Bank extends Task {
 
     @Override
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "BANK";
         if (!script.getWidgetManager().getBank().isVisible()) {
-            script.log(getClass(), "Bank is not visible, opening bank!");
+            script.log("BANK", "Bank is not visible, opening bank!");
             openBank();
             return false;
         }
 
         task = "Deposit items";
         if (!script.getWidgetManager().getBank().depositAll(Set.of(ItemID.HAMMER, ItemID.IMCANDO_HAMMER, ItemID.IMCANDO_HAMMER_OFFHAND, ItemID.SAW, ItemID.AMYS_SAW, ItemID.AMYS_SAW_OFFHAND, ItemID.CRYSTAL_SAW, ItemID.SWAMP_PASTE, ItemID.SWAMP_PASTE_22095, ItemID.LAMP, ItemID.BOOK_OF_KNOWLEDGE, selectedNail))) {
-            script.log(getClass().getSimpleName(), "Deposit item by item action failed.");
+            script.log("BANK", "Deposit item by item action failed.");
             return false;
         }
-        script.log(getClass(), "Deposit items succeeded.");
+        script.log("BANK", "Deposit items succeeded.");
 
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Collections.emptySet());
         if (inventorySnapshot == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
+            script.log("BANK", "Inventory not visible.");
             return false;
         }
 
@@ -56,30 +56,41 @@ public class Bank extends Task {
             withdrawAmount = 25;
         }
 
-        if (!script.getWidgetManager().getBank().withdraw(selectedBaseMaterialId, withdrawAmount)) {
-            script.log(getClass(), "Withdraw failed for " + withdrawAmount + "x " + selectedBaseMaterialId);
+        // Ironwood (31435) and Rosewood (31438) planks:
+        // 1 plank makes 3 repair kits → divide free slots by 3 and round down
+        if (selectedBaseMaterialId == 31435 || selectedBaseMaterialId == 31438) {
+            withdrawAmount = withdrawAmount / 3;
+        }
+
+        if (withdrawAmount <= 0) {
+            script.log("BANK", "No space to withdraw base material: " + selectedBaseMaterialId);
             return false;
         }
-        script.log(getClass(), "Withdraw succeeded for " + withdrawAmount + "x " + selectedBaseMaterialId);
+
+        if (!script.getWidgetManager().getBank().withdraw(selectedBaseMaterialId, withdrawAmount)) {
+            script.log("BANK", "Withdraw failed for " + withdrawAmount + "x " + selectedBaseMaterialId);
+            return false;
+        }
+        script.log("BANK", "Withdraw succeeded for " + withdrawAmount + "x " + selectedBaseMaterialId);
 
         script.getWidgetManager().getBank().close();
         return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
     }
 
     private void openBank() {
-        script.log(getClass(), "Searching for a bank...");
+        script.log("BANK", "Searching for a bank...");
         task = "Open bank";
 
         // Regular bank object
         List<RSObject> banksFound = script.getObjectManager().getObjects(dConstructioneer.bankQuery);
         if (banksFound.isEmpty()) {
-            script.log(getClass(), "No bank objects found.");
+            script.log("BANK", "No bank objects found.");
             return;
         }
 
         RSObject bank = (RSObject) script.getUtils().getClosest(banksFound);
         if (!bank.interact(dConstructioneer.BANK_ACTIONS)) {
-            script.log(getClass(), "Failed to interact with bank object.");
+            script.log("BANK", "Failed to interact with bank object.");
             return;
         }
 

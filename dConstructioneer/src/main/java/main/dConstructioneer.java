@@ -39,11 +39,11 @@ import java.util.function.Predicate;
         name = "dConstructioneer",
         description = "Trains construction quickly by making hull parts or repair kits for the Sailing skill",
         skillCategory = SkillCategory.CONSTRUCTION,
-        version = 1.1,
+        version = 1.2,
         author = "JustDavyy"
 )
 public class dConstructioneer extends Script {
-    public static String scriptVersion = "1.1";
+    public static String scriptVersion = "1.2";
     private final String scriptName = "Constructioneer";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -623,7 +623,7 @@ public class dConstructioneer extends Script {
 
             int code = conn.getResponseCode();
             if (code == 200) {
-                log("STATS", "✅ Stats reported: gp=" + gpEarned + ", runtime=" + (runtimeMs/1000) + "s");
+                log("STATS", "✅ Stats reported: xp=" + xpGained + ", runtime=" + (runtimeMs/1000) + "s");
             } else {
                 log("STATS", "⚠ Failed to report stats, HTTP " + code);
             }
