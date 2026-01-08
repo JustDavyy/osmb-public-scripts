@@ -43,11 +43,11 @@ import javax.imageio.ImageIO;
         name = "dAIOFisher",
         description = "AIO Fisher that fishes, banks and/or drops to get those gains!",
         skillCategory = SkillCategory.FISHING,
-        version = 3.9,
+        version = 4.0,
         author = "JustDavyy"
 )
 public class dAIOFisher extends Script {
-    public static String scriptVersion = "3.9";
+    public static String scriptVersion = "4.0";
     private final String scriptName = "AIOFisher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -64,6 +64,7 @@ public class dAIOFisher extends Script {
     public static boolean dropMode = false;
     public static boolean cookMode = false;
     public static boolean noteMode = false;
+    public static boolean cutMode = false;
     public static boolean hasToolEquipped = false;
     public static FishingMethod fishingMethod;
     public static FishingLocation fishingLocation;
@@ -238,6 +239,9 @@ public class dAIOFisher extends Script {
             };
             case Fishing_Guild_South, Fishing_Guild_North, Minnows -> new int[]{
                     10293
+            };
+            case The_Onyx_Crest -> new int[]{
+                    11811
             };
             default -> new int[0];
         };
@@ -587,6 +591,7 @@ public class dAIOFisher extends Script {
         dropMode = ui.getSelectedHandlingMethod().equals(HandlingMode.DROP) || ui.getSelectedHandlingMethod().equals(HandlingMode.COOK);
         cookMode = ui.getSelectedHandlingMethod().equals(HandlingMode.COOK) || ui.getSelectedHandlingMethod().equals(HandlingMode.COOKnBANK) || ui.getSelectedHandlingMethod().equals(HandlingMode.COOKnNOTE);
         noteMode = ui.getSelectedHandlingMethod().equals(HandlingMode.NOTE) || ui.getSelectedHandlingMethod().equals(HandlingMode.COOKnNOTE);
+        cutMode = ui.getSelectedHandlingMethod().equals(HandlingMode.CUT);
         fishingMethod = ui.getSelectedMethod();
         fishingLocation = ui.getSelectedLocation();
         menuHook = fishingMethod.getMenuEntry();
@@ -644,6 +649,7 @@ public class dAIOFisher extends Script {
         else {
             taskList.add(new Travel(this));
             taskList.add(new Fish(this));
+            taskList.add(new Cut(this));
             taskList.add(new Cook(this));
             taskList.add(new Drop(this));
             taskList.add(new Bank(this));

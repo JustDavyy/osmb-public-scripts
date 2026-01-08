@@ -2826,6 +2826,43 @@ public enum FishingLocation {
                     )
             )
     ),
+    The_Onyx_Crest(
+            new RectangleArea(2996, 2271, 10, 14, 0), // Main fishing area
+            List.of(
+                    new RectangleArea(3001, 2278, 2, 3, 0),
+                    new RectangleArea(3000, 2273, 2, 3, 0)
+            ), // Fishing spot areas
+            new RectangleArea(2981, 2266, 5, 4, 0), // Bank area
+            List.of(
+                    new FishingMethod(
+                            "Lantern harpoon",
+                            List.of(31553, 31561),
+                            List.of(HandlingMode.DROP, HandlingMode.CUT),
+                            List.of(ItemID.HARPOON),
+                            List.of(),
+                            List.of(),
+                            "Harpoon",
+                            Set.of(
+                                    new WorldPosition(3004, 2280, 0),
+                                    new WorldPosition(3004, 2279, 0),
+                                    new WorldPosition(3004, 2278, 0),
+                                    new WorldPosition(3004, 2277, 0),
+                                    new WorldPosition(3003, 2275, 0),
+                                    new WorldPosition(3003, 2274, 0),
+                                    new WorldPosition(3003, 2273, 0),
+                                    new WorldPosition(3002, 2271, 0),
+                                    new WorldPosition(3002, 2270, 0),
+                                    new WorldPosition(3001, 2268, 0)
+                            ),
+                            "None",
+                            "None",
+                            "Bank chest",
+                            "Bank",
+                            FishingMethod.BankObjectType.BANK,
+                            85000
+                    )
+            )
+    ),
     Minnows(
             new RectangleArea(0, 0, 0, 0, 0), // Main fishing area
             List.of(

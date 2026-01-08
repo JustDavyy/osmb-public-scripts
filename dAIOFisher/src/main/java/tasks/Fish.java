@@ -146,6 +146,7 @@ public class Fish extends Task {
         boolean xpRecently = System.currentTimeMillis() - lastXpGained <= fishingMethod.getFishingDelay();
 
         task = "Check if currently fishing";
+        if (stillValid && xpRecently) task = "Wait till done fishing";
         return stillValid && xpRecently;
     }
 

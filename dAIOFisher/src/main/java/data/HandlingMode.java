@@ -7,7 +7,8 @@ public enum HandlingMode {
     COOKnBANK,
     STACK,
     NOTE,
-    COOKnNOTE;
+    COOKnNOTE,
+    CUT;
 
     @Override
     public String toString() {
