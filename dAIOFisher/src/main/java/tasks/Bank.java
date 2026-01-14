@@ -21,7 +21,11 @@ public class Bank extends Task {
 
     public Bank(Script script) {
         super(script);
-        ignoreItems.addAll(fishingMethod.getRequiredTools());
+
+        ignoreItems.addAll(
+                expandWithEquivalents(fishingMethod.getRequiredTools())
+        );
+
         Collections.addAll(ignoreItems,
                 ItemID.SPIRIT_FLAKES,
                 ItemID.FISH_BARREL,
@@ -321,5 +325,38 @@ public class Bank extends Task {
         // Or if bank/deposit is already visible & interactable on screen
         RSObject bank = getClosestBankOrDeposit();
         return bank != null && bank.isInteractableOnScreen();
+    }
+
+    public static Set<Integer> expandWithEquivalents(Collection<Integer> baseIds) {
+        Set<Integer> expanded = new HashSet<>();
+
+        for (int id : baseIds) {
+            expanded.add(id);
+
+            switch (id) {
+                case ItemID.HARPOON ->
+                        expanded.addAll(TOOL_EQUIVALENTS.get("harpoon"));
+
+                case ItemID.FISHING_ROD ->
+                        expanded.addAll(TOOL_EQUIVALENTS.get("fishingrod"));
+
+                case ItemID.FLY_FISHING_ROD ->
+                        expanded.addAll(TOOL_EQUIVALENTS.get("flyfishingrod"));
+
+                case ItemID.OILY_FISHING_ROD ->
+                        expanded.addAll(TOOL_EQUIVALENTS.get("oilyfishingrod"));
+
+                case ItemID.BARBARIAN_ROD ->
+                        expanded.addAll(TOOL_EQUIVALENTS.get("barbarianrod"));
+
+                case ItemID.FEATHER ->
+                        expanded.addAll(BAIT_EQUIVALENTS.get("barbbait"));
+
+                case ItemID.SANDWORMS ->
+                        expanded.addAll(BAIT_EQUIVALENTS.get("sandworm"));
+            }
+        }
+
+        return expanded;
     }
 }
