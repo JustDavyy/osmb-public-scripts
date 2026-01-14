@@ -38,7 +38,7 @@ import javax.imageio.ImageIO;
 
 @ScriptDefinition(
         name = "dPublic Alcher",
-        description = "Alchs items (both high & low) until out of items or runes.",
+        description = "Alchs items using high or low alch until out of items or runes.",
         skillCategory = SkillCategory.MAGIC,
         version = 2.5,
         author = "JustDavyy"
