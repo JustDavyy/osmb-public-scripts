@@ -28,6 +28,7 @@ public class ScriptUI {
     private static final String PREF_SELECTED_ITEM_ID = "dpublicalcher_selected_item_id";
     private static final String PREF_SELECTED_MULTIPLE_ITEMS = "dpublicalcher_selected_multiple_item_ids";
     private static final String PREF_SELECTION_MODE = "dpublicalcher_selection_mode";
+    private static final String PREF_FAST_ALCH = "dpublicalcher_fast_alch";
     private static final String PREF_WEBHOOK_ENABLED = "dpublicalcher_webhook_enabled";
     private static final String PREF_WEBHOOK_URL = "dpublicalcher_webhook_url";
     private static final String PREF_WEBHOOK_INTERVAL = "dpublicalcher_webhook_interval";
@@ -43,6 +44,7 @@ public class ScriptUI {
     private ComboBox<String> selectionModeComboBox;
     private ImageView itemToAlchView;
     private ListView<Integer> multipleItemsView;
+    private CheckBox fastAlchCheckBox;
 
     private int selectedItemID = ItemID.BANK_FILLER;
     private final ObservableList<Integer> multipleSelectedItemIDs = FXCollections.observableArrayList();
@@ -80,7 +82,10 @@ public class ScriptUI {
         updateItemSelectionUI(core);
         selectionModeComboBox.setOnAction(e -> updateItemSelectionUI(core));
 
-        mainBox.getChildren().addAll(spellLabel, spellComboBox, modeLabel, selectionModeComboBox, itemSelectionBox);
+        fastAlchCheckBox = new CheckBox("Enable faster alching");
+        fastAlchCheckBox.setSelected(prefs.getBoolean(PREF_FAST_ALCH, false));
+
+        mainBox.getChildren().addAll(spellLabel, spellComboBox, modeLabel, selectionModeComboBox, itemSelectionBox, fastAlchCheckBox);
         Tab mainTab = new Tab("Main", mainBox);
         mainTab.setClosable(false);
 
@@ -261,6 +266,7 @@ public class ScriptUI {
             prefs.putInt(PREF_SELECTED_ITEM_ID, selectedItemID);
             script.log("SAVESETTINGS", "Saved selected single item ID: " + selectedItemID);
         }
+        prefs.putBoolean(PREF_FAST_ALCH, isFastAlchEnabled());
 
         prefs.putBoolean(PREF_WEBHOOK_ENABLED, isWebhookEnabled());
         prefs.put(PREF_WEBHOOK_URL, getWebhookUrl());
@@ -284,6 +290,10 @@ public class ScriptUI {
 
     public boolean isMultipleSelectionMode() {
         return selectionModeComboBox.getSelectionModel().getSelectedItem().equals("Multiple Items");
+    }
+
+    public boolean isFastAlchEnabled() {
+        return fastAlchCheckBox != null && fastAlchCheckBox.isSelected();
     }
 
     public boolean isWebhookEnabled() {

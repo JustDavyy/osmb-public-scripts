@@ -62,7 +62,7 @@ public class Setup extends Task {
         } else {
             int stack = inventorySnapshot.getAmount(itemId);
             script.log("INFO", "Item " + itemName + " found, stack: " + stack);
-            stackSize = stack;
+            stackSizeAtStart = stack;
             hasReqs = true;
             itemRect = inventorySnapshot.getItem(itemId).getTappableBounds();
         }

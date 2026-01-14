@@ -40,11 +40,11 @@ import javax.imageio.ImageIO;
         name = "dPublic Alcher",
         description = "Alchs items (both high & low) until out of items or runes.",
         skillCategory = SkillCategory.MAGIC,
-        version = 2.4,
+        version = 2.5,
         author = "JustDavyy"
 )
 public class dPublicAlcher extends Script {
-    public static final String scriptVersion = "2.4";
+    public static final String scriptVersion = "2.5";
     private final String scriptName = "PublicAlcher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -54,12 +54,15 @@ public class dPublicAlcher extends Script {
     public static int alchItemID;
     public static String itemName;
     public static int stackSize;
+    public static int stackSizeAtStart;
     public static boolean hasReqs;
     public static UIResult<Rectangle> itemRect;
 
     public static boolean multipleItemsMode = false;
     public static List<Integer> itemsToAlch;
     public static int currentItemIndex = 0;
+
+    public static boolean fastAlchMode = false;
 
     private static boolean webhookEnabled = false;
     private static boolean webhookShowUser = false;
@@ -145,6 +148,11 @@ public class dPublicAlcher extends Script {
 
         int xpPerHour = (int) Math.round(xpGainedLive / hours);
         xpGained = (int) Math.round(xpGainedLive);
+
+        int xpPerAlch = getXpPerAlch();
+        alchCount = xpPerAlch > 0 ? xpGained / xpPerAlch : 0;
+
+        stackSize = stackSizeAtStart - alchCount;
 
         int alchsPerHour = (int) Math.round(alchCount / hours);
         String timeTillCompletion = "-";
@@ -361,6 +369,10 @@ public class dPublicAlcher extends Script {
 
         log("DEBUG", "Mode: " + (multipleItemsMode ? "Multiple" : "Single"));
         log("DEBUG", "Starting with item: " + itemName + " (ID=" + alchItemID + ") using: " + spellToCast);
+
+        fastAlchMode = ui.isFastAlchEnabled();
+
+        log("DEBUG", "Fast alching enabled is: " + fastAlchMode);
 
         webhookEnabled = ui.isWebhookEnabled();
         webhookUrl = ui.getWebhookUrl();
@@ -626,12 +638,16 @@ public class dPublicAlcher extends Script {
 
             int code = conn.getResponseCode();
             if (code == 200) {
-                log("STATS", "✅ Stats reported: gp=" + gpEarned + ", runtime=" + (runtimeMs/1000) + "s");
+                log("STATS", "✅ Stats reported: xp=" + xpGained + ", runtime=" + (runtimeMs/1000) + "s");
             } else {
                 log("STATS", "⚠ Failed to report stats, HTTP " + code);
             }
         } catch (Exception e) {
             log("STATS", "❌ Error sending stats: " + e.getMessage());
         }
+    }
+
+    private int getXpPerAlch() {
+        return (spellToCast == StandardSpellbook.HIGH_LEVEL_ALCHEMY) ? 65 : 31;
     }
 }

@@ -48,7 +48,6 @@ public class AlchTask extends Task {
             script.stop();
             return false;
         }
-
         if (success) {
             long now = System.currentTimeMillis();
             long timeSinceLastAlch = now - lastAlchTime;
@@ -56,8 +55,6 @@ public class AlchTask extends Task {
 
             task = "Update counts";
             lastAlchTime = System.currentTimeMillis();
-            alchCount++;
-            stackSize--;
 
             task = "Tap item";
             script.getFinger().tap(itemRect.get().getBounds());
@@ -74,23 +71,31 @@ public class AlchTask extends Task {
 
     private long getCooldownForSpell() {
         int roll = script.random(100);
+        long delay;
 
         if (spellToCast == StandardSpellbook.HIGH_LEVEL_ALCHEMY) {
             if (roll < 50) {
-                return script.random(3000, 3101);
+                delay = script.random(3000, 3101);
             } else if (roll < 90) {
-                return script.random(3050, 3201);
+                delay = script.random(3050, 3201);
             } else {
-                return script.random(3100, 3501);
+                delay = script.random(3100, 3501);
             }
         } else {
             if (roll < 50) {
-                return script.random(1800, 1901);
+                delay = script.random(1800, 1901);
             } else if (roll < 90) {
-                return script.random(1850, 2001);
+                delay = script.random(1850, 2001);
             } else {
-                return script.random(1900, 2301);
+                delay = script.random(1900, 2301);
             }
         }
+
+        // Shorter delay if using fast mode
+        if (fastAlchMode) {
+            delay = Math.round(delay * 0.25);
+        }
+
+        return delay;
     }
 }
