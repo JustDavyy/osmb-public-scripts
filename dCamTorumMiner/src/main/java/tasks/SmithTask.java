@@ -11,6 +11,7 @@ import com.osmb.api.location.area.impl.RectangleArea;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Collections;
@@ -98,7 +99,7 @@ public class SmithTask extends Task {
                         return type == DialogueType.ITEM_OPTION;
                     };
 
-                    script.pollFramesHuman(condition, script.random(4000, 6000));
+                    script.pollFramesHuman(condition, RandomUtils.uniformRandom(4000, 6000));
 
                     DialogueType dialogueType = script.getWidgetManager().getDialogue().getDialogueType();
                     if (dialogueType == DialogueType.ITEM_OPTION) {
@@ -106,7 +107,7 @@ public class SmithTask extends Task {
                         if (!selected) {
                             task = "Retry interaction";
                             script.log(getClass(), "Initial calcified deposit selection failed, retrying...");
-                            script.pollFramesHuman(() -> false, script.random(150, 300));
+                            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                             selected = script.getWidgetManager().getDialogue().selectItem(ItemID.CALCIFIED_DEPOSIT);
                         }
 
@@ -225,12 +226,12 @@ public class SmithTask extends Task {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
                 script.log(getClass().getSimpleName(), "Dialogue detected, leveled up?");
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
             // A timer to timeout
-            if (amountChangeTimer.timeElapsed() > script.random(70000, 78000)) {
+            if (amountChangeTimer.timeElapsed() > RandomUtils.uniformRandom(70000, 78000)) {
                 return true;
             }
 
@@ -241,6 +242,6 @@ public class SmithTask extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until smithing finishes.");
-        script.pollFramesHuman(condition, script.random(70000, 78000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(70000, 78000));
     }
 }

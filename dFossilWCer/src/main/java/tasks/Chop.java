@@ -14,6 +14,7 @@ import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.visual.SearchablePixel;
 import com.osmb.api.visual.color.ColorModel;
 import com.osmb.api.visual.color.tolerance.impl.SingleThresholdComparator;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.awt.*;
@@ -185,7 +186,7 @@ public class Chop extends Task {
                 clusterFailCount = 0;
             }
 
-            script.pollFramesHuman(() -> false, script.random(400, 800));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(400, 800));
             return false;
         }
 
@@ -208,8 +209,8 @@ public class Chop extends Task {
         waitUntilFinishedChopping(startSnapshot);
 
         // === Small chance for additional delay ===
-        if (script.random(1, 100) <= 15) {
-            script.pollFramesHuman(() -> false, script.random(1, 100));
+        if (RandomUtils.uniformRandom(1, 100) <= 15) {
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 100));
         }
 
         return true;
@@ -229,7 +230,7 @@ public class Chop extends Task {
         script.pollFramesHuman(() -> {
             WorldPosition p = script.getWorldPosition();
             return p != null && eastArea.contains(p);
-        }, script.random(6000, 9000));
+        }, RandomUtils.uniformRandom(6000, 9000));
 
         waitTillStopped();
         return true;
@@ -253,7 +254,7 @@ public class Chop extends Task {
 
     private void waitUntilFinishedChopping(ItemGroupResult startSnapshot) {
 
-        int maxChopDuration = script.random(240_000, 270_000);
+        int maxChopDuration = RandomUtils.uniformRandom(240_000, 270_000);
 
         if (startSnapshot == null) {
             script.log(getClass(), "Aborting chop check: could not read starting inventory.");
@@ -268,10 +269,10 @@ public class Chop extends Task {
         lastXpGain.reset();
 
         // === INITIAL: wait to let user start chopping ===
-        script.pollFramesHuman(() -> false, script.random(2750, 4000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2750, 4000));
 
         long[] animClearSince = { -1 };
-        long animCheckMs = script.random(800, 1500);
+        long animCheckMs = RandomUtils.uniformRandom(800, 1500);
 
         // === Main monitoring loop ===
         script.pollFramesHuman(() -> {
@@ -292,7 +293,7 @@ public class Chop extends Task {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
                 script.log(getClass(), "Dialogue detected, leveled up?");
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -400,7 +401,7 @@ public class Chop extends Task {
             return script.pollFramesHuman(() -> {
                 WorldPosition currentPos = script.getWorldPosition();
                 return currentPos != null && !bankingArea.contains(currentPos);
-            }, script.random(7000, 12000));
+            }, RandomUtils.uniformRandom(7000, 12000));
         } else {
             return walkWithoutShortcut();
         }
@@ -415,7 +416,7 @@ public class Chop extends Task {
 
         WorldPosition currentPos = script.getWorldPosition();
 
-        script.pollFramesHuman(() -> currentPos != null && choppingArea.contains(currentPos), script.random(600, 1200));
+        script.pollFramesHuman(() -> currentPos != null && choppingArea.contains(currentPos), RandomUtils.uniformRandom(600, 1200));
         return true;
     }
 
@@ -550,7 +551,7 @@ public class Chop extends Task {
         }
 
         long baseWaitMs = soonestReadyTime - now;
-        long randomExtraMs = script.random(0, 5_000);
+        long randomExtraMs = RandomUtils.uniformRandom(0, 5_000);
         long waitMs = baseWaitMs + randomExtraMs;
         if (waitMs <= 0) {
             depletedTrees.clear(); // safety
@@ -589,7 +590,7 @@ public class Chop extends Task {
         long[] stillStart = { System.currentTimeMillis() };
         long[] animClearSince = { -1 };
 
-        int delay = script.random(750, 1050);
+        int delay = RandomUtils.uniformRandom(750, 1050);
 
         java.util.function.BooleanSupplier stopCondition = () -> {
 
@@ -622,6 +623,6 @@ public class Chop extends Task {
 
         script.pollFramesUntil(
                 stopCondition,
-                script.random(4000, 7500));
+                RandomUtils.uniformRandom(4000, 7500));
     }
 }

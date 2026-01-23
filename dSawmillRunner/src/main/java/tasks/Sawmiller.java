@@ -12,6 +12,7 @@ import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.ui.tabs.Equipment;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -166,7 +167,7 @@ public class Sawmiller extends Task {
                 if (script.getWidgetManager().getDialogue() == null) return false;
                 DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
                 return type != null && type.equals(DialogueType.ITEM_OPTION);
-            }, script.random(3000, 5000));
+            }, RandomUtils.uniformRandom(3000, 5000));
 
             return false;
         }
@@ -186,7 +187,7 @@ public class Sawmiller extends Task {
                 boolean selected = script.getWidgetManager().getDialogue().selectItem(neededLogs);
                 if (!selected) {
                     script.log(getClass(), "Initial log selection failed, retrying...");
-                    script.pollFramesHuman(() -> false, script.random(150, 300));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                     selected = script.getWidgetManager().getDialogue().selectItem(neededLogs);
                 }
 
@@ -318,6 +319,9 @@ public class Sawmiller extends Task {
             case ItemID.OAK_PLANK -> requiredCoins = 250;
             case ItemID.TEAK_PLANK -> requiredCoins = 500;
             case ItemID.MAHOGANY_PLANK -> requiredCoins = 1500;
+            case 31432 -> requiredCoins = 2500;
+            case 31435 -> requiredCoins = 5000;
+            case 31438 -> requiredCoins = 7500;
             default -> {
                 script.log(getClass(), "Unknown plank ID selected: " + plankId + ". Stopping script.");
                 script.stop();
@@ -436,7 +440,7 @@ public class Sawmiller extends Task {
             }
 
             if (type != null && type.equals(DialogueType.TAP_HERE_TO_CONTINUE)) {
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -448,7 +452,7 @@ public class Sawmiller extends Task {
             return !hasLogs() || hasPlanks();
         };
 
-        script.pollFramesHuman(condition, script.random(6000, 10000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(6000, 10000));
 
         if (!plankCountChecked) {
             // Count how many planks we have in inventory and increment totalPlankCount
@@ -465,9 +469,9 @@ public class Sawmiller extends Task {
             plankCountChecked = true;
         }
 
-        if (script.random(10) < 3) {
+        if (RandomUtils.uniformRandom(10) < 3) {
             script.log(getClass(), "Adding extra randomized delay");
-            script.pollFramesHuman(() -> false, script.random(150, 500));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 500));
         }
     }
 
@@ -523,7 +527,7 @@ public class Sawmiller extends Task {
             return;
         }
 
-        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), script.random(5000, 8000));
+        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 8000));
     }
 
     private boolean isItemOptionDialogueOpen() {

@@ -5,6 +5,7 @@ import com.osmb.api.item.ItemID;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -117,7 +118,7 @@ public class Cut extends Task {
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -132,6 +133,6 @@ public class Cut extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until cutting finishes.");
-        return script.pollFramesHuman(condition, script.random(66000, 70000));
+        return script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
     }
 }

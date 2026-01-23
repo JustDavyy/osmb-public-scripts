@@ -24,11 +24,11 @@ import java.util.List;
         name = "dLooter",
         description = "Loots WT/GOTR/Tempoross, seed packs and cwars supply crates",
         skillCategory = SkillCategory.OTHER,
-        version = 1.3,
+        version = 1.4,
         author = "JustDavyy"
 )
 public class dLooter extends Script {
-    public static final String scriptVersion = "1.3";
+    public static final String scriptVersion = "1.4";
     public static boolean setupDone = false;
     public static boolean needToStop = false;
     public static boolean RNGEnabled = false;

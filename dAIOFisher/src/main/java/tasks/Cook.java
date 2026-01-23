@@ -10,6 +10,7 @@ import com.osmb.api.ui.component.ComponentSearchResult;
 import com.osmb.api.ui.component.minimap.xpcounter.XPDropsComponent;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.visual.ocr.fonts.Font;
+import com.osmb.api.utils.RandomUtils;
 import data.FishingLocation;
 import utils.Task;
 
@@ -72,7 +73,7 @@ public class Cook extends Task {
             }
 
             boolean clickSuccess;
-            int clickOrder = script.random(1, 2);
+            int clickOrder = RandomUtils.uniformRandom(1, 2);
             if (clickOrder == 1) {
                 // Click fish first, then tool
                 clickSuccess = inventory.getItem(fishToUse).interact() &&
@@ -121,7 +122,7 @@ public class Cook extends Task {
 
             task = "Start cooking action";
             BooleanSupplier condition = () -> script.getWidgetManager().getDialogue().getDialogueType() == DialogueType.ITEM_OPTION;
-            script.pollFramesHuman(condition, script.random(4000, 6000));
+            script.pollFramesHuman(condition, RandomUtils.uniformRandom(4000, 6000));
 
             if (script.getWidgetManager().getDialogue().getDialogueType() == DialogueType.ITEM_OPTION) {
                 int cookedId = fishingMethod.getCookedFish().get(rawFish.indexOf(rawId));
@@ -131,7 +132,7 @@ public class Cook extends Task {
 
                 if (!selected) {
                     script.log(getClass(), "Initial food selection failed, retrying...");
-                    script.pollFramesHuman(() -> false, script.random(150, 300));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
 
                     selected = script.getWidgetManager().getDialogue().selectItem(rawId)
                             || script.getWidgetManager().getDialogue().selectItem(cookedId);
@@ -177,14 +178,14 @@ public class Cook extends Task {
         Timer amountChangeTimer = new Timer();
 
         if (switchTabTimer.timeLeft() < TimeUnit.MINUTES.toMillis(1)) {
-            script.log("PREVENT-LOG", "Timer was under 1 minute – resetting as we just performed an action.");
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.log("PREVENT-LOG", "Timer was under 1 minute. Resetting as we just performed an action.");
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
         }
 
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -199,15 +200,15 @@ public class Cook extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until cooking finishes.");
-        script.pollFramesHuman(condition, script.random(66000, 70000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
     }
 
     private void waitUntilFinishedCutting(int itemIdToWatch) {
         task = "Wait until cooking finish";
 
         if (switchTabTimer.timeLeft() < TimeUnit.MINUTES.toMillis(1)) {
-            script.log("PREVENT-LOG", "Timer was under 1 minute – resetting as we just performed an action.");
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.log("PREVENT-LOG", "Timer was under 1 minute. Resetting as we just performed an action.");
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
         }
 
         Timer amountChangeTimer = new Timer();
@@ -215,7 +216,7 @@ public class Cook extends Task {
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -230,6 +231,6 @@ public class Cook extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until cooking finishes.");
-        script.pollFramesHuman(condition, script.random(66000, 70000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
     }
 }

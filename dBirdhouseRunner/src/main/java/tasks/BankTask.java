@@ -10,6 +10,7 @@ import com.osmb.api.shape.Shape;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.visual.ImageAnalyzer;
+import com.osmb.api.utils.RandomUtils;
 import component.MushroomTransportInterface;
 import utils.Task;
 
@@ -139,7 +140,7 @@ public class BankTask extends Task {
                 task = "Deposit all";
                 script.getWidgetManager().getBank().depositAll(Collections.emptySet());
             }
-            script.pollFramesHuman(() -> false, script.random(1000, 1500));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 1500));
         }
 
         task = "Take inventory snapshot";
@@ -164,7 +165,7 @@ public class BankTask extends Task {
         if (withdrawStepIterator.hasNext()) {
             Runnable step = withdrawStepIterator.next();
             step.run();
-            script.pollFramesHuman(() -> false, script.random(100, 300));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 300));
             return true;
         }
 
@@ -263,7 +264,7 @@ public class BankTask extends Task {
         boolean success = script.pollFramesUntil(() -> {
             WorldPosition current = script.getWorldPosition();
             return current != null && bankIslandArea.contains(current);
-        }, script.random(14000, 17500));
+        }, RandomUtils.uniformRandom(14000, 17500));
 
         script.log(getClass(), success ? "✅ Successfully arrived at the bank island." : "⚠ Timed out waiting to arrive.");
         return success;
@@ -299,7 +300,7 @@ public class BankTask extends Task {
         boolean dialogueAppeared = script.pollFramesUntil(() -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             return type == DialogueType.TEXT_OPTION;
-        }, script.random(6000, 10000));
+        }, RandomUtils.uniformRandom(6000, 10000));
 
         if (!dialogueAppeared) {
             script.log(getClass(), "❌ Dialogue option did not appear.");
@@ -315,7 +316,7 @@ public class BankTask extends Task {
         boolean success = script.pollFramesUntil(() -> {
             WorldPosition current = script.getWorldPosition();
             return current != null && bankIslandArea.contains(current);
-        }, script.random(14000, 17500));
+        }, RandomUtils.uniformRandom(14000, 17500));
 
         script.log(getClass(), success ? "✅ Successfully arrived at the bank island." : "⚠ Timed out waiting to arrive.");
         return success;
@@ -329,7 +330,7 @@ public class BankTask extends Task {
                 boolean success = script.pollFramesHuman(() -> {
                     WorldPosition current = script.getWorldPosition();
                     return current != null && mushroomMeadowArea.contains(current);
-                }, script.random(14000, 17500));
+                }, RandomUtils.uniformRandom(14000, 17500));
 
                 script.log(getClass(), success ? "✅ Successfully arrived at Mushroom Meadow." : "⚠ Timed out waiting to arrive.");
                 return success;
@@ -365,7 +366,7 @@ public class BankTask extends Task {
                 script.log(getClass(), "❌ Failed to walk to Magic Mushtree.");
                 return false;
             }
-            script.pollFramesHuman(() -> false, script.random(500, 2000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 2000));
         }
 
         if (!mushtree.interact("Use")) {
@@ -375,7 +376,7 @@ public class BankTask extends Task {
 
         script.log(getClass(), "✅ Interacted with Magic Mushtree. Waiting for transport interface...");
 
-        boolean interfaceAppeared = script.pollFramesUntil(() -> mushroomInterface.isVisible(), script.random(10000, 15000));
+        boolean interfaceAppeared = script.pollFramesUntil(() -> mushroomInterface.isVisible(), RandomUtils.uniformRandom(10000, 15000));
 
         if (!interfaceAppeared) {
             script.log(getClass(), "❌ Mushroom transport interface did not appear.");
@@ -455,7 +456,7 @@ public class BankTask extends Task {
             } else {
                 return true;
             }
-            script.pollFramesHuman(() -> false, script.random(150, 300));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
         }
         script.log(getClass().getSimpleName(), "⚠ Failed to tap teleport box");
         return false;

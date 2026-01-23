@@ -11,6 +11,7 @@ import com.osmb.api.shape.Polygon;
 import com.osmb.api.ui.component.chatbox.ChatboxComponent;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -141,7 +142,7 @@ public class Bank extends Task {
             boolean done = script.pollFramesHuman(() -> {
                 WorldPosition currentPos = script.getWorldPosition();
                 return currentPos != null && !choppingArea.contains(currentPos);
-            }, script.random(7000, 12000));
+            }, RandomUtils.uniformRandom(7000, 12000));
             if (done) {
                 return walkWithoutShortcut();
             } else {
@@ -202,7 +203,7 @@ public class Bank extends Task {
             return false;
         }
 
-        script.pollFramesHuman(() -> false, script.random(600, 1200));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(600, 1200));
         return true;
     }
 

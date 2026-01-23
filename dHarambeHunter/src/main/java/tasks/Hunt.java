@@ -16,6 +16,7 @@ import com.osmb.api.visual.image.Image;
 import com.osmb.api.visual.image.ImageSearchResult;
 import com.osmb.api.visual.image.SearchableImage;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import javax.imageio.ImageIO;
@@ -34,7 +35,7 @@ public class Hunt extends Task {
     private static final long RESPAWN_DELAY = 60000; // ~60s respawn per spawn
     public static Set<WorldPosition> blacklistedTraps = new HashSet<>();
     public static SearchableImage monkeyTail = null;
-    private int monkeyTailDropThreshold = script.random(2, 6);
+    private int monkeyTailDropThreshold = RandomUtils.uniformRandom(2, 6);
     private int invalidTrapCount = 0;
 
     // List of bone spawn locations
@@ -209,12 +210,12 @@ public class Hunt extends Task {
                     if (countMonkeyTails() >= monkeyTailDropThreshold) {
                         dropMonkeyTails();
                         // Reset threshold after dropping
-                        monkeyTailDropThreshold = script.random(2, 6);
+                        monkeyTailDropThreshold = RandomUtils.uniformRandom(2, 6);
                         return false;
                     }
 
                     return false; // keep waiting
-                }, script.random(90000, 120000));
+                }, RandomUtils.uniformRandom(90000, 120000));
 
                 if (turnedGreen) {
                     canHop = false;
@@ -244,7 +245,7 @@ public class Hunt extends Task {
                 boolean gained = false;
 
                 script.log(getClass(), "Insert additional human delay before checking.");
-                script.pollFramesHuman(() -> false, script.random(1, 500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 500));
 
                 script.getWidgetManager().getInventory().unSelectItemIfSelected();
                 if (lastTrap.interact("Check")) {
@@ -286,9 +287,9 @@ public class Hunt extends Task {
                             script.log(getClass(), "Tail check logic, before: " + beforeCount + " after: " + afterCount);
 
                             return afterCount > beforeCount;
-                        }, script.random(6000, 9000));
+                        }, RandomUtils.uniformRandom(6000, 9000));
 
-                    }, script.random(6000, 9000));
+                    }, RandomUtils.uniformRandom(6000, 9000));
 
                     if (gained) {
                         script.log(getClass(), "Successfully looted a (damaged) monkey tail (screen-based).");
@@ -359,7 +360,7 @@ public class Hunt extends Task {
                         script.getWidgetManager().getInventory().unSelectItemIfSelected();
                         inv.getItem(ItemID.BONES_TO_BANANAS).interact();
                         return script.pollFramesHuman(() -> inv.contains(ItemID.BANANA),
-                                script.random(1500, 2500));
+                                RandomUtils.uniformRandom(1500, 2500));
                     }
                 }
             }
@@ -417,7 +418,7 @@ public class Hunt extends Task {
                                 15
                         );
                 return checkCircles.containsKey(lastTrap);
-            }, script.random(7500, 10500));
+            }, RandomUtils.uniformRandom(7500, 10500));
 
             if (appeared) {
                 script.log(getClass(), "Respawn circle detected after setting trap.");
@@ -534,7 +535,7 @@ public class Hunt extends Task {
                 boolean taken = script.pollFramesHuman(() -> {
                     ItemGroupResult after = script.getWidgetManager().getInventory().search(Set.of(ItemID.BONES));
                     return after != null && after.getAmount(ItemID.BONES) > beforeBones;
-                }, script.random(2500, 4000));
+                }, RandomUtils.uniformRandom(2500, 4000));
 
                 if (taken) {
                     picked++;
@@ -593,10 +594,10 @@ public class Hunt extends Task {
         for (ImageSearchResult match : matches) {
             script.getFinger().tap(match.getBounds());
 
-            if (script.random(0, 99) < 10) { // 5% humanized wait
-                script.pollFramesHuman(() -> false, script.random(1, 50));
+            if (RandomUtils.uniformRandom(0, 99) < 10) { // 5% humanized wait
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 50));
             } else {
-                script.pollFramesUntil(() -> false, script.random(100, 300));
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(100, 300));
             }
         }
 

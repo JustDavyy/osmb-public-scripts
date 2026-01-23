@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import static main.dWinemaker.*;
@@ -61,7 +62,7 @@ public class ProcessTask extends Task {
             boolean selected = script.getWidgetManager().getDialogue().selectItem(ItemID.JUG_OF_WINE, grapeID, ItemID.WINE_OF_ZAMORAK, ItemID.UNFERMENTED_WINE, ItemID.UNFERMENTED_WINE_1996, ItemID.ZAMORAKS_UNFERMENTED_WINE);
             if (!selected) {
                 script.log(getClass().getSimpleName(), "Initial selection failed, retrying...");
-                script.sleep(script.random(150, 300)); // slight delay before retry
+                script.sleep(RandomUtils.uniformRandom(150, 300)); // slight delay before retry
                 selected = script.getWidgetManager().getDialogue().selectItem(ItemID.JUG_OF_WINE, grapeID, ItemID.WINE_OF_ZAMORAK, ItemID.UNFERMENTED_WINE, ItemID.UNFERMENTED_WINE_1996, ItemID.ZAMORAKS_UNFERMENTED_WINE);
             }
 
@@ -79,7 +80,7 @@ public class ProcessTask extends Task {
     }
 
     private boolean interactAndWaitForDialogue(ItemGroupResult inventSnapshot) {
-        boolean firstIsGrape = script.random(2) == 0;
+        boolean firstIsGrape = RandomUtils.uniformRandom(2) == 0;
 
         int firstID = firstIsGrape ? grapeID : ItemID.JUG_OF_WATER;
         int secondID = firstIsGrape ? ItemID.JUG_OF_WATER : grapeID;
@@ -93,7 +94,7 @@ public class ProcessTask extends Task {
             }
         }
 
-        script.sleep(script.random(150, 300));
+        script.sleep(RandomUtils.uniformRandom(150, 300));
 
         // Second interaction with retry
         if (!inventSnapshot.getRandomItem(secondID).interact()) {
@@ -105,14 +106,14 @@ public class ProcessTask extends Task {
 
         task = "Interact with item 2";
         // Wait for dialogue
-        boolean useHumanTask = script.random(10) < 3; // 30% chance
+        boolean useHumanTask = RandomUtils.uniformRandom(10) < 3; // 30% chance
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             return type == DialogueType.ITEM_OPTION;
         };
 
         task = "Wait for dialogue";
-        return script.pollFramesHuman(condition, script.random(3000, 5000));
+        return script.pollFramesHuman(condition, RandomUtils.uniformRandom(3000, 5000));
     }
 
     private void waitUntilFinishedProducing() {
@@ -121,7 +122,7 @@ public class ProcessTask extends Task {
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -135,6 +136,6 @@ public class ProcessTask extends Task {
         };
 
         task = "Checking wait condition";
-        script.pollFramesHuman(condition, script.random(18000, 20000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(18000, 20000));
     }
 }

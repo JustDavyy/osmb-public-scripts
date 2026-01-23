@@ -12,6 +12,7 @@ import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.UIResult;
 import com.osmb.api.utils.UIResultList;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -102,7 +103,7 @@ public class Tempoross extends Task {
                     inv.set(script.getWidgetManager().getInventory().search(Set.of(ItemID.SMALL_FISHING_NET)));
                     return inv.get() != null && inv.get().contains(ItemID.SMALL_FISHING_NET);
                 };
-                boolean gotNet = script.pollFramesHuman(condition, script.random(5000, 10000));
+                boolean gotNet = script.pollFramesHuman(condition, RandomUtils.uniformRandom(5000, 10000));
 
                 if (gotNet) {
                     return true;
@@ -178,7 +179,7 @@ public class Tempoross extends Task {
 
             if (type != null && type.equals(DialogueType.TAP_HERE_TO_CONTINUE)) {
                 task = "Read dialogue";
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
 
                 UIResult<String> textResult = dialogue.getText();
                 if (textResult == null || textResult.isNotFound() || textResult.isNotVisible()) {
@@ -212,7 +213,7 @@ public class Tempoross extends Task {
             return invSlots.isFull();
         };
 
-        script.pollFramesHuman(condition, script.random(150000, 250000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(150000, 250000));
 
         // Update all counts here of loot gained
         script.log(getClass(), "Updating all loot counts.");
@@ -220,10 +221,10 @@ public class Tempoross extends Task {
         updateLootCountsIfNeeded("post-search completion");
 
         // Additional random delay sometimes
-        if (script.random(10) < 3) {
+        if (RandomUtils.uniformRandom(10) < 3) {
             task = "Add extra random delay";
             script.log(getClass(), "Adding extra randomized delay");
-            script.pollFramesHuman(() -> false, script.random(150, 500));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 500));
         }
     }
 
@@ -259,7 +260,7 @@ public class Tempoross extends Task {
             return;
         }
 
-        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), script.random(5000, 8000));
+        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 8000));
     }
 
     private boolean startSearch() {
@@ -283,7 +284,7 @@ public class Tempoross extends Task {
             boolean walked = script.getWalker().walkTo(poolArea.getRandomPosition(), config);
             if (!walked) {
                 script.log(getClass(), "Walking to Reward pool failed (attempt " + attempt + "/" + maxAttempts + ").");
-                script.pollFramesHuman(() -> false, script.random(300, 700));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(300, 700));
                 continue;
             }
 
@@ -293,7 +294,7 @@ public class Tempoross extends Task {
             }
 
             script.log(getClass(), "Failed to interact with Reward pool (attempt " + attempt + "/" + maxAttempts + "). Retrying...");
-            script.pollFramesHuman(() -> false, script.random(400, 900));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(400, 900));
         }
 
         script.log(getClass(), "Reward pool interaction failed 3 times in a row. Marking needToStop = true.");

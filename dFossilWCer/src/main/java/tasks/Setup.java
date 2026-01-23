@@ -8,6 +8,7 @@ import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.UIResult;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Set;
@@ -94,7 +95,7 @@ public class Setup extends Task {
             script.log(getClass(), "Zoom is within acceptable range (" + currentZoom + ")");
         } else {
             // Pick a new zoom level in desired range
-            int zoomSet = script.random(minZoom, maxZoom);
+            int zoomSet = RandomUtils.uniformRandom(minZoom, maxZoom);
             task = "Set zoom level: " + zoomSet;
 
             script.log(getClass(), "Zoom is out of range (" + currentZoom + "). Setting new level: " + zoomSet);

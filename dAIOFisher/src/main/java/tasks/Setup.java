@@ -8,6 +8,7 @@ import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.ui.tabs.Equipment;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.utils.UIResult;
+import com.osmb.api.utils.RandomUtils;
 import data.FishingLocation;
 import utils.Task;
 
@@ -122,8 +123,8 @@ public class Setup extends Task {
 
         // Reset timer
         if (switchTabTimer.timeLeft() < TimeUnit.MINUTES.toMillis(1)) {
-            script.log("PREVENT-LOG", "Timer was under 1 minute – resetting as we just performed an action.");
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.log("PREVENT-LOG", "Timer was under 1 minute. Resetting as we just performed an action.");
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
         }
 
         // Karambwan logic

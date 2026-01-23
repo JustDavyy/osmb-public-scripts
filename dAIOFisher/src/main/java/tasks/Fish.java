@@ -20,6 +20,7 @@ import data.FishingLocation;
 import data.FishingSpot;
 import utils.Task;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 
 import java.awt.Color;
 import java.util.*;
@@ -126,7 +127,7 @@ public class Fish extends Task {
         }
 
         // We're currently fishing; monitor exit conditions
-        script.pollFramesHuman(this::earlyExitCheck, script.random(25000, 40000));
+        script.pollFramesHuman(this::earlyExitCheck, RandomUtils.uniformRandom(25000, 40000));
 
         return false;
     }
@@ -160,8 +161,8 @@ public class Fish extends Task {
         task = "Check AFK timer";
         if (switchTabTimer.hasFinished()) {
             script.log("PREVENT-LOG", "Switching tabs...");
-            script.getWidgetManager().getTabManager().openTab(Tab.Type.values()[script.random(Tab.Type.values().length)]);
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.getWidgetManager().getTabManager().openTab(Tab.Type.values()[RandomUtils.uniformRandom(Tab.Type.values().length)]);
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
             script.getWidgetManager().getTabManager().openTab(Tab.Type.INVENTORY);
         }
 
@@ -271,7 +272,7 @@ public class Fish extends Task {
             script.log(getClass(), "Fishing spot is on game screen, interacting directly.");
             boolean success = interactWithFishingSpot(fishingSpot);
             if (success) {
-                script.pollFramesHuman(() -> false, script.random(2500, 4500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2500, 4500));
             }
             return success;
         } else {
@@ -286,8 +287,8 @@ public class Fish extends Task {
         }
 
         if (switchTabTimer.timeLeft() < TimeUnit.MINUTES.toMillis(1)) {
-            script.log("PREVENT-LOG", "Timer was under 1 minute – resetting as we just performed an action.");
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.log("PREVENT-LOG", "Timer was under 1 minute. Resetting as we just performed an action.");
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
         }
 
         return false;
@@ -432,7 +433,7 @@ public class Fish extends Task {
             candidates = fishingSpots;
         }
 
-        Area chosen = candidates.get(script.random(candidates.size()));
+        Area chosen = candidates.get(RandomUtils.uniformRandom(candidates.size()));
         return chosen.getRandomPosition();
     }
 

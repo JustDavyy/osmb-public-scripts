@@ -16,6 +16,7 @@ import com.osmb.api.visual.color.ColorModel;
 import com.osmb.api.visual.color.tolerance.impl.SingleThresholdComparator;
 import com.osmb.api.visual.ocr.fonts.Font;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import data.FishingLocation;
 import data.FishingSpot;
 import utils.Task;
@@ -96,7 +97,7 @@ public class dkFish extends Task {
 
         if (isAnimating) {
             lastAnimationDetected = System.currentTimeMillis();
-            script.pollFramesHuman(this::earlyExitCheck, script.random(30000, 55000));
+            script.pollFramesHuman(this::earlyExitCheck, RandomUtils.uniformRandom(30000, 55000));
             return false;
         }
 
@@ -227,8 +228,8 @@ public class dkFish extends Task {
         }
 
         if (switchTabTimer.timeLeft() < TimeUnit.MINUTES.toMillis(1)) {
-            script.log("PREVENT-LOG", "Timer was under 1 minute – resetting as we just performed an action.");
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.log("PREVENT-LOG", "Timer was under 1 minute. Resetting as we just performed an action.");
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
         }
 
         return false;
@@ -351,7 +352,7 @@ public class dkFish extends Task {
             candidates = fishingSpots;
         }
 
-        Area chosen = candidates.get(script.random(candidates.size()));
+        Area chosen = candidates.get(RandomUtils.uniformRandom(candidates.size()));
         return chosen.getRandomPosition();
     }
 

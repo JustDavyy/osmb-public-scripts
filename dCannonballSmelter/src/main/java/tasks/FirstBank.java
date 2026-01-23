@@ -6,6 +6,7 @@ import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import main.dCannonballSmelter;
 import utils.Task;
 
@@ -59,7 +60,7 @@ public class FirstBank extends Task {
         if (!hasMould) {
             task = "Deposit all";
             script.getWidgetManager().getBank().depositAll(Set.of(ItemID.AMMO_MOULD, ItemID.DOUBLE_AMMO_MOULD));
-            script.pollFramesHuman(() -> false, script.random(300, 600));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(300, 600));
             bankSnapshot = script.getWidgetManager().getBank().search(Set.of(ItemID.DOUBLE_AMMO_MOULD));
             if (bankSnapshot.contains(ItemID.DOUBLE_AMMO_MOULD)) {
                 task = "Withdraw double mould";
@@ -90,7 +91,7 @@ public class FirstBank extends Task {
         script.getWidgetManager().getBank().withdraw(ItemID.STEEL_BAR, 27);
         task = "Close bank";
         script.getWidgetManager().getBank().close();
-        script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(5000, 7500));
+        script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 7500));
 
         inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(ItemID.AMMO_MOULD, ItemID.DOUBLE_AMMO_MOULD, ItemID.STEEL_BAR));
 
@@ -132,6 +133,6 @@ public class FirstBank extends Task {
             }
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
-        }, script.random(15000, 17000));
+        }, RandomUtils.uniformRandom(15000, 17000));
     }
 }

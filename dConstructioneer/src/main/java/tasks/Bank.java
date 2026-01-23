@@ -6,6 +6,7 @@ import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import main.dConstructioneer;
 import utils.Task;
 
@@ -74,7 +75,7 @@ public class Bank extends Task {
         script.log("BANK", "Withdraw succeeded for " + withdrawAmount + "x " + selectedBaseMaterialId);
 
         script.getWidgetManager().getBank().close();
-        return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+        return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
     }
 
     private void openBank() {
@@ -108,6 +109,6 @@ public class Bank extends Task {
             }
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
     }
 }

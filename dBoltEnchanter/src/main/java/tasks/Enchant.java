@@ -12,6 +12,7 @@ import static main.dBoltEnchanter.*;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.spellbook.SpellNotFoundException;
 import com.osmb.api.ui.tabs.Spellbook;
+import com.osmb.api.utils.RandomUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Enchant extends Task {
         };
 
         task = "Wait for enchant menu";
-        boolean appeared = script.pollFramesHuman(condition, script.random(4000, 6000));
+        boolean appeared = script.pollFramesHuman(condition, RandomUtils.uniformRandom(4000, 6000));
 
         if (!appeared) {
             script.log(getClass().getSimpleName(), "Enchant menu did not appear, retrying...");
@@ -63,7 +64,7 @@ public class Enchant extends Task {
             boolean selected = script.getWidgetManager().getDialogue().selectItem(enchantedBoltID);
             if (!selected) {
                 task = "Retry bolt selection";
-                script.pollFramesHuman(() -> false, script.random(150, 300));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                 selected = script.getWidgetManager().getDialogue().selectItem(enchantedBoltID);
             }
 
@@ -74,13 +75,13 @@ public class Enchant extends Task {
                     DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
                     if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
                         script.log(getClass().getSimpleName(), "Dialogue detected, leveled up?");
-                        script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                         return true;
                     }
                     return false;
                 };
 
-                script.pollFramesHuman(eCondition, script.random(16800, 19000));
+                script.pollFramesHuman(eCondition, RandomUtils.uniformRandom(16800, 19000));
             }
         }
 

@@ -3,6 +3,7 @@ package tasks;
 import com.osmb.api.item.ItemGroupResult;
 import com.osmb.api.item.ItemID;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Collections;
@@ -38,7 +39,7 @@ public class Drop extends Task {
                 break; // All items successfully dropped
             }
 
-            script.pollFramesHuman(() -> false, script.random(150, 400));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 400));
         }
 
         return false;

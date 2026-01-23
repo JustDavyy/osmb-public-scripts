@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import static main.dAmethystCutter.*;
@@ -75,7 +76,7 @@ public class Process extends Task {
     }
 
     private boolean interactAndWaitForDialogue(ItemGroupResult inventSnapshot) {
-        boolean firstIsChisel = script.random(2) == 0;
+        boolean firstIsChisel = RandomUtils.uniformRandom(2) == 0;
 
         int firstID = firstIsChisel ? ItemID.AMETHYST : ItemID.CHISEL;
         int secondID = firstIsChisel ? ItemID.CHISEL : ItemID.AMETHYST;
@@ -87,7 +88,7 @@ public class Process extends Task {
             return false;
         }
 
-        script.pollFramesUntil(() -> false, script.random(150, 300));
+        script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(150, 300));
 
         task = "Interact with item 2";
         // Second interaction with retry
@@ -103,7 +104,7 @@ public class Process extends Task {
         };
 
         task = "Wait for dialogue";
-        return script.pollFramesHuman(condition, script.random(3000, 5000));
+        return script.pollFramesHuman(condition, RandomUtils.uniformRandom(3000, 5000));
     }
 
     private void waitUntilFinishedCrafting() {
@@ -116,12 +117,12 @@ public class Process extends Task {
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
                 script.log(getClass().getSimpleName(), "Dialogue detected, leveled up?");
                 script.getWidgetManager().getDialogue().continueChatDialogue();
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
             // A timer to timeout
-            if (amountChangeTimer.timeElapsed() > script.random(70000, 78000)) {
+            if (amountChangeTimer.timeElapsed() > RandomUtils.uniformRandom(70000, 78000)) {
                 return true;
             }
 
@@ -132,6 +133,6 @@ public class Process extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until crafting finishes.");
-        script.pollFramesHuman(condition, script.random(70000, 78000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(70000, 78000));
     }
 }

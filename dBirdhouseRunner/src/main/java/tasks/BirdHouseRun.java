@@ -14,6 +14,7 @@ import com.osmb.api.utils.timing.Timer;
 import component.MushroomTransportInterface;
 import utils.Task;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import static main.dBirdhouseRunner.*;
 import static main.dBirdhouseRunner.currentPos;
 
@@ -92,9 +93,9 @@ public class BirdHouseRun extends Task {
 
                     // this many seeds are left
                     int baseMinutes = currentLevel * 5; // remaining time
-                    int bufferMinutes = script.random(7, 12);
+                    int bufferMinutes = RandomUtils.uniformRandom(7, 12);
                     int totalMinutes = baseMinutes + bufferMinutes;
-                    int extraSeconds = script.random(0, 59);
+                    int extraSeconds = RandomUtils.uniformRandom(0, 59);
 
                     lastRun = System.currentTimeMillis();
                     nextDelay = (totalMinutes * 60_000L) + (extraSeconds * 1_000L);
@@ -128,7 +129,7 @@ public class BirdHouseRun extends Task {
         if (justArrivedFromBank) {
             // Randomize whether to start at Verdant or not
             if (!startLocationDecided) {
-                startAtVerdantThisRun = script.random(0, 100) < 35;
+                startAtVerdantThisRun = RandomUtils.uniformRandom(0, 100) < 35;
                 startLocationDecided = true;
             }
 
@@ -173,7 +174,7 @@ public class BirdHouseRun extends Task {
                         boolean success = script.pollFramesHuman(() -> {
                             WorldPosition current = script.getWorldPosition();
                             return current != null && mushroomMeadowArea.contains(current);
-                        }, script.random(14000, 17500));
+                        }, RandomUtils.uniformRandom(14000, 17500));
 
                         script.log(getClass(), success ? "✅ Successfully arrived at Mushroom Meadow." : "⚠ Timed out waiting to arrive.");
                         return success;
@@ -242,7 +243,7 @@ public class BirdHouseRun extends Task {
                         boolean success = script.pollFramesHuman(() -> {
                             WorldPosition current = script.getWorldPosition();
                             return current != null && verdantValleyArea.contains(current);
-                        }, script.random(14000, 17500));
+                        }, RandomUtils.uniformRandom(14000, 17500));
 
                         script.log(getClass(), success ? "✅ Successfully arrived at Verdant Valley." : "⚠ Timed out waiting to arrive.");
                         return success;
@@ -314,7 +315,7 @@ public class BirdHouseRun extends Task {
     }
 
     private long generateNextBHRun() {
-        int roll = script.random(0, 100);
+        int roll = RandomUtils.uniformRandom(0, 100);
         if (roll < 85) {
             // 85% chance between 55 and 70 minutes
             return (55 + random.nextInt(16)) * 60_000L;
@@ -354,7 +355,7 @@ public class BirdHouseRun extends Task {
         boolean dialogueAppeared = script.pollFramesUntil(() -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             return type == DialogueType.TEXT_OPTION;
-        }, script.random(6000, 10000));
+        }, RandomUtils.uniformRandom(6000, 10000));
 
         if (!dialogueAppeared) {
             script.log(getClass(), "❌ Dialogue option did not appear.");
@@ -370,7 +371,7 @@ public class BirdHouseRun extends Task {
         boolean success = script.pollFramesUntil(() -> {
             WorldPosition current = script.getWorldPosition();
             return current != null && campLandingArea.contains(current);
-        }, script.random(14000, 17500));
+        }, RandomUtils.uniformRandom(14000, 17500));
 
         justArrivedFromBank = success;
 
@@ -403,7 +404,7 @@ public class BirdHouseRun extends Task {
                 script.log(getClass(), "❌ Failed to walk to Magic Mushtree.");
                 return false;
             }
-            script.pollFramesHuman(() -> false, script.random(500, 2000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 2000));
         }
 
         task = "Interact with Magic Mushtree";
@@ -415,7 +416,7 @@ public class BirdHouseRun extends Task {
         script.log(getClass(), "✅ Interacted with Magic Mushtree. Waiting for transport interface...");
 
         task = "Wait for interface";
-        boolean interfaceAppeared = script.pollFramesUntil(() -> mushroomInterface.isVisible(), script.random(12500, 17500));
+        boolean interfaceAppeared = script.pollFramesUntil(() -> mushroomInterface.isVisible(), RandomUtils.uniformRandom(12500, 17500));
 
         if (!interfaceAppeared) {
             script.log(getClass(), "❌ Mushroom transport interface did not appear.");
@@ -443,7 +444,7 @@ public class BirdHouseRun extends Task {
                 script.log(getClass(), "❌ Failed to walk to destination region.");
                 return false;
             }
-            script.pollFramesHuman(() -> false, script.random(1000, 2000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 2000));
         }
 
         task = "Locating birdhouse tile";
@@ -494,7 +495,7 @@ public class BirdHouseRun extends Task {
                 script.log(getClass().getSimpleName(), "Getting seed level count of birdhouse.");
                 boolean success = script.getFinger().tap(interactTile.getTileCube(20, 0).getResized(0.6), "Seeds");
                 if (success) {
-                    script.pollFramesHuman(() -> false, script.random(500, 1000));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 1000));
                     birdhousesNotReadyString = script.getWidgetManager().getDialogue().getText().toString();
                 } else {
                     script.log(getClass().getSimpleName(), "Failed to long press 'Seeds', fallback to default logic.");
@@ -503,11 +504,11 @@ public class BirdHouseRun extends Task {
             }
 
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesUntil(() -> false, script.random(1000, 3000));
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
-            int timeout = script.random(12500, 15000);
+            int timeout = RandomUtils.uniformRandom(12500, 15000);
             if (amountChangeTimer.timeElapsed() > timeout) {
                 return true;
             }
@@ -516,9 +517,9 @@ public class BirdHouseRun extends Task {
             return inventorySnapshot != null && inventorySnapshot.contains(ItemID.CLOCKWORK);
         };
 
-        script.pollFramesUntil(() -> false, script.random(1500, 3000));
+        script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(1500, 3000));
         script.log(getClass(), "Using human task to wait until birdhouse empty is complete.");
-        script.pollFramesHuman(condition, script.random(20000, 25000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(20000, 25000));
 
         task = "Taking post-reset snapshot";
         ItemGroupResult after = script.getWidgetManager().getInventory().search(Set.of(
@@ -594,7 +595,7 @@ public class BirdHouseRun extends Task {
         if (!resetWasFullyDone) {
             task = "Using " + script.getItemManager().getItemName(materials.get(0));
             if (!interactWithRetry(inventorySnapshot, materials.get(0))) return false;
-            script.pollFramesHuman(() -> false, script.random(150, 300));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
 
             task = "Using " + script.getItemManager().getItemName(materials.get(1));
             if (!interactWithRetry(inventorySnapshot, materials.get(1))) return false;
@@ -614,7 +615,7 @@ public class BirdHouseRun extends Task {
                     );
 
                     if (!selected) {
-                        script.sleep(script.random(150, 300)); // Retry after delay
+                        script.sleep(RandomUtils.uniformRandom(150, 300)); // Retry after delay
                         selected = script.getWidgetManager().getDialogue().selectItem(
                                 selectedBirdhouseId,
                                 ItemID.BIRD_HOUSE, ItemID.OAK_BIRD_HOUSE, ItemID.WILLOW_BIRD_HOUSE,
@@ -627,7 +628,7 @@ public class BirdHouseRun extends Task {
                 }
 
                 if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                    script.pollFramesUntil(() -> false, script.random(1000, 3000));
+                    script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(1000, 3000));
                     return true;
                 }
 
@@ -638,14 +639,14 @@ public class BirdHouseRun extends Task {
                                 .search(Set.of(selectedBirdhouseId)))
                         .map(inv -> inv.contains(selectedBirdhouseId)).orElse(false);
             };
-            script.pollFramesHuman(condition, script.random(15000, 20000));
+            script.pollFramesHuman(condition, RandomUtils.uniformRandom(15000, 20000));
 
-            script.pollFramesHuman(() -> false, script.random(100, 200));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 200));
             task = "Placing birdhouse";
             if (!tapTileWithRetry(interactTile)) return false;
         }
 
-        script.pollFramesHuman(() -> false, script.random(100, 200));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 200));
         // Feed the birdhouse seeds
         if (!feedWithRetry(selectedSeedId, interactTile)) return false;
 
@@ -663,7 +664,7 @@ public class BirdHouseRun extends Task {
             if (item != null && item.interact()) {
                 return true;
             }
-            script.pollFramesHuman(() -> false, script.random(150, 300));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
         }
         script.log(getClass().getSimpleName(), "⚠ Failed to interact with item ID: " + itemId);
         return false;
@@ -677,7 +678,7 @@ public class BirdHouseRun extends Task {
             } else {
                 return true;
             }
-            script.pollFramesHuman(() -> false, script.random(150, 300));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
         }
         script.log(getClass().getSimpleName(), "⚠ Failed to interact with birdhouse");
         return false;
@@ -696,21 +697,21 @@ public class BirdHouseRun extends Task {
             ItemSearchResult seedItem = before.getItem(itemId);
             if (seedItem == null || !seedItem.interact()) {
                 script.log(getClass().getSimpleName(), "⚠ Failed to interact with seed (itemId=" + itemId + ")");
-                script.pollFramesHuman(() -> false, script.random(150, 300));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                 continue;
             }
 
-            script.pollFramesHuman(() -> false, script.random(100, 200));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 200));
 
             task = "Feeding birdhouse";
             // Try to tap the birdhouse
             if (!script.getFinger().tap(interactTile.getTileCube(20, 0).getResized(0.6))) {
                 script.log(getClass(), "⚠ Failed to tap on birdhouse.");
-                script.pollFramesHuman(() -> false, script.random(150, 300));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                 continue;
             }
 
-            script.pollFramesHuman(() -> false, script.random(300, 500));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(300, 500));
 
             // Snapshot after interaction
             ItemGroupResult after = script.getWidgetManager().getInventory().search(Set.of(itemId));
@@ -721,10 +722,10 @@ public class BirdHouseRun extends Task {
                 return true;
             } else {
                 script.log(getClass(), "⚠ Seeds not consumed, retrying...");
-                script.pollFramesHuman(() -> false, script.random(150, 300));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                 if (before.contains(ItemID.CLOCKWORK) && before.contains(usedLogsId)) {
                     if (!interactWithRetry(before, usedLogsId)) return false;
-                    script.pollFramesHuman(() -> false, script.random(150, 300));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                     if (!interactWithRetry(before, ItemID.CLOCKWORK)) return false;
 
                     task = "Handling make-dialogue or waiting for birdhouse to be created";
@@ -742,7 +743,7 @@ public class BirdHouseRun extends Task {
                             );
 
                             if (!selected) {
-                                script.sleep(script.random(150, 300)); // Retry after delay
+                                script.sleep(RandomUtils.uniformRandom(150, 300)); // Retry after delay
                                 selected = script.getWidgetManager().getDialogue().selectItem(
                                         selectedBirdhouseId,
                                         ItemID.BIRD_HOUSE, ItemID.OAK_BIRD_HOUSE, ItemID.WILLOW_BIRD_HOUSE,
@@ -755,7 +756,7 @@ public class BirdHouseRun extends Task {
                         }
 
                         if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                            script.pollFramesUntil(() -> false, script.random(1000, 3000));
+                            script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(1000, 3000));
                             return true;
                         }
 
@@ -766,9 +767,9 @@ public class BirdHouseRun extends Task {
                                         .search(Set.of(selectedBirdhouseId)))
                                 .map(inv -> inv.contains(selectedBirdhouseId)).orElse(false);
                     };
-                    script.pollFramesHuman(condition, script.random(15000, 20000));
+                    script.pollFramesHuman(condition, RandomUtils.uniformRandom(15000, 20000));
 
-                    script.pollFramesHuman(() -> false, script.random(100, 200));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 200));
                 }
             }
         }

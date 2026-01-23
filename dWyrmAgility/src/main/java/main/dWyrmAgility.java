@@ -44,12 +44,12 @@ import java.util.concurrent.atomic.AtomicReference;
 @ScriptDefinition(
         name = "dWyrmAgility",
         author = "JustDavyy",
-        version = 2.4,
+        version = 2.5,
         description = "Does the Wyrm basic or advanced agility course.",
         skillCategory = SkillCategory.AGILITY
 )
 public class dWyrmAgility extends Script {
-    public static final String scriptVersion = "2.4";
+    public static final String scriptVersion = "2.5";
     private final String scriptName = "WyrmAgility";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

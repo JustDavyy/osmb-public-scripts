@@ -17,6 +17,7 @@ import com.osmb.api.utils.UIResultList;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.visual.ocr.fonts.Font;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.awt.*;
@@ -215,7 +216,7 @@ public class MineTask extends Task {
 
     private void waitUntilFinishedMining(RSObject vein) {
         AtomicInteger localMinedCount = new AtomicInteger(0);
-        int maxMiningDuration = script.random(240_000, 270_000);
+        int maxMiningDuration = RandomUtils.uniformRandom(240_000, 270_000);
 
         ItemGroupResult startSnapshot = script.getWidgetManager().getInventory().search(Set.of(ItemID.BLESSED_BONE_SHARDS));
         if (startSnapshot == null) {
@@ -240,8 +241,8 @@ public class MineTask extends Task {
 
         long start = System.currentTimeMillis();
 
-        final long gracePeriodMs = script.random(3500, 4500);
-        final long maxNoAnimTime = script.random(6000, 8000);
+        final long gracePeriodMs = RandomUtils.uniformRandom(3500, 4500);
+        final long maxNoAnimTime = RandomUtils.uniformRandom(6000, 8000);
 
         script.pollFramesHuman(() -> {
             // === Every ~5 seconds, refresh veins and redraw overlays ===
@@ -313,7 +314,7 @@ public class MineTask extends Task {
             long elapsed = System.currentTimeMillis() - start;
             boolean graceOver = elapsed > gracePeriodMs;
             boolean animStale = animationTimer.timeElapsed() > maxNoAnimTime;
-            boolean trustStale = lastXpGain.timeElapsed() > script.random(8000, 11000);
+            boolean trustStale = lastXpGain.timeElapsed() > RandomUtils.uniformRandom(8000, 11000);
 
             if (elapsed > maxMiningDuration) {
                 script.log(getClass(), "Mining stopped: exceeded max mining duration.");
@@ -329,7 +330,7 @@ public class MineTask extends Task {
             return false;
         }, maxMiningDuration);
 
-        script.pollFramesHuman(() -> false, script.random(300, 800));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(300, 800));
     }
 
     private boolean checkAndDoWDHAction() {

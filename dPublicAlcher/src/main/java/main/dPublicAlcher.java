@@ -40,11 +40,11 @@ import javax.imageio.ImageIO;
         name = "dPublic Alcher",
         description = "Alchs items using high or low alch until out of items or runes.",
         skillCategory = SkillCategory.MAGIC,
-        version = 2.5,
+        version = 2.6,
         author = "JustDavyy"
 )
 public class dPublicAlcher extends Script {
-    public static final String scriptVersion = "2.5";
+    public static final String scriptVersion = "2.6";
     private final String scriptName = "PublicAlcher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

@@ -2,6 +2,7 @@ package tasks;
 
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.spellbook.SpellNotFoundException;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import static main.dOffering.*;
@@ -35,7 +36,7 @@ public class Cast extends Task {
         task = getClass().getSimpleName();
 
         script.log(getClass(), "Preparing to cast spell: humanized delay...");
-        script.pollFramesHuman(() -> false, script.random(1, 100));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 100));
 
         boolean success;
         try {

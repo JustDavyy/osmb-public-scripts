@@ -8,6 +8,7 @@ import static main.dPublicAlcher.*;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.spellbook.SpellNotFoundException;
 import com.osmb.api.ui.tabs.Spellbook;
+import com.osmb.api.utils.RandomUtils;
 
 public class AlchTask extends Task {
     private long lastAlchTime = 0;
@@ -70,24 +71,24 @@ public class AlchTask extends Task {
     }
 
     private long getCooldownForSpell() {
-        int roll = script.random(100);
+        int roll = RandomUtils.uniformRandom(100);
         long delay;
 
         if (spellToCast == StandardSpellbook.HIGH_LEVEL_ALCHEMY) {
             if (roll < 50) {
-                delay = script.random(3000, 3101);
+                delay = RandomUtils.uniformRandom(3000, 3101);
             } else if (roll < 90) {
-                delay = script.random(3050, 3201);
+                delay = RandomUtils.uniformRandom(3050, 3201);
             } else {
-                delay = script.random(3100, 3501);
+                delay = RandomUtils.uniformRandom(3100, 3501);
             }
         } else {
             if (roll < 50) {
-                delay = script.random(1800, 1901);
+                delay = RandomUtils.uniformRandom(1800, 1901);
             } else if (roll < 90) {
-                delay = script.random(1850, 2001);
+                delay = RandomUtils.uniformRandom(1850, 2001);
             } else {
-                delay = script.random(1900, 2301);
+                delay = RandomUtils.uniformRandom(1900, 2301);
             }
         }
 

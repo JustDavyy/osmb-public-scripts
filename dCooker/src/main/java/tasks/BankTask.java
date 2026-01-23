@@ -7,6 +7,7 @@ import com.osmb.api.scene.RSObject;
 import com.osmb.api.scene.RSTile;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import data.CookingItem;
 import main.dCooker;
 import utils.Task;
@@ -65,7 +66,7 @@ public class BankTask extends Task {
         if (amountNeeded == 0) {
             task = "Close bank";
             script.getWidgetManager().getBank().close();
-            script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+            script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
         } else if (amountNeeded > 0) {
             ItemGroupResult bankSnapshot = script.getWidgetManager().getBank().search(Set.of(cookingItemID));
             if (!bankSnapshot.contains(cookingItemID)) {
@@ -89,7 +90,7 @@ public class BankTask extends Task {
             }
 
             script.getWidgetManager().getBank().close();
-            script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+            script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
         } else {
             if (bankMethod.equals("Deposit all")) {
                 if (!script.getWidgetManager().getBank().depositAll(Collections.emptySet())) {
@@ -160,6 +161,6 @@ public class BankTask extends Task {
             }
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
     }
 }

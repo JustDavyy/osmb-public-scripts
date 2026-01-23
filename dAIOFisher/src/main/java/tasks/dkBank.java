@@ -6,6 +6,7 @@ import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import data.FishingLocation;
 import utils.Task;
 
@@ -50,7 +51,7 @@ public class dkBank extends Task {
         if (!inventorySnapshot.contains(ItemID.RAW_KARAMBWANJI)) {
             missingKarambwanjiCount++;
             script.log(getClass().getSimpleName(), "❌ Missing Karambwanji (" + missingKarambwanjiCount + "/3)");
-            script.pollFramesHuman(() -> false, script.random(2000, 4000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2000, 4000));
 
             if (!script.getWidgetManager().getBank().isVisible()) {
                 openBank();
@@ -94,7 +95,7 @@ public class dkBank extends Task {
 
         task = "Close bank";
         script.getWidgetManager().getBank().close();
-        script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+        script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
 
         doneBanking = true;
         return false;
@@ -131,6 +132,6 @@ public class dkBank extends Task {
             }
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
     }
 }

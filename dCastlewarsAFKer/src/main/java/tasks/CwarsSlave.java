@@ -10,6 +10,7 @@ import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.ui.tabs.TabManager;
 import com.osmb.api.utils.UIResultList;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -107,7 +108,7 @@ public class CwarsSlave extends Task {
             };
 
             task = "Wait till new area arrival";
-            return script.pollFramesHuman(condition, script.random(6000, 10000));
+            return script.pollFramesHuman(condition, RandomUtils.uniformRandom(6000, 10000));
         }
 
         // 2. If inside a waiting lobby
@@ -141,7 +142,7 @@ public class CwarsSlave extends Task {
             };
 
             task = "Wait till next action";
-            return script.pollFramesHuman(condition, script.random(120_000, 270_000));
+            return script.pollFramesHuman(condition, RandomUtils.uniformRandom(120_000, 270_000));
         }
 
         // 3. If inside the castle lobby area
@@ -165,7 +166,7 @@ public class CwarsSlave extends Task {
             };
 
             task = "Wait till new area arrival";
-            return script.pollFramesHuman(condition, script.random(6000, 10000));
+            return script.pollFramesHuman(condition, RandomUtils.uniformRandom(6000, 10000));
         }
 
         // 4. If inside the Upstairs AFK area
@@ -192,7 +193,7 @@ public class CwarsSlave extends Task {
             };
 
             task = "Wait till next action";
-            return script.pollFramesHuman(condition, script.random(120_000, 270_000));
+            return script.pollFramesHuman(condition, RandomUtils.uniformRandom(120_000, 270_000));
         }
 
         // 5. If inside the Upstairs area
@@ -218,7 +219,7 @@ public class CwarsSlave extends Task {
                     return (!inAfkArea) || timerDone;
                 };
 
-                return script.pollFramesHuman(condition, script.random(120_000, 270_000));
+                return script.pollFramesHuman(condition, RandomUtils.uniformRandom(120_000, 270_000));
             }
 
             WalkConfig precise = new WalkConfig.Builder()
@@ -310,7 +311,7 @@ public class CwarsSlave extends Task {
 
         task = "Retry Interact with " + objectName + " object (" + objectAction + ")";
         // Retry once after a short jitter (re-locate target to avoid staleness)
-        script.pollFramesHuman(() -> false, script.random(250, 550));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 550));
         target = findClosest(objectQuery);
         if (target == null) {
             script.log(getClass(), "handleObject: target disappeared before retry.");
@@ -482,7 +483,7 @@ public class CwarsSlave extends Task {
             final var walker     = script.getWalker();
 
             // Decide action: 70% tabs, 30% walk (only if allowed)
-            final int roll = script.random(100);
+            final int roll = RandomUtils.uniformRandom(100);
             final boolean doWalk = allowWalk && roll >= 70;
 
             if (doWalk && walkArea != null) {
@@ -491,7 +492,7 @@ public class CwarsSlave extends Task {
                     script.log(getClass(), "Walking a few tiles...");
                     walker.walkTo(dest);
 
-                    script.pollFramesHuman(() -> false, script.random(100, 5000));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 5000));
                 } else {
                     // Fallback to tabs if we couldn't get a destination
                     doTabSwitch(tabManager);
@@ -503,9 +504,7 @@ public class CwarsSlave extends Task {
         } catch (Exception e) {
             script.log(getClass(), "anti-AFK error: " + e.getMessage());
         } finally {
-            long min = TimeUnit.MINUTES.toMillis(2);          // 120,000 ms
-            long max = (long) (4.2 * 60_000);                 // 252,000 ms
-            long delay = script.random(min, max);
+            long delay = RandomUtils.uniformRandom(120000, 252000);
             switchTabTimer.reset(delay);
         }
     }
@@ -523,22 +522,20 @@ public class CwarsSlave extends Task {
         if (pool.isEmpty()) pool = java.util.Arrays.asList(all); // extreme fallback
 
         // Pick a random tab from the pool
-        var pick = pool.get(script.random(pool.size()));
+        var pick = pool.get(RandomUtils.uniformRandom(pool.size()));
 
         // Open it
         script.log(getClass(), "Switching tab to " + pick + "...");
         tabManager.openTab(pick);
 
-        script.pollFramesHuman(() -> false, script.random(100, 5000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 5000));
 
         // Close the container linked to the active tab
         tabManager.closeContainer();
     }
 
     private void resetAntiAfkTimer() {
-        long min = TimeUnit.MINUTES.toMillis(2);          // 120,000 ms
-        long max = (long) (4.2 * 60_000);                 // 252,000 ms
-        long delay = script.random(min, max);
+        long delay = RandomUtils.uniformRandom(120000, 252000);
         switchTabTimer.reset(delay);
     }
 

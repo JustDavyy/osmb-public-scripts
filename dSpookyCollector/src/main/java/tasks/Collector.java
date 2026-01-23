@@ -13,6 +13,7 @@ import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.visual.ocr.fonts.Font;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -99,7 +100,7 @@ public class Collector extends Task {
             var dlg = script.getWidgetManager().getDialogue();
             DialogueType type = dlg != null ? dlg.getDialogueType() : null;
             return type != null && type.equals(DialogueType.ITEM_OPTION);
-        }, script.random(4000, 7500));
+        }, RandomUtils.uniformRandom(4000, 7500));
 
         var dialogue = script.getWidgetManager().getDialogue();
         if (dialogue != null && dialogue.getDialogueType() == DialogueType.ITEM_OPTION) {
@@ -132,10 +133,10 @@ public class Collector extends Task {
                         var dlg2 = script.getWidgetManager().getDialogue();
                         DialogueType type2 = dlg2 != null ? dlg2.getDialogueType() : null;
                         return type2 != null && type2.equals(DialogueType.ITEM_OPTION);
-                    }, script.random(1500, 2500));
+                    }, RandomUtils.uniformRandom(1500, 2500));
 
                     // Wait between 600–1400ms before spooky tap
-                    script.pollFramesHuman(() -> false, script.random(600, 1400));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(600, 1400));
 
                     // Tap spooky egg option (same as smelly sock coords)
                     rectToTap = new Rectangle(213, 39, 328 - 213, 53 - 39);
@@ -160,7 +161,7 @@ public class Collector extends Task {
             var dlg = script.getWidgetManager().getDialogue();
             DialogueType type = dlg != null ? dlg.getDialogueType() : null;
             return type != null && type.equals(DialogueType.TAP_HERE_TO_CONTINUE);
-        }, script.random(2500, 5500));
+        }, RandomUtils.uniformRandom(2500, 5500));
 
         return false;
     }
@@ -242,7 +243,7 @@ public class Collector extends Task {
             }
 
             // Wait for bank interface to become visible
-            script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), script.random(8000, 11000));
+            script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(8000, 11000));
         } else {
             // Otherwise walk towards it
             script.log(getClass(), "Bank object not on screen, walking towards it...");

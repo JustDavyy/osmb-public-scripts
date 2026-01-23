@@ -38,11 +38,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dCamTorumMiner",
         description = "Mines blessed bone shards in the Cam Torum mine",
         skillCategory = SkillCategory.MINING,
-        version = 2.8,
+        version = 2.9,
         author = "JustDavyy"
 )
 public class dCamTorumMiner extends Script {
-    public static final String scriptVersion = "2.8";
+    public static final String scriptVersion = "2.9";
     private final String scriptName = "CamTorumMiner";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

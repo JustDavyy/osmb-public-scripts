@@ -39,11 +39,11 @@ import java.util.function.Predicate;
         name = "dConstructioneer",
         description = "Trains construction quickly by making hull parts or repair kits for the Sailing skill",
         skillCategory = SkillCategory.CONSTRUCTION,
-        version = 1.2,
+        version = 1.3,
         author = "JustDavyy"
 )
 public class dConstructioneer extends Script {
-    public static String scriptVersion = "1.2";
+    public static String scriptVersion = "1.3";
     private final String scriptName = "Constructioneer";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

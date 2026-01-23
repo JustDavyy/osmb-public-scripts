@@ -6,6 +6,7 @@ import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class BankTask extends Task {
         boolean withdrawed = script.getWidgetManager().getBank().withdraw(ItemID.STEEL_BAR, 27);
         task = "Close bank";
         script.getWidgetManager().getBank().close();
-        script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(5000, 7500));
+        script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 7500));
 
         task = "Check inventory";
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(ItemID.STEEL_BAR));
@@ -79,6 +80,6 @@ public class BankTask extends Task {
             }
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
-        }, script.random(15000, 17000));
+        }, RandomUtils.uniformRandom(15000, 17000));
     }
 }

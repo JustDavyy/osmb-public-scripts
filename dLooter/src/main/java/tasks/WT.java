@@ -13,6 +13,7 @@ import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.UIResult;
 import com.osmb.api.utils.UIResultList;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -123,7 +124,7 @@ public class WT extends Task {
 
             if (type != null && type.equals(DialogueType.TAP_HERE_TO_CONTINUE)) {
                 task = "Read dialogue";
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
 
                 UIResult<String> textResult = dialogue.getText();
                 if (textResult == null || textResult.isNotFound() || textResult.isNotVisible()) {
@@ -158,7 +159,7 @@ public class WT extends Task {
             return invSlots.isFull();
         };
 
-        script.pollFramesHuman(condition, script.random(150000, 250000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(150000, 250000));
 
         // Update all counts here of loot gained
         script.log(getClass(), "Updating all loot counts.");
@@ -166,10 +167,10 @@ public class WT extends Task {
         updateLootCountsIfNeeded("post-search completion");
 
         // Additional random delay sometimes
-        if (script.random(10) < 3) {
+        if (RandomUtils.uniformRandom(10) < 3) {
             task = "Add extra random delay";
             script.log(getClass(), "Adding extra randomized delay");
-            script.pollFramesHuman(() -> false, script.random(150, 500));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 500));
         }
     }
 
@@ -205,7 +206,7 @@ public class WT extends Task {
             return;
         }
 
-        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), script.random(5000, 8000));
+        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 8000));
     }
 
     private boolean startSearch() {

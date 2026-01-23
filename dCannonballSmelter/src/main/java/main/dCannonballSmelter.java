@@ -39,11 +39,11 @@ import java.util.function.Predicate;
         name = "dCannonballSmelter",
         description = "Turns steel bars into cannonballs",
         skillCategory = SkillCategory.SMITHING,
-        version = 3.5,
+        version = 3.6,
         author = "JustDavyy"
 )
 public class dCannonballSmelter extends Script implements WebhookSender {
-    public static final String scriptVersion = "3.5";
+    public static final String scriptVersion = "3.6";
     private final String scriptName = "CannonballSmelter";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

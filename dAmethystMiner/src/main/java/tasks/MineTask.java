@@ -13,6 +13,7 @@ import com.osmb.api.shape.triangle.Triangle;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.utils.UIResultList;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.awt.*;
@@ -206,11 +207,11 @@ public class MineTask extends Task {
         }
 
         task = "Wait before check";
-        script.pollFramesHuman(() -> false, script.random(1500, 2500));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1500, 2500));
         task = "Wait until interrupt";
         waitUntilFinishedMining(targetVein);
         task = "Human delay task";
-        script.pollFramesHuman(() -> false, script.random(150, 700));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 700));
         task = "Add vein to blocklist";
         objectPositionBlacklist.put(targetVein.getWorldPosition(), System.currentTimeMillis());
         return true;
@@ -310,7 +311,7 @@ public class MineTask extends Task {
 
     private void waitUntilFinishedMining(RSObject vein) {
         AtomicInteger localMinedCount = new AtomicInteger(0);
-        int maxMiningDuration = (int) script.random(240_000, 270_000);
+        int maxMiningDuration = (int) RandomUtils.uniformRandom(240_000, 270_000);
 
         ItemGroupResult startSnapshot = script.getWidgetManager().getInventory().search(Set.of(ItemID.AMETHYST));
         if (startSnapshot == null) {
@@ -333,8 +334,8 @@ public class MineTask extends Task {
         Timer debounceTimer = new Timer();
         long start = System.currentTimeMillis();
 
-        final long gracePeriodMs = script.random(3500, 4500);
-        final long maxNoAnimTime = script.random(7000, 9000);
+        final long gracePeriodMs = RandomUtils.uniformRandom(3500, 4500);
+        final long maxNoAnimTime = RandomUtils.uniformRandom(7000, 9000);
 
         script.pollFramesHuman(() -> {
             ItemGroupResult currentInv = script.getWidgetManager().getInventory().search(Set.of(ItemID.AMETHYST));
@@ -412,6 +413,6 @@ public class MineTask extends Task {
             return false;
         }, maxMiningDuration);
 
-        script.pollFramesHuman(() -> false, script.random(300, 800));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(300, 800));
     }
 }

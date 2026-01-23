@@ -1,6 +1,7 @@
 package tasks;
 
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.time.Instant;
@@ -38,7 +39,7 @@ public class BreakManager extends Task {
             script.log(getClass().getSimpleName(), "Log out till next run is due");
             boolean success = script.getWidgetManager().getLogoutTab().logout();
 
-            long waitTime = birdhouseWait + script.random(5000, 10000);
+            long waitTime = birdhouseWait + RandomUtils.uniformRandom(5000, 10000);
             waitTime = Math.max(0, waitTime); // Prevent negative sleep time
 
             // Format local time of next run
@@ -61,7 +62,7 @@ public class BreakManager extends Task {
                 return false;
             }
 
-            long waitTime = seaweedWait + script.random(5000, 10000);
+            long waitTime = seaweedWait + RandomUtils.uniformRandom(5000, 10000);
             waitTime = Math.max(0, waitTime);
 
             // Format local time of next run

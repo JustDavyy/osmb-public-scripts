@@ -12,6 +12,7 @@ import com.osmb.api.shape.Rectangle;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.UIResult;
 import com.osmb.api.utils.UIResultList;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Arrays;
@@ -113,7 +114,7 @@ public class TalkTask extends Task {
             script.log(getClass().getSimpleName(), "Bronze arrows found, equipping!");
             UIResult<Rectangle> tappableSlot = inventorySnapshot.getItem(ItemID.BRONZE_ARROW).getTappableBounds();
             boolean success = script.getFinger().tap(tappableSlot.get().getRandomPoint());
-            script.pollFramesHuman(() -> false, script.random(100, 250));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 250));
 
             if (success) {
                 readyToShoot = true;
@@ -160,7 +161,7 @@ public class TalkTask extends Task {
                     script.log(getClass().getSimpleName(), "We need to talk to the NPC to start a new round");
                     boolean success = findAndInteractWithNPC();
 
-                    script.pollFramesHuman(() -> false, script.random(2000, 2500));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2000, 2500));
                     alreadyStarted = success;
                     return success;
                 }
@@ -209,7 +210,7 @@ public class TalkTask extends Task {
         }
 
         // Wait for chatbox or target view
-        if (!script.pollFramesHuman(() -> targetInterface.isVisible() || script.getWidgetManager().getDialogue().getDialogueType() != null, script.random(4000, 5000))) {
+        if (!script.pollFramesHuman(() -> targetInterface.isVisible() || script.getWidgetManager().getDialogue().getDialogueType() != null, RandomUtils.uniformRandom(4000, 5000))) {
             script.log(getClass().getSimpleName(), "❌ Target interface did not return — shot may have failed.");
         }
 
@@ -247,7 +248,7 @@ public class TalkTask extends Task {
                             DialogueType dt = script.getWidgetManager().getDialogue().getDialogueType();
                             script.log(getClass(), "Polling dialogue type during wait: " + dt);
                             return dt != null;
-                        }, script.random(4000, 6000));
+                        }, RandomUtils.uniformRandom(4000, 6000));
 
                         if (!appeared) {
                             script.log(getClass(), "Dialogue never appeared after tap.");
@@ -263,7 +264,7 @@ public class TalkTask extends Task {
             }
 
             if (attempt < 3) {
-                script.pollFramesHuman(() -> false, script.random(500, 1500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 1500));
             } else {
                 script.log(getClass().getSimpleName(), "All attempts failed. Hopping worlds...");
                 script.getProfileManager().forceHop();

@@ -119,7 +119,7 @@ public class dmFish extends Task {
                 return false;
             }
             return getAdjacentFishingSpot(fishingSpots, myPosition) != null;
-        }, script.random(2500, 6000));
+        }, RandomUtils.uniformRandom(2500, 6000));
     }
 
     private void waitUntilFinishedFishing() {
@@ -163,7 +163,7 @@ public class dmFish extends Task {
             }
 
             return false;
-        }, script.random(16000, 22000));
+        }, RandomUtils.uniformRandom(16000, 22000));
         // random delay before next fishing attempt
         int randomDelay = RandomUtils.gaussianRandom(300, 5000, 500, 1500);
         if (!skipMinnowDelay) {

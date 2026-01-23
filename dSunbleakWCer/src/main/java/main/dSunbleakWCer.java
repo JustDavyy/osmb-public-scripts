@@ -34,11 +34,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dSunbleakWCer",
         description = "Chops and optionally banks Ironwood logs on Sunbleak island",
         skillCategory = SkillCategory.WOODCUTTING,
-        version = 1.2,
+        version = 1.3,
         author = "JustDavyy"
 )
 public class dSunbleakWCer extends Script {
-    public static final String scriptVersion = "1.2";
+    public static final String scriptVersion = "1.3";
     private final String scriptName = "SunbleakWCer";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

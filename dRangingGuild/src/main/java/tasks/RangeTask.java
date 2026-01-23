@@ -11,6 +11,7 @@ import static main.dRangingGuild.*;
 import com.osmb.api.script.Script;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.location.position.types.WorldPosition;
+import com.osmb.api.utils.RandomUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -117,7 +118,7 @@ public class RangeTask extends Task {
                         script.log(getClass().getSimpleName(), "Bronze arrows found, equipping!");
                         UIResult<Rectangle> tappableSlot = inventorySnapshot.getItem(ItemID.BRONZE_ARROW).getTappableBounds();
                         boolean success = script.getFinger().tap(tappableSlot.get().getRandomPoint());
-                        script.pollFramesHuman(() -> false, script.random(100, 250));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 250));
 
                         if (success) {
                             readyToShoot = true;
@@ -152,13 +153,13 @@ public class RangeTask extends Task {
         lastTaskRanAt = System.currentTimeMillis();
 
         // Step 2: Wait for target interface to disappear
-        if (!script.pollFramesHuman(() -> !targetInterface.isVisible(), script.random(1750, 2500), true)) {
+        if (!script.pollFramesHuman(() -> !targetInterface.isVisible(), RandomUtils.uniformRandom(1750, 2500), true)) {
             script.log(getClass().getSimpleName(), "❌ Target interface did not disappear.");
             return false;
         }
 
         // Step 3: Wait for it to reappear
-        if (!script.pollFramesHuman(() -> targetInterface.isVisible() || script.getWidgetManager().getDialogue().getDialogueType() != null, script.random(4000, 5000), true)) {
+        if (!script.pollFramesHuman(() -> targetInterface.isVisible() || script.getWidgetManager().getDialogue().getDialogueType() != null, RandomUtils.uniformRandom(4000, 5000), true)) {
             script.log(getClass().getSimpleName(), "❌ Target interface did not return — shot may have failed.");
             return false;
         }
@@ -206,10 +207,10 @@ public class RangeTask extends Task {
             currentScore = 0;
             totalRounds++;
         } else {
-            if (script.random(0, 99) < 30) {
-                script.pollFramesHuman(() -> false, script.random(1, 150));
+            if (RandomUtils.uniformRandom(0, 99) < 30) {
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 150));
             } else {
-                script.pollFramesUntil(() -> false, script.random(50, 350));
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(50, 350));
             }
         }
 

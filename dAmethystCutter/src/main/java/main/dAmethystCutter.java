@@ -36,11 +36,11 @@ import java.util.function.Predicate;
         name = "dAmethystCutter",
         description = "Crafts your amethyst into useful resources",
         skillCategory = SkillCategory.CRAFTING,
-        version = 1.0,
+        version = 1.1,
         author = "JustDavyy"
 )
 public class dAmethystCutter extends Script {
-    public static final String scriptVersion = "1.0";
+    public static final String scriptVersion = "1.1";
     private final String scriptName = "AmethystCutter";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

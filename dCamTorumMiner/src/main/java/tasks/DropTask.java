@@ -6,6 +6,7 @@ import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Collections;
@@ -164,7 +165,7 @@ public class DropTask extends Task {
     }
 
     private int getNewBankThreshold() {
-        return script.random(15, 21);
+        return RandomUtils.uniformRandom(15, 21);
     }
 
     private int safeAmount(int amount) {

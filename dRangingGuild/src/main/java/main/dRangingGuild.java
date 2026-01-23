@@ -40,11 +40,11 @@ import javax.imageio.ImageIO;
         name = "dRangingGuild",
         description = "Trains ranged by doing the ranging guild minigame",
         skillCategory = SkillCategory.COMBAT,
-        version = 2.5,
+        version = 2.6,
         author = "JustDavyy"
 )
 public class dRangingGuild extends Script {
-    public static final String scriptVersion = "2.5";
+    public static final String scriptVersion = "2.6";
     private final String scriptName = "RangingGuild";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

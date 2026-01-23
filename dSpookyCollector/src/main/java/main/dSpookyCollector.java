@@ -32,11 +32,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dSpookyCollector",
         description = "Collects spooky stuff at varrock west bank for u smelly fetish people",
         skillCategory = SkillCategory.OTHER,
-        version = 1.4,
+        version = 1.5,
         author = "JustDavyy"
 )
 public class dSpookyCollector extends Script {
-    public static final String scriptVersion = "1.4";
+    public static final String scriptVersion = "1.5";
     private final String scriptName = "SpookyCollector";
     public static boolean setupDone = false;
 

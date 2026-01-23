@@ -5,6 +5,7 @@ import com.osmb.api.item.ItemID;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.shape.Rectangle;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -90,7 +91,7 @@ public class cWarsCrate extends Task {
 
             task = "Close bank";
             script.getWidgetManager().getBank().close();
-            return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+            return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
         }
 
         // Processing here
@@ -134,7 +135,7 @@ public class cWarsCrate extends Task {
 
                 Rectangle bounds = boundsRes.get();
                 script.getFinger().tap(bounds);
-                script.pollFramesUntil(() -> false, script.random(1, 200)); // slight jitter
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(1, 200)); // slight jitter
 
                 // Wait until: crate count decreases OR slot disappears OR loot delta detected
                 boolean opened = script.pollFramesUntil(() -> {
@@ -150,13 +151,13 @@ public class cWarsCrate extends Task {
                     if (slotGone) return true; // slot visually disappeared
 
                     return hasTrackedDelta(); // loot detected
-                }, script.random(2000, 3500));
+                }, RandomUtils.uniformRandom(2000, 3500));
 
                 // Update totals if a loot delta was detected
                 updateLootCountsIfNeeded();
 
                 // Human-like pause before moving to the next crate
-                script.pollFramesUntil(() -> false, script.random(50, 150));
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(50, 150));
             }
         }
 
@@ -182,7 +183,7 @@ public class cWarsCrate extends Task {
             return;
         }
 
-        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), script.random(5000, 8000));
+        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 8000));
     }
 
     private Set<Integer> getTrackedItems() {

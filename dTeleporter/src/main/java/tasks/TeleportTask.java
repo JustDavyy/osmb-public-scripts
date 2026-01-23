@@ -5,6 +5,7 @@ import utils.Task;
 import static main.dTeleporter.*;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.spellbook.SpellNotFoundException;
+import com.osmb.api.utils.RandomUtils;
 
 public class TeleportTask extends Task {
     private long lastTeleportTime = 0;
@@ -54,14 +55,14 @@ public class TeleportTask extends Task {
 
     private long getCooldownForSpell() {
         // Randomized delay
-        int roll = script.random(100);
+        int roll = RandomUtils.uniformRandom(100);
 
         if (roll < 50) {
-            return script.random(1800, 1901);
+            return RandomUtils.uniformRandom(1800, 1901);
         } else if (roll < 90) {
-            return script.random(1850, 2001);
+            return RandomUtils.uniformRandom(1850, 2001);
         } else {
-            return script.random(1900, 2301);
+            return RandomUtils.uniformRandom(1900, 2301);
         }
     }
 }

@@ -39,11 +39,11 @@ import javax.imageio.ImageIO;
         name = "dBoltEnchanter",
         description = "Casts the enchant crossbow bolt spell to enchant gem tipped bolts.",
         skillCategory = SkillCategory.MAGIC,
-        version = 1.5,
+        version = 1.6,
         author = "JustDavyy"
 )
 public class dBoltEnchanter extends Script {
-    public static final String scriptVersion = "1.5";
+    public static final String scriptVersion = "1.6";
     private final String scriptName = "BoltEnchanter";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

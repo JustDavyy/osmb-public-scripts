@@ -6,6 +6,7 @@ import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import main.dWinemaker;
 import utils.Task;
 
@@ -55,7 +56,7 @@ public class BankTask extends Task {
             return false;
         }
 
-        boolean randomOrder = script.random(2) == 0;
+        boolean randomOrder = RandomUtils.uniformRandom(2) == 0;
         int targetAmount = 14;
 
         task = "Withdraw items";

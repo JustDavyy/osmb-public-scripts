@@ -5,6 +5,7 @@ import com.osmb.api.item.ItemID;
 import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.walker.WalkConfig;
 import data.FishingLocation;
@@ -157,10 +158,10 @@ public class Bank extends Task {
         task = "Close bank";
         if (fishingMethod.getBankObjectType().equals(FishingMethod.BankObjectType.BANK)) {
             script.getWidgetManager().getBank().close();
-            script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+            script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
         } else if (fishingMethod.getBankObjectType().equals(FishingMethod.BankObjectType.DEPOSIT_BOX)) {
             script.getWidgetManager().getDepositBox().close();
-            script.pollFramesHuman(() -> !script.getWidgetManager().getDepositBox().isVisible(), script.random(4000, 6000));
+            script.pollFramesHuman(() -> !script.getWidgetManager().getDepositBox().isVisible(), RandomUtils.uniformRandom(4000, 6000));
         }
 
         return false;
@@ -215,7 +216,7 @@ public class Bank extends Task {
             }
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
     }
 
     private void openDepositBox() {
@@ -267,7 +268,7 @@ public class Bank extends Task {
             }
 
             return script.getWidgetManager().getDepositBox().isVisible() || positionChangeTimer.get().timeElapsed() > 3000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
     }
 
     private RSObject getClosestBankOrDeposit() {

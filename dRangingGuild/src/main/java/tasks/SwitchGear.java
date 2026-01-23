@@ -4,6 +4,7 @@ import com.osmb.api.item.ItemGroupResult;
 import com.osmb.api.item.ItemID;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.tabs.Tab;
+import com.osmb.api.utils.RandomUtils;
 import main.ScriptUI;
 import utils.Task;
 
@@ -50,13 +51,13 @@ public class SwitchGear extends Task {
                 script.getWidgetManager().getInventory().unSelectItemIfSelected();
                 script.log(getClass().getSimpleName(), "Equipping " + slot + " (" + script.getItemManager().getItemName(itemId) + ")");
                 switchedSomething = inventory.getItem(itemId).interact();
-                script.pollFramesHuman(() -> false, script.random(500, 700));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 700));
             }
         }
 
         // Check if any item that was equipped is no longer in inventory
         if (switchedSomething) {
-            script.pollFramesHuman(() -> false, script.random(1250, 2000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1250, 2000));
             ItemGroupResult updatedInventory = script.getWidgetManager().getInventory().search(Set.of(ItemID.MAGIC_LONGBOW, ItemID.MAGIC_SHORTBOW, ItemID.BLUE_DHIDE_VAMBRACES, ItemID.BLUE_DHIDE_BODY, ItemID.BLUE_DHIDE_CHAPS, ItemID.DARK_BOW, ItemID.RED_DHIDE_VAMBRACES, ItemID.RED_DHIDE_BODY, ItemID.RED_DHIDE_CHAPS, ItemID.BLACK_DHIDE_VAMBRACES, ItemID.BLACK_DHIDE_BODY, ItemID.BLACK_DHIDE_CHAPS, ItemID.SCORCHING_BOW));
 
             if (updatedInventory == null) {

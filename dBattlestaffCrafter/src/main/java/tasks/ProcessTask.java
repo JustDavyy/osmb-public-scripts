@@ -6,6 +6,7 @@ import com.osmb.api.item.ItemSearchResult;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Set;
@@ -65,7 +66,7 @@ public class ProcessTask extends Task {
             boolean selected = script.getWidgetManager().getDialogue().selectItem(staffID);
             if (!selected) {
                 script.log(getClass().getSimpleName(), "Initial staff selection failed, retrying...");
-                script.pollFramesHuman(() -> false, script.random(150, 300));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                 selected = script.getWidgetManager().getDialogue().selectItem(staffID);
             }
 
@@ -77,9 +78,9 @@ public class ProcessTask extends Task {
 
             task = "Wait until finished";
             waitUntilFinishedProducing();
-            if (script.random(10) < 3) {
+            if (RandomUtils.uniformRandom(10) < 3) {
                 script.log(getClass().getSimpleName(), "Adding extra randomized delay");
-                script.pollFramesHuman(() -> false, script.random(250, 1200));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 1200));
             }
         }
 
@@ -94,7 +95,7 @@ public class ProcessTask extends Task {
             }
         }
 
-        script.pollFramesHuman(() -> false, script.random(25, 50));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(25, 50));
 
         if (!staff.interact()) {
             script.log(getClass(), "Staff interaction failed, retrying...");
@@ -117,7 +118,7 @@ public class ProcessTask extends Task {
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesHuman(() -> false, script.random(500, 2500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 2500));
                 return true;
             }
 
@@ -130,7 +131,7 @@ public class ProcessTask extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until crafting finishes.");
-        script.pollFramesHuman(condition, script.random(18000, 20000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(18000, 20000));
     }
 
     public static int getOrbIdForStaff(int staffId) {

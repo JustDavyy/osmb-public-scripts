@@ -33,11 +33,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dSawmillRunner",
         description = "Creates planks of your choice at multiple sawmills",
         skillCategory = SkillCategory.CONSTRUCTION,
-        version = 1.8,
+        version = 2.0,
         author = "JustDavyy"
 )
 public class dSawmillRunner extends Script {
-    public static final String scriptVersion = "1.8";
+    public static final String scriptVersion = "2.0";
     private final String scriptName = "SawmillRunner";
     public static boolean setupDone = false;
 

@@ -20,6 +20,7 @@ import com.osmb.api.ui.component.minimap.xpcounter.XPDropsComponent;
 import com.osmb.api.ui.overlay.HealthOverlay;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.ui.tabs.TabManager;
+import com.osmb.api.utils.RandomUtils;
 import com.osmb.api.utils.UIResult;
 import com.osmb.api.utils.UIResultList;
 import com.osmb.api.walker.WalkConfig;
@@ -93,7 +94,7 @@ public class Fight extends Task {
             // This is where the fighting happens --> moved to its own method considering how large the logic became.
             alreadyFought = true;
             if (needToAttack) initiateAttack();
-            return script.pollFramesHuman(this::fightMrCrabs, script.random(630000, 720000));
+            return script.pollFramesHuman(this::fightMrCrabs, RandomUtils.uniformRandom(630000, 720000));
         } else {
             // Check if we need to bank
             if (needToBank) {
@@ -177,12 +178,12 @@ public class Fight extends Task {
                     return false;
                 } else {
                     task = "Wait till arrival at new area";
-                    if (script.pollFramesHuman(() -> getClosestCrabArea() != currentArea || isDialogueOpen(), script.random(15000, 20000))) {
+                    if (script.pollFramesHuman(() -> getClosestCrabArea() != currentArea || isDialogueOpen(), RandomUtils.uniformRandom(15000, 20000))) {
 
                         if (isDialogueOpen()) {
                             script.log(getClass(), "Dialogue detected, could not use the cave...");
                             script.getWidgetManager().getDialogue().continueChatDialogue();
-                            script.pollFramesHuman(() -> false, script.random(1, 1000));
+                            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 1000));
                             foundCrab = false;
                             alreadyFought = false;
                             return false;
@@ -190,10 +191,10 @@ public class Fight extends Task {
 
                         script.log(getClass(), "Waiting for Gemstone crab to spawn...");
                         task = "Wait for Gemstone crab spawn.";
-                        script.pollFramesHuman(this::crabActive3s, script.random(15000, 20000));
+                        script.pollFramesHuman(this::crabActive3s, RandomUtils.uniformRandom(15000, 20000));
                         script.log(getClass(), "Add additional humanized delay");
                         task = "Additional human delay";
-                        script.pollFramesHuman(() -> false, script.random(1, 500));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 500));
                         if (findCrabNPC(true)) {
                             boolean succeeded = initiateAttack();
 
@@ -245,7 +246,7 @@ public class Fight extends Task {
                         if (foodTotal == 0) {
                             script.log(getClass(), "Bank is flagged (EAST) but we're below our HP threshold and out of food, going to safety for now!");
                             walkToObject("Cave", "Crawl-through");
-                            script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                         }
                     }
                 }
@@ -311,7 +312,7 @@ public class Fight extends Task {
                 if (inv2 == null) return false;
                 return totalAmount(inv2, eatOrder) < beforeTotal;
             };
-            script.pollFramesHuman(waitCon, script.random(4000, 8000));
+            script.pollFramesHuman(waitCon, RandomUtils.uniformRandom(4000, 8000));
         }
 
         // Monitor potion usage
@@ -343,7 +344,7 @@ public class Fight extends Task {
                     needToBank = true;
                     return false;
                 }
-                script.pollFramesUntil(() -> false, script.random(1200, 2000));
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(1200, 2000));
                 if (!initiateAttack()) {
                     initiateAttack();
                 }
@@ -354,7 +355,7 @@ public class Fight extends Task {
                     if (inv2 == null) return false;
                     return totalPotionAmount(inv2, drinkOrder) < beforeTotal;
                 };
-                script.pollFramesHuman(waitCon, script.random(5000, 10000));
+                script.pollFramesHuman(waitCon, RandomUtils.uniformRandom(5000, 10000));
             }
         }
 
@@ -382,10 +383,10 @@ public class Fight extends Task {
                     ItemGroupResult dbaxe = script.getWidgetManager().getInventory().search(Set.of(ItemID.DRAGON_BATTLEAXE));
                     if (dbaxe == null) return false;
                     return !dbaxe.contains(ItemID.DRAGON_BATTLEAXE);
-                }, script.random(3000, 5000));
+                }, RandomUtils.uniformRandom(3000, 5000));
 
                 // Small human-like delay before pressing spec
-                script.pollFramesUntil(() -> false, script.random(200, 500));
+                script.pollFramesUntil(() -> false, RandomUtils.uniformRandom(200, 500));
 
                 // Click spec orb
                 script.getWidgetManager().getMinimapOrbs().setSpecialAttack(true);
@@ -394,7 +395,7 @@ public class Fight extends Task {
                 boolean activated = script.pollFramesUntil(() -> {
                     Integer specPct = script.getWidgetManager().getMinimapOrbs().getSpecialAttackPercentage();
                     return (specPct != null && specPct < 100);
-                }, script.random(3000, 5000));
+                }, RandomUtils.uniformRandom(3000, 5000));
 
                 if (!activated) {
                     script.log(getClass(), "Failed to activate special attack, retry!");
@@ -405,7 +406,7 @@ public class Fight extends Task {
                 activated = script.pollFramesUntil(() -> {
                     Integer specPct = script.getWidgetManager().getMinimapOrbs().getSpecialAttackPercentage();
                     return (specPct != null && specPct < 100);
-                }, script.random(3000, 5000));
+                }, RandomUtils.uniformRandom(3000, 5000));
 
                 // --- RE-EQUIP PREVIOUS WEAPON USING THE SAME SLOT'S TAPPABLE BOUNDS ---
                 UIResult<Rectangle> tapBoundsRes = inv.getBoundsForSlot(savedSlot);
@@ -429,7 +430,7 @@ public class Fight extends Task {
                     ItemGroupResult dbaxe = script.getWidgetManager().getInventory().search(Set.of(ItemID.DRAGON_BATTLEAXE));
                     if (dbaxe == null) return false;
                     return dbaxe.contains(ItemID.DRAGON_BATTLEAXE);
-                }, script.random(3000, 5000));
+                }, RandomUtils.uniformRandom(3000, 5000));
 
                 if (!succ) {
                     script.log(getClass(), "Re-equip verification failed; retrying tap once...");
@@ -438,7 +439,7 @@ public class Fight extends Task {
                         ItemGroupResult dbaxe = script.getWidgetManager().getInventory().search(Set.of(ItemID.DRAGON_BATTLEAXE));
                         if (dbaxe == null) return false;
                         return dbaxe.contains(ItemID.DRAGON_BATTLEAXE);
-                    }, script.random(3000, 5000))) return false;
+                    }, RandomUtils.uniformRandom(3000, 5000))) return false;
                 }
 
                 if (!initiateAttack()) {
@@ -518,7 +519,7 @@ public class Fight extends Task {
                     task = "Finish kill before hop/break";
                     // Delay the hop/break until the crab is gone for a few seconds
                     if (!crabInactive3s()) {
-                        script.pollFramesUntil(this::crabInactive3s, script.random(10000, 15000));
+                        script.pollFramesUntil(this::crabInactive3s, RandomUtils.uniformRandom(10000, 15000));
                         return false;
                     }
                 }
@@ -529,7 +530,7 @@ public class Fight extends Task {
                 WorldPosition safeSpot = getCombatSafeSpot();
                 if (safeSpot == null) return false;
                 script.getWalker().walkTo(safeSpot);
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                 canBreakNow = true;
                 canHopNow   = true;
                 foundCrab   = false;
@@ -545,12 +546,12 @@ public class Fight extends Task {
                 return false;
             } else {
                 task = "Wait till arrival at new area";
-                if (script.pollFramesHuman(() -> getClosestCrabArea() != currentArea || isDialogueOpen(), script.random(15000, 20000))) {
+                if (script.pollFramesHuman(() -> getClosestCrabArea() != currentArea || isDialogueOpen(), RandomUtils.uniformRandom(15000, 20000))) {
 
                     if (isDialogueOpen()) {
                         script.log(getClass(), "Dialogue detected, could not use the cave...");
                         script.getWidgetManager().getDialogue().continueChatDialogue();
-                        script.pollFramesHuman(() -> false, script.random(1, 1000));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 1000));
                         foundCrab = false;
                         alreadyFought = false;
                         return false;
@@ -558,10 +559,10 @@ public class Fight extends Task {
 
                     script.log(getClass(), "Waiting for Gemstone crab to spawn...");
                     task = "Wait for Gemstone crab spawn.";
-                    script.pollFramesHuman(this::crabActive3s, script.random(15000, 20000));
+                    script.pollFramesHuman(this::crabActive3s, RandomUtils.uniformRandom(15000, 20000));
                     script.log(getClass(), "Add additional humanized delay");
                     task = "Additional human delay";
-                    script.pollFramesHuman(() -> false, script.random(1, 4000));
+                    script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 4000));
                     if (findCrabNPC(true)) {
                         boolean succeeded = initiateAttack();
 
@@ -588,7 +589,7 @@ public class Fight extends Task {
                     task = "Finish kill before hop/break";
                     // Delay the hop/break until the crab is gone for a few seconds
                     if (!crabInactive3s()) {
-                        script.pollFramesUntil(this::crabInactive3s, script.random(10000, 15000));
+                        script.pollFramesUntil(this::crabInactive3s, RandomUtils.uniformRandom(10000, 15000));
                         return false;
                     }
                 }
@@ -599,7 +600,7 @@ public class Fight extends Task {
                 WorldPosition safeSpot = getCombatSafeSpot();
                 if (safeSpot == null) return false;
                 script.getWalker().walkTo(safeSpot);
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                 canBreakNow = true;
                 canHopNow   = true;
                 foundCrab   = false;
@@ -618,7 +619,7 @@ public class Fight extends Task {
         try {
             final var tabManager = script.getWidgetManager().getTabManager();
 
-            int roll = script.random(100);
+            int roll = RandomUtils.uniformRandom(100);
             boolean chooseAttack = (roll >= 85); // 85% tabs, 15% attack
 
             if (chooseAttack) {
@@ -632,7 +633,7 @@ public class Fight extends Task {
                     if (!ok) {
                         // small jitter before retry
                         task = "Add human delay";
-                        script.pollFramesHuman(() -> false, script.random(120, 420));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(120, 420));
                     }
                 }
 
@@ -665,13 +666,13 @@ public class Fight extends Task {
         if (pool.isEmpty()) pool = Arrays.asList(all); // extreme fallback
 
         // Pick a random tab from the pool
-        var pick = pool.get(script.random(pool.size()));
+        var pick = pool.get(RandomUtils.uniformRandom(pool.size()));
 
         // Open it
         script.log(getClass(), "Switching tab to " + pick + "...");
         tabManager.openTab(pick);
 
-        script.pollFramesHuman(() -> false, script.random(100, 5000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(100, 5000));
 
         // Close the container linked to the active tab
         tabManager.closeContainer();
@@ -679,9 +680,7 @@ public class Fight extends Task {
 
     private void resetAntiAfkTimer() {
         task = "Reset AFK timer";
-        long min = TimeUnit.MINUTES.toMillis(3);  // 180,000 ms
-        long max = (long) (4.5 * 60_000);                              // 270,000 ms
-        long delay = script.random(min, max);
+        long delay = RandomUtils.uniformRandom(180000, 270000);
         switchTabTimer.reset(delay);
     }
 
@@ -783,7 +782,7 @@ public class Fight extends Task {
         }
 
         // Human delay to wait for attacking to properly complete.
-        script.pollFramesHuman(() -> false, script.random(2000, 5000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2000, 5000));
         lastXpGainAt = System.currentTimeMillis();
         needToAttack = false;
         return true;
@@ -889,14 +888,14 @@ public class Fight extends Task {
         task = "Interact with " + objectName + " object (" + objectAction + ")";
         // Try interaction
         if (target.interact(objectAction)) {
-            script.pollFramesHuman(() -> false, script.random(3500, 5000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(3500, 5000));
             resetAntiAfkTimer();
             return true;
         }
 
         task = "Retry Interact with " + objectName + " object (" + objectAction + ")";
         // Retry once after a short jitter (re-locate target to avoid staleness)
-        script.pollFramesHuman(() -> false, script.random(250, 550));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 550));
         target = findClosest(objectQuery);
         if (target == null) {
             script.log(getClass(), "handleObject: target disappeared before retry.");
@@ -915,7 +914,7 @@ public class Fight extends Task {
         task = "Interact with " + objectName + " object (" + objectAction + ")";
         resetAntiAfkTimer();
         boolean success = target.interact(objectAction);
-        if (success) script.pollFramesHuman(() -> false, script.random(3500, 5000));
+        if (success) script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(3500, 5000));
         return success;
     }
 
@@ -1121,11 +1120,11 @@ public class Fight extends Task {
     }
 
     private boolean crabActive3s() {
-       return  script.pollFramesHuman(() -> findCrabNPC(false), script.random(3000, 4000));
+       return  script.pollFramesHuman(() -> findCrabNPC(false), RandomUtils.uniformRandom(3000, 4000));
     }
 
     private boolean crabInactive3s() {
-        return script.pollFramesHuman(() -> !findCrabNPC(false), script.random(3000, 4000));
+        return script.pollFramesHuman(() -> !findCrabNPC(false), RandomUtils.uniformRandom(3000, 4000));
     }
 
     private static boolean withinRadius(WorldPosition a, WorldPosition b, int r) {
@@ -1224,7 +1223,7 @@ public class Fight extends Task {
     private boolean waitCrabDieThenTraverseCave() {
         task = "Wait crab death (for banking)";
         // Wait up to ~12–15s for “no crab for 3s”
-        boolean died = script.pollFramesHuman(() -> !crabActive3s(), script.random(12_000, 15_000));
+        boolean died = script.pollFramesHuman(() -> !crabActive3s(), RandomUtils.uniformRandom(12_000, 15_000));
         if (!died) {
             script.log(getClass(), "Crab still active; aborting cave traverse for banking.");
             return false;
@@ -1237,7 +1236,7 @@ public class Fight extends Task {
         }
 
         // Small settle delay
-        script.pollFramesHuman(() -> false, script.random(8000, 14000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(8000, 14000));
         return true;
     }
 
@@ -1245,7 +1244,7 @@ public class Fight extends Task {
         task = "Disengage for banking";
         // Best-effort: step to cave to drop combat before banking
         script.getWalker().walkTo(getCombatSafeSpot());
-        script.pollFramesHuman(() -> false, script.random(1_000, 1_500));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1_000, 1_500));
 
         canBankNow = true;     // allow bank task to proceed
         foundCrab = false;     // leave the fight loop
@@ -1337,8 +1336,8 @@ public class Fight extends Task {
             shouldPot = false;
 
             nextPotAt = isDivine
-                    ? now + script.random((long) (5.2 * 60_000), 6 * 60_000)
-                    : now + script.random(6 * 60_000, 8 * 60_000);
+                    ? now + RandomUtils.uniformRandom(312000, 360000)
+                    : now + RandomUtils.uniformRandom(360000, 480000);
 
             return true;
         }
@@ -1356,8 +1355,8 @@ public class Fight extends Task {
         // -------------------------------------------------
         if (now >= nextPotAt) {
             nextPotAt = isDivine
-                    ? now + script.random((long) (5.2 * 60_000), 6 * 60_000)
-                    : now + script.random(6 * 60_000, 8 * 60_000);
+                    ? now + RandomUtils.uniformRandom(312000, 360000)
+                    : now + RandomUtils.uniformRandom(360000, 480000);
 
             return true;
         }
@@ -1466,7 +1465,7 @@ public class Fight extends Task {
                 script.log(getClass(), "Chat: out of runes -> " + msg);
                 script.log(getClass(), "Stopping script after going to safety");
                 walkToObject("Cave", "Crawl-through");
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                 script.getWidgetManager().getLogoutTab().logout();
                 script.stop();
                 return;
@@ -1477,7 +1476,7 @@ public class Fight extends Task {
                 script.log(getClass(), "Chat: last one consumed -> " + msg);
                 script.log(getClass(), "Stopping script after going to safety");
                 walkToObject("Cave", "Crawl-through");
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                 script.getWidgetManager().getLogoutTab().logout();
                 script.stop();
                 return;
@@ -1488,34 +1487,34 @@ public class Fight extends Task {
                 script.log(getClass(), "Chat: out of ammo -> " + msg);
                 script.log(getClass(), "Stopping script after going to safety");
                 walkToObject("Cave", "Crawl-through");
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                 script.getWidgetManager().getLogoutTab().logout();
                 script.stop();
                 return;
             }
 
-            // 3) Out of charges
+            // 4) Out of charges
             if (msg.contains("out of") && msg.contains("charge")) {
                 script.log(getClass(), "Chat: out of charges -> " + msg);
                 script.log(getClass(), "Stopping script after going to safety");
                 walkToObject("Cave", "Crawl-through");
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
-                script.getWidgetManager().getLogoutTab().logout();
-                script.stop();
-                return;
-            }
-
-            // 4) We dedded
-            if (msg.contains("you are dead")) {
-                script.log(getClass(), "Chat: we are dedded -> " + msg);
-                script.log(getClass(), "Stopping scrip... fuck me man");
-                script.pollFramesHuman(() -> false, script.random(10000, 12500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
                 script.getWidgetManager().getLogoutTab().logout();
                 script.stop();
                 return;
             }
 
             // 5) We dedded
+            if (msg.contains("you are dead")) {
+                script.log(getClass(), "Chat: we are dedded -> " + msg);
+                script.log(getClass(), "Stopping scrip... fuck me man");
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(10000, 12500));
+                script.getWidgetManager().getLogoutTab().logout();
+                script.stop();
+                return;
+            }
+
+            // 6) We dedded
             if (msg.contains("need a magic level of")) {
                 script.log(getClass(), "Chat: need higher magic level -> " + msg);
                 script.log(getClass(), "Marking force drink pot as TRUE");

@@ -9,6 +9,7 @@ import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.List;
@@ -102,7 +103,7 @@ public class Bank extends Task {
                             return false;
                         }
                         script.log(getClass(), "Potion not found (attempt " + attempt + "/3). Retrying...");
-                        script.pollFramesHuman(() -> false, script.random(250, 600));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 600));
                         continue;
                     }
 
@@ -116,7 +117,7 @@ public class Bank extends Task {
                         }
                         script.log(getClass(), "Withdraw failed (attempt " + attempt + "/3) for pot: " +
                                 script.getItemManager().getItemName(potID) + ". Retrying...");
-                        script.pollFramesHuman(() -> false, script.random(250, 600));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 600));
                     } else {
                         success = true;
                         didAnyWithdraw = true;
@@ -149,7 +150,7 @@ public class Bank extends Task {
                             return false;
                         }
                         script.log(getClass(), "Food not found (attempt " + attempt + "/3). Retrying...");
-                        script.pollFramesHuman(() -> false, script.random(250, 600));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 600));
                         continue;
                     }
 
@@ -163,7 +164,7 @@ public class Bank extends Task {
                         }
                         script.log(getClass(), "Withdraw failed (attempt " + attempt + "/3) for food: " +
                                 script.getItemManager().getItemName(foodID) + ". Retrying...");
-                        script.pollFramesHuman(() -> false, script.random(250, 600));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(250, 600));
                     } else {
                         success = true;
                         didAnyWithdraw = true;
@@ -219,16 +220,16 @@ public class Bank extends Task {
 
             boolean success = script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 2000;
             if (success) {
-                script.pollFramesHuman(() -> false, script.random(1, 1500));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 1500));
             }
             return success;
-        }, script.random(15000, 17000));
+        }, RandomUtils.uniformRandom(15000, 17000));
     }
 
     private boolean closeBank() {
         task = "Close bank";
         script.getWidgetManager().getBank().close();
-        return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+        return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
     }
 
     private boolean isAtBank(WorldPosition myPos) {

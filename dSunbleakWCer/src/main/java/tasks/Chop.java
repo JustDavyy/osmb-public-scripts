@@ -10,6 +10,7 @@ import com.osmb.api.shape.Polygon;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.ui.component.chatbox.ChatboxComponent;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -52,7 +53,7 @@ public class Chop extends Task {
 
         if (tree == null) {
             script.log("CHOP", "No available Ironwood trees. Waiting...");
-            script.pollFramesHuman(() -> false, script.random(800, 1200));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(800, 1200));
             return false;
         }
 
@@ -69,8 +70,8 @@ public class Chop extends Task {
         waitUntilFinishedChopping(startSnapshot);
 
         // === Small chance for additional delay ===
-        if (script.random(1, 100) <= 15) {
-            script.pollFramesHuman(() -> false, script.random(1, 100));
+        if (RandomUtils.uniformRandom(1, 100) <= 15) {
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 100));
         }
 
         return true;
@@ -86,7 +87,7 @@ public class Chop extends Task {
         long[] stillStart = { System.currentTimeMillis() };
         long[] animClearSince = { -1 };
 
-        int delay = script.random(750, 1050);
+        int delay = RandomUtils.uniformRandom(750, 1050);
 
         java.util.function.BooleanSupplier stopCondition = () -> {
 
@@ -119,12 +120,12 @@ public class Chop extends Task {
 
         script.pollFramesUntil(
                 stopCondition,
-                script.random(4000, 7500));
+                RandomUtils.uniformRandom(4000, 7500));
     }
 
     private void waitUntilFinishedChopping(ItemGroupResult startSnapshot) {
 
-        int maxChopDuration = script.random(260_000, 285_000);
+        int maxChopDuration = RandomUtils.uniformRandom(260_000, 285_000);
 
         if (startSnapshot == null) {
             script.log("CHOP", "Aborting chop check: could not read starting inventory.");
@@ -136,10 +137,10 @@ public class Chop extends Task {
         long start = System.currentTimeMillis();
 
         // === INITIAL: wait to let user start chopping ===
-        script.pollFramesHuman(() -> false, script.random(2750, 4000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2750, 4000));
 
         long[] animClearSince = { -1 };
-        long animCheckMs = script.random(800, 1500);
+        long animCheckMs = RandomUtils.uniformRandom(800, 1500);
 
         // === Main monitoring loop ===
         script.pollFramesHuman(() -> {
@@ -160,7 +161,7 @@ public class Chop extends Task {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
                 script.log("CHOP", "Dialogue detected, leveled up?");
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 

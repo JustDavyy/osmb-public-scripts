@@ -17,6 +17,7 @@ import com.osmb.api.visual.color.ColorModel;
 import com.osmb.api.visual.color.tolerance.impl.SingleThresholdComparator;
 import com.osmb.api.visual.ocr.fonts.Font;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import data.FishingLocation;
 import data.FishingSpot;
 import utils.Task;
@@ -111,7 +112,7 @@ public class dCrabs extends Task {
         }
 
         // We're currently fishing; monitor exit conditions
-        return script.pollFramesHuman(this::earlyExitCheck, script.random(6000, 7000));
+        return script.pollFramesHuman(this::earlyExitCheck, RandomUtils.uniformRandom(6000, 7000));
     }
 
     private boolean isCurrentlyFishing() {
@@ -142,8 +143,8 @@ public class dCrabs extends Task {
         task = "Check AFK timer";
         if (switchTabTimer.hasFinished()) {
             script.log("PREVENT-LOG", "Switching tabs...");
-            script.getWidgetManager().getTabManager().openTab(Tab.Type.values()[script.random(Tab.Type.values().length)]);
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.getWidgetManager().getTabManager().openTab(Tab.Type.values()[RandomUtils.uniformRandom(Tab.Type.values().length)]);
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
             script.getWidgetManager().getTabManager().openTab(Tab.Type.INVENTORY);
         }
 
@@ -252,8 +253,8 @@ public class dCrabs extends Task {
         }
 
         if (switchTabTimer.timeLeft() < TimeUnit.MINUTES.toMillis(1)) {
-            script.log("PREVENT-LOG", "Timer was under 1 minute – resetting as we just performed an action.");
-            switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+            script.log("PREVENT-LOG", "Timer was under 1 minute. Resetting as we just performed an action.");
+            switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
         }
 
         return false;
@@ -392,7 +393,7 @@ public class dCrabs extends Task {
             candidates = fishingSpots;
         }
 
-        Area chosen = candidates.get(script.random(candidates.size()));
+        Area chosen = candidates.get(RandomUtils.uniformRandom(candidates.size()));
         return chosen.getRandomPosition();
     }
 }

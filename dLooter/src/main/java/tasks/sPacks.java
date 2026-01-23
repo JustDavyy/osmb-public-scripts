@@ -5,6 +5,7 @@ import com.osmb.api.item.ItemID;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.shape.Rectangle;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.*;
@@ -92,7 +93,7 @@ public class sPacks extends Task {
 
             task = "Close bank";
             script.getWidgetManager().getBank().close();
-            return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), script.random(4000, 6000));
+            return script.pollFramesHuman(() -> !script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(4000, 6000));
         }
 
         // Processing here
@@ -129,7 +130,7 @@ public class sPacks extends Task {
                     if (boundsOpt != null && boundsOpt.isFound()) {
                         Rectangle bounds = boundsOpt.get();
                         script.getFinger().tap(bounds, "Take-all");
-                        script.pollFramesHuman(() -> false, script.random(1, 250));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1, 250));
                     } else {
                         script.log(getClass(), "No bounds found for seed pack slot " + packSlot + " in inventory.");
                     }
@@ -143,14 +144,14 @@ public class sPacks extends Task {
                                             !script.getWidgetManager().getInventory().getBoundsForSlot(firstPackSlot).isFound()) ||
                                     (script.getWidgetManager().getInventory().search(Set.of(ItemID.SEED_PACK)) != null &&
                                             !script.getWidgetManager().getInventory().search(Set.of(ItemID.SEED_PACK)).contains(ItemID.SEED_PACK)),
-                    script.random(800, 1800)
+                    RandomUtils.uniformRandom(800, 1800)
             );
 
             // add deltas to totals and mark processed
             updateLootCountsIfNeeded();
 
             // tiny human jitter
-            script.pollFramesHuman(() -> false, script.random(80, 160));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(80, 160));
         }
 
         return false;
@@ -175,7 +176,7 @@ public class sPacks extends Task {
             return;
         }
 
-        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), script.random(5000, 8000));
+        script.pollFramesHuman(() -> script.getWidgetManager().getBank().isVisible(), RandomUtils.uniformRandom(5000, 8000));
     }
 
     private Set<Integer> getTrackedItems() {

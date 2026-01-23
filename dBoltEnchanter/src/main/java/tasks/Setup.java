@@ -6,6 +6,7 @@ import com.osmb.api.ui.component.tabs.skill.SkillType;
 import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.Set;
@@ -70,7 +71,7 @@ public class Setup extends Task {
         script.log(getClass().getSimpleName(), "Opening magic tab");
         script.getWidgetManager().getTabManager().openTab(Tab.Type.SPELLBOOK);
 
-        script.pollFramesHuman(() -> false, script.random(1200, 2000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1200, 2000));
 
         setupDone = true;
         return false;

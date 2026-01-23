@@ -9,6 +9,7 @@ import com.osmb.api.script.Script;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 
 import java.util.List;
@@ -122,7 +123,7 @@ public class Process extends Task {
             return type == DialogueType.TEXT_OPTION;
         };
 
-        script.pollFramesHuman(condition, script.random(4000, 6000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(4000, 6000));
 
         DialogueType dialogueType = script.getWidgetManager().getDialogue().getDialogueType();
         if (dialogueType == DialogueType.TEXT_OPTION) {
@@ -144,7 +145,7 @@ public class Process extends Task {
             BooleanSupplier waitItemOption = () ->
                     script.getWidgetManager().getDialogue().getDialogueType() == DialogueType.ITEM_OPTION;
 
-            script.pollFramesHuman(waitItemOption, script.random(4000, 6000));
+            script.pollFramesHuman(waitItemOption, RandomUtils.uniformRandom(4000, 6000));
 
             // Once that appear, select the correct option, then wait
             DialogueType afterCategory = script.getWidgetManager().getDialogue().getDialogueType();
@@ -226,7 +227,7 @@ public class Process extends Task {
         BooleanSupplier condition = () -> {
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -258,7 +259,7 @@ public class Process extends Task {
         };
 
         script.log("PROCESS", "Using human task to wait until processing finishes.");
-        script.pollFramesHuman(condition, script.random(66000, 70000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
     }
 
     private MenuHook getFireMenuHook() {

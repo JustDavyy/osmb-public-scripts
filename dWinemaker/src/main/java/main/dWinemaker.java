@@ -39,11 +39,11 @@ import java.util.function.Predicate;
         name = "dWinemaker",
         description = "Turns your grapes into Jug of Wines or Wine of Zamorak for hefty cooking experience.",
         skillCategory = SkillCategory.COOKING,
-        version = 2.3,
+        version = 2.4,
         author = "JustDavyy"
 )
 public class dWinemaker extends Script {
-    public static final String scriptVersion = "2.3";
+    public static final String scriptVersion = "2.4";
     private final String scriptName = "Winemaker";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

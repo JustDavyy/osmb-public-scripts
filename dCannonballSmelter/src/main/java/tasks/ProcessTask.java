@@ -6,6 +6,7 @@ import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.ui.chatbox.dialogue.DialogueType;
 import com.osmb.api.utils.timing.Timer;
+import com.osmb.api.utils.RandomUtils;
 import main.WebhookSender;
 import utils.Task;
 
@@ -69,7 +70,7 @@ public class ProcessTask extends Task {
         };
 
         task = "Wait for dialogue";
-        script.pollFramesHuman(condition, script.random(4000, 6000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(4000, 6000));
 
         DialogueType dialogueType = script.getWidgetManager().getDialogue().getDialogueType();
         if (dialogueType == DialogueType.ITEM_OPTION) {
@@ -77,7 +78,7 @@ public class ProcessTask extends Task {
             if (!selected) {
                 task = "Retry interaction";
                 script.log(getClass(), "Initial cannonball selection failed, retrying...");
-                script.pollFramesHuman(() -> false, script.random(150, 300));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
                 selected = script.getWidgetManager().getDialogue().selectItem(ItemID.CANNONBALL);
             }
 
@@ -125,7 +126,7 @@ public class ProcessTask extends Task {
                 if (webhookEnabled) {
                     webhook.queueSendWebhook();
                 }
-                script.pollFramesHuman(() -> false, script.random(1000, 3000));
+                script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
             }
 
@@ -136,7 +137,7 @@ public class ProcessTask extends Task {
             }
 
             // A timer to timeout
-            if (amountChangeTimer.timeElapsed() > script.random(162500, 166000)) {
+            if (amountChangeTimer.timeElapsed() > RandomUtils.uniformRandom(162500, 166000)) {
                 return true;
             }
 
@@ -152,6 +153,6 @@ public class ProcessTask extends Task {
         };
 
         script.log(getClass(), "Using human task to wait until smelting finishes.");
-        script.pollFramesHuman(condition, script.random(162500, 166000));
+        script.pollFramesHuman(condition, RandomUtils.uniformRandom(162500, 166000));
     }
 }

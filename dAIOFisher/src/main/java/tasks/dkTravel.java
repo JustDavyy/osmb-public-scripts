@@ -10,6 +10,7 @@ import com.osmb.api.script.Script;
 import com.osmb.api.ui.tabs.Equipment;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.walker.WalkConfig;
+import com.osmb.api.utils.RandomUtils;
 import data.FishingLocation;
 import utils.Task;
 
@@ -132,7 +133,7 @@ public class dkTravel extends Task {
                         usedId = id;
                         script.log(getClass().getSimpleName(),
                                 "Teleporting using " + script.getItemManager().getItemName(id) + " (" + id + ")");
-                        script.pollFramesHuman(() -> false, script.random(3500, 4500));
+                        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(3500, 4500));
 
                         if (arrivedAtArea(destinationArea)) {
                             script.log(getClass().getSimpleName(), "Teleport was successful");
@@ -287,7 +288,7 @@ public class dkTravel extends Task {
             }
 
             return destination.contains(currentPos) || positionChangeTimer.get().timeElapsed() > 10000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
         return destination.contains(currentPos);
     }
 
@@ -306,7 +307,7 @@ public class dkTravel extends Task {
         }
 
         doneBanking = false;
-        script.pollFramesHuman(() -> false, script.random(4000, 5000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(4000, 5000));
 
         AtomicReference<Timer> positionChangeTimer = new AtomicReference<>(new Timer());
         AtomicReference<WorldPosition> previousPosition = new AtomicReference<>(null);
@@ -321,7 +322,7 @@ public class dkTravel extends Task {
             }
 
             return zanarisFairyRingArea.contains(currentPos) || positionChangeTimer.get().timeElapsed() > 10000;
-        }, script.random(14000, 16000));
+        }, RandomUtils.uniformRandom(14000, 16000));
         return zanarisFairyRingArea.contains(currentPos);
     }
 
@@ -340,7 +341,7 @@ public class dkTravel extends Task {
             }
 
             doneBanking = false;
-            script.pollFramesHuman(() -> false, script.random(3000, 4000));
+            script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(3000, 4000));
 
             // Interaction seems successful, wait till we arrive at the guild
             AtomicReference<Timer> positionChangeTimer = new AtomicReference<>(new Timer());
@@ -355,7 +356,7 @@ public class dkTravel extends Task {
                 }
 
                 return craftingGuildBankArea.contains(currentPos) || positionChangeTimer.get().timeElapsed() > 10000;
-            }, script.random(14000, 16000));
+            }, RandomUtils.uniformRandom(14000, 16000));
         } else {
             script.log(getClass().getSimpleName(), "It seems the crafting cape is not in our inventory? Re-polling script.");
             return false;
@@ -380,10 +381,10 @@ public class dkTravel extends Task {
         }
 
         doneBanking = false;
-        script.pollFramesHuman(() -> false, script.random(4000, 5000));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(4000, 5000));
 
         // Reset afk timer
-        switchTabTimer.reset(script.random(TimeUnit.MINUTES.toMillis(3), TimeUnit.MINUTES.toMillis(5)));
+        switchTabTimer.reset(RandomUtils.uniformRandom(180000, 300000));
 
         AtomicReference<Timer> positionChangeTimer = new AtomicReference<>(new Timer());
         AtomicReference<WorldPosition> previousPosition = new AtomicReference<>(null);
@@ -398,7 +399,7 @@ public class dkTravel extends Task {
             }
 
             return fishingArea.contains(currentPos) || positionChangeTimer.get().timeElapsed() > 15000;
-        }, script.random(20000, 25000));
+        }, RandomUtils.uniformRandom(20000, 25000));
         dkFish.lastAnimationDetected = System.currentTimeMillis() - 10_000L;
         return fishingArea.contains(currentPos);
     }

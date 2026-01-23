@@ -38,11 +38,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dGemstoneCrabber",
         description = "Trains combat by hunting the gem stone crab",
         skillCategory = SkillCategory.COMBAT,
-        version = 2.9,
+        version = 3.0,
         author = "JustDavyy"
 )
 public class dGemstoneCrabber extends Script implements WebhookSender {
-    public static final String scriptVersion = "2.9";
+    public static final String scriptVersion = "3.0";
     private final String scriptName = "GemstoneCrabber";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

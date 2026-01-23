@@ -4,6 +4,7 @@ import com.osmb.api.ui.component.tabs.skill.SkillType;
 import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.ui.tabs.Tab;
 import com.osmb.api.script.Script;
+import com.osmb.api.utils.RandomUtils;
 import utils.Task;
 import static main.dCannonballSmelter.*;
 
@@ -34,7 +35,7 @@ public class Setup extends Task {
         task = "Open inventory";
         script.log(getClass(), "Opening inventory tab");
         script.getWidgetManager().getTabManager().openTab(Tab.Type.INVENTORY);
-        script.pollFramesHuman(() -> false, script.random(500, 1250));
+        script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(500, 1250));
 
         setupDone = true;
         return false;
