@@ -65,7 +65,7 @@ public class Bank extends Task {
 
     @Override
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "Bank";
 
         if (script.getWidgetManager().getBank().isVisible()) {
             return bankItems();
@@ -75,10 +75,10 @@ public class Bank extends Task {
         if (myPos != null && !bankArea.contains(myPos) && !isBankChestInteractable()) {
             task = "Walk to bank area";
             if (useShortcut) {
-                script.log(getClass(), "Walking to bank area (shortcut)");
+                script.log("Bank", "Walking to bank area (shortcut)");
                 return walkWithShortcut();
             } else {
-                script.log(getClass(), "Walking to bank area");
+                script.log("Bank", "Walking to bank area");
                 return walkWithoutShortcut();
             }
         }
@@ -111,19 +111,19 @@ public class Bank extends Task {
             });
 
             if (holes.isEmpty()) {
-                script.log(getClass(), "No Hole object found at base tile (3712,3828).");
+                script.log("Bank", "No Hole object found at base tile (3712,3828).");
                 return false;
             }
 
             RSObject hole = (RSObject) script.getUtils().getClosest(holes);
             if (hole == null) {
-                script.log(getClass(), "Closest Hole object is null.");
+                script.log("Bank", "Closest Hole object is null.");
                 return false;
             }
 
             // Walk to hole if not interactable on screen
             if (!hole.isInteractableOnScreen()) {
-                script.log(getClass(), "Hole not on screen, walking closer...");
+                script.log("Bank", "Hole not on screen, walking closer...");
                 WalkConfig config = new WalkConfig.Builder()
                         .breakCondition(hole::isInteractableOnScreen)
                         .enableRun(true)
@@ -135,7 +135,7 @@ public class Bank extends Task {
             // Interact with Hole
             task = "Climbing through hole";
             if (!hole.interact("Climb through")) {
-                script.log(getClass(), "Failed to climb through Hole.");
+                script.log("Bank", "Failed to climb through Hole.");
                 return false;
             }
 
@@ -168,19 +168,19 @@ public class Bank extends Task {
         });
 
         if (chests.isEmpty()) {
-            script.log(getClass(), "No bank chest object found at (3742,3805). Walking to bank area...");
+            script.log("Bank", "No bank chest object found at (3742,3805). Walking to bank area...");
             script.getWalker().walkTo(bankWalkArea.getRandomPosition());
             return false;
         }
 
         RSObject chest = (RSObject) script.getUtils().getClosest(chests);
         if (chest == null) {
-            script.log(getClass(), "Closest bank chest object is null.");
+            script.log("Bank", "Closest bank chest object is null.");
             return false;
         }
 
         if (!chest.isInteractableOnScreen()) {
-            script.log(getClass(), "Chest not fully on screen, walking closer...");
+            script.log("Bank", "Chest not fully on screen, walking closer...");
 
             WalkConfig cfg = new WalkConfig.Builder()
                     .breakCondition(() -> {
@@ -199,7 +199,7 @@ public class Bank extends Task {
         // Get full convex hull
         Polygon hull = chest.getConvexHull();
         if (hull == null) {
-            script.log(getClass(), "Chest convex hull is null, re-polling.");
+            script.log("Bank", "Chest convex hull is null, re-polling.");
             return false;
         }
 
@@ -212,7 +212,7 @@ public class Bank extends Task {
         if (myPos == null) return false;
 
         task = "Open bank";
-        script.log(getClass(), "Searching for bank chest (Chest pieces)...");
+        script.log("Bank", "Searching for bank chest (Chest pieces)...");
 
         List<RSObject> chests = script.getObjectManager().getObjects(obj -> {
             if (obj.getName() == null || obj.getActions() == null) return false;
@@ -223,20 +223,20 @@ public class Bank extends Task {
         });
 
         if (chests.isEmpty()) {
-            script.log(getClass(), "No bank chest object found at (3742,3805). Walking to bank area...");
+            script.log("Bank", "No bank chest object found at (3742,3805). Walking to bank area...");
             script.getWalker().walkTo(bankWalkArea.getRandomPosition());
             return false;
         }
 
         RSObject chest = (RSObject) script.getUtils().getClosest(chests);
         if (chest == null) {
-            script.log(getClass(), "Closest bank chest object is null.");
+            script.log("Bank", "Closest bank chest object is null.");
             return false;
         }
 
         Polygon hull = chest.getConvexHull();
         if (hull == null) {
-            script.log(getClass(), "Chest convex hull is null, re-polling.");
+            script.log("Bank", "Chest convex hull is null, re-polling.");
             return false;
         }
 
@@ -245,7 +245,7 @@ public class Bank extends Task {
 
         // Walk closer if not fully visible
         if (insideFactor < 1.0) {
-            script.log(getClass(), String.format(
+            script.log("Bank", String.format(
                     "Bank chest not fully on screen (factor=%.2f). Walking closer...",
                     insideFactor));
 
@@ -265,7 +265,7 @@ public class Bank extends Task {
 
         // Now safe to tap (insideFactor ≥ 1.0)
         if (!script.getFinger().tap(hull, "Use")) {
-            script.log(getClass(), "Failed to interact with bank chest.");
+            script.log("Bank", "Failed to interact with bank chest.");
             return false;
         }
 
@@ -287,7 +287,7 @@ public class Bank extends Task {
         }, 20000);
 
         boolean bankOpen = script.getWidgetManager().getBank().isVisible();
-        script.log(getClass(), "Bank open status: " + bankOpen);
+        script.log("Bank", "Bank open status: " + bankOpen);
         return bankOpen;
     }
 
@@ -300,21 +300,20 @@ public class Bank extends Task {
             if (inv == null) return false;
 
             if (!inv.getItem(ItemID.LOG_BASKET, ItemID.OPEN_LOG_BASKET).interact("Empty")) {
-                script.log(getClass(), "Failed to empty log basket, returning!");
+                script.log("Bank", "Failed to empty log basket, returning!");
                 return false;
             } else {
                 usedBasketAlready = true;
-                logsChopped += 28;
             }
         }
 
         if (!script.getWidgetManager().getBank().depositAll(ITEMS_NOT_TO_DEPOSIT)) {
-            script.log(getClass(), "Banking failed (partially?), returning!");
+            script.log("Bank", "Banking failed (partially?), returning!");
             return false;
         }
 
         script.getWidgetManager().getBank().close();
-        script.log(getClass(), "Banked items and closed bank.");
+        script.log("Bank", "Banked items and closed bank.");
         return true;
     }
 

@@ -1,5 +1,6 @@
 package main;
 
+import com.osmb.api.item.ItemID;
 import com.osmb.api.script.Script;
 import com.osmb.api.script.ScriptDefinition;
 import com.osmb.api.script.SkillCategory;
@@ -33,15 +34,19 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dFossilWCer",
         description = "Cuts and drops/banks hardwood trees on Fossil Island",
         skillCategory = SkillCategory.WOODCUTTING,
-        version = 2.7,
+        version = 2.8,
         author = "JustDavyy"
 )
 public class dFossilWCer extends Script {
-    public static final String scriptVersion = "2.7";
+    public static final String scriptVersion = "2.8";
     private final String scriptName = "FossilWCer";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
     private static final long STATS_INTERVAL_MS = 600_000L;
+    public static long nextSpecAt = -1;
+    public static final int SPEC_MIN_DELAY_MS = 2_000;
+    public static final int SPEC_MAX_DELAY_MS = 30_000;
+    public static boolean needToSpec = false;
 
     public static boolean dropMode = false;
     public static boolean bankMode = false;
@@ -49,6 +54,7 @@ public class dFossilWCer extends Script {
     public static boolean setupDone = false;
     public static boolean useLogBasket = false;
     public static boolean usedBasketAlready = false;
+    public static boolean useSpecialAttack = false;
     public static int logsId = -1;
     public static int logsChopped = 0;
     public static int treeAmount = 3;
@@ -107,6 +113,7 @@ public class dFossilWCer extends Script {
         dropMode = mode.equals("Drop");
         logsId = ui.getSelectedTree();
         treeAmount = ui.getTreeCount();
+        useSpecialAttack = ui.isSpecialAttacksEnabled();
 
         webhookEnabled = ui.isWebhookEnabled();
         webhookUrl = ui.getWebhookUrl();
@@ -199,6 +206,7 @@ public class dFossilWCer extends Script {
         xpGained = xpGainedInt;
 
         // Totals & rates
+        logsChopped = logsChopped();
         int logsHr = (int) Math.round(logsChopped / hours);
 
         // Current level text with (+N)
@@ -660,5 +668,35 @@ public class dFossilWCer extends Script {
         } catch (Exception e) {
             log("STATS", "❌ Error sending stats: " + e.getMessage());
         }
+    }
+
+    private int logsChopped() {
+        if (xpGained <= 0) {
+            return 0;
+        }
+
+        final double xpPerLog;
+
+        switch (logsId) {
+            case ItemID.TEAK_LOGS:
+                xpPerLog = 85.0;
+                break;
+            case ItemID.MAHOGANY_LOGS:
+                xpPerLog = 125.0;
+                break;
+            case 32904: // Camphor logs
+                xpPerLog = 143.5;
+                break;
+            case 32907: // Ironwood logs
+                xpPerLog = 175.0;
+                break;
+            case 32910: // Rosewood logs
+                xpPerLog = 212.5;
+                break;
+            default:
+                return 0;
+        }
+
+        return (int) Math.round(xpGained / xpPerLog);
     }
 }

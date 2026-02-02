@@ -26,7 +26,7 @@ public class Drop extends Task {
 
     @Override
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "Drop";
         ItemGroupResult inv = script.getWidgetManager().getInventory().search(Set.of(logsId, ItemID.CLUE_NEST_BEGINNER, ItemID.CLUE_NEST_EASY, ItemID.CLUE_NEST_MEDIUM, ItemID.CLUE_NEST_HARD, ItemID.CLUE_NEST_ELITE));
         if (inv == null) return false;
 

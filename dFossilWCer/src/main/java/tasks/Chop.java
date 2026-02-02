@@ -131,6 +131,33 @@ public class Chop extends Task {
             }
         }
 
+        // === Use spec if needed/enabled ===
+        if (useSpecialAttack && needToSpec) {
+            // Click spec orb
+            script.getWidgetManager().getMinimapOrbs().setSpecialAttack(true, true);
+
+            // Verify spec actually triggered (percentage dropped below 100) — wait up to 3–5s
+            boolean activated = script.pollFramesUntil(() -> {
+                int specPct = script.getWidgetManager().getMinimapOrbs().getSpecialAttackPercentage();
+                return (specPct != -1 && specPct < 100);
+            }, RandomUtils.uniformRandom(3000, 5000));
+
+            if (!activated) {
+                script.log("Chop", "Failed to activate special attack, retry!");
+                script.getWidgetManager().getMinimapOrbs().setSpecialAttack(true, true);
+            }
+
+            // Re-verify after retry attempt (again 3–5s)
+            activated = script.pollFramesUntil(() -> {
+                int specPct = script.getWidgetManager().getMinimapOrbs().getSpecialAttackPercentage();
+                return (specPct != -1 && specPct < 100);
+            }, RandomUtils.uniformRandom(3000, 5000));
+
+            if (activated) {
+                nextSpecAt = -1;
+            }
+        }
+
         SearchablePixel[] depletedCluster = null;
 
         if (logsId == 32904) depletedCluster = CAMPHOR_DEPLETED_PIXEL_CLUSTER;
@@ -151,7 +178,7 @@ public class Chop extends Task {
         } else if (logsId == 32910) {
             clusterToUse = ROSEWOOD_PIXEL_CLUSTER;
         } else {
-            script.log(getClass(), "Invalid tree ID selected: " + logsId);
+            script.log("Chop", "Invalid tree ID selected: " + logsId);
             return false;
         }
 
@@ -171,16 +198,16 @@ public class Chop extends Task {
             }
 
             clusterFailCount++;
-            script.log(getClass(), "No valid tree patch found. Fail count = " + clusterFailCount);
+            script.log("Chop", "No valid tree patch found. Fail count = " + clusterFailCount);
 
             if (clusterFailCount >= 3) {
-                script.log(getClass(), "No patches found 3 times in a row, closing inventory and retrying.");
+                script.log("Chop", "No patches found 3 times in a row, closing inventory and retrying.");
 
                 if (script.getWidgetManager().getInventory().isVisible()) {
                     if (script.getWidgetManager().getInventory().close()) {
-                        script.log(getClass(), "Inventory closed to refresh view.");
+                        script.log("Chop", "Inventory closed to refresh view.");
                     } else {
-                        script.log(getClass(), "Failed to close inventory.");
+                        script.log("Chop", "Failed to close inventory.");
                     }
                 }
                 clusterFailCount = 0;
@@ -195,7 +222,7 @@ public class Chop extends Task {
         // === Interact with tree ===
         task = "Chop tree";
         if (!treePatch.interact(getMenuHook(treePatch))) {
-            script.log(getClass(), "Failed to interact with tree.");
+            script.log("Chop", "Failed to interact with tree.");
             return false;
         } else {
             targetTree = treePatch;
@@ -223,7 +250,7 @@ public class Chop extends Task {
         }
 
         task = "Walk to east tree area";
-        script.log(getClass(), "No tree found, repositioning to east area.");
+        script.log("Chop", "No tree found, repositioning to east area.");
 
         script.getWalker().walkTo(eastArea.getRandomPosition());
 
@@ -257,7 +284,7 @@ public class Chop extends Task {
         int maxChopDuration = RandomUtils.uniformRandom(240_000, 270_000);
 
         if (startSnapshot == null) {
-            script.log(getClass(), "Aborting chop check: could not read starting inventory.");
+            script.log("Chop", "Aborting chop check: could not read starting inventory.");
             return;
         }
 
@@ -281,20 +308,56 @@ public class Chop extends Task {
             // === Inventory check ===
             ItemGroupResult currentInv = script.getWidgetManager().getInventory().search(Set.of(logsId));
             if (currentInv == null) {
-                script.log(getClass(), "Chop stopped: inventory became inaccessible.");
+                script.log("Chop", "Chop stopped: inventory became inaccessible.");
                 return true;
             }
             if (currentInv.isFull()) {
-                script.log(getClass(), "Chop stopped: inventory is full.");
+                script.log("Chop", "Chop stopped: inventory is full.");
                 return true;
             }
 
             // === Dialogue check for level up ===
             DialogueType type = script.getWidgetManager().getDialogue().getDialogueType();
             if (type == DialogueType.TAP_HERE_TO_CONTINUE) {
-                script.log(getClass(), "Dialogue detected, leveled up?");
+                script.log("Chop", "Dialogue detected, leveled up?");
                 script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(1000, 3000));
                 return true;
+            }
+
+            // === Special attack counter ===
+            if (useSpecialAttack) {
+                int specPct = script.getWidgetManager()
+                        .getMinimapOrbs()
+                        .getSpecialAttackPercentage();
+
+                long nowMs = System.currentTimeMillis();
+
+                // Spec just became ready → schedule usage
+                if (specPct == 100 && nextSpecAt == -1) {
+                    int delay = RandomUtils.uniformRandom(
+                            SPEC_MIN_DELAY_MS,
+                            SPEC_MAX_DELAY_MS
+                    );
+
+                    nextSpecAt = nowMs + delay;
+
+                    script.log(
+                            "Chop",
+                            "Spec is 100%. Scheduling special attack in "
+                                    + delay + "ms"
+                    );
+                }
+
+                // Timer reached → stop chopping so spec can be used
+                if (nextSpecAt != -1 && nowMs >= nextSpecAt) {
+                    script.log(
+                            "Chop",
+                            "Special attack timer reached. Stopping chop to use spec."
+                    );
+
+                    needToSpec = true;
+                    return true;
+                }
             }
 
             // === Inventory count tracking ===
@@ -303,11 +366,9 @@ public class Chop extends Task {
             if (currentCount > lastCount) {
                 int gained = currentCount - lastCount;
                 previousCount.set(currentCount);
-                logsChopped += gained;
-                script.log(getClass(), "+" + gained + " logs chopped! (" + logsChopped + " total)");
                 lastXpGain.reset();
             } else if (currentCount < lastCount) {
-                script.log(getClass(), "Detected log count drop (from " + lastCount + " to " + currentCount + "). Syncing.");
+                script.log("Chop", "Detected log count drop (from " + lastCount + " to " + currentCount + "). Syncing.");
                 previousCount.set(currentCount);
             }
 
@@ -334,7 +395,7 @@ public class Chop extends Task {
                     nowMs - animClearSince[0] >= animCheckMs;
 
             if (animClearLongEnough) {
-                script.log(getClass(),
+                script.log("Chop",
                         "Chop stopped: no animation for " +
                                 (nowMs - animClearSince[0]) + "ms.");
                 markTreeDepleted(
@@ -349,12 +410,12 @@ public class Chop extends Task {
             boolean noXpTooLong = lastXpGain.timeElapsed() > 90_000;
 
             if (elapsed > maxChopDuration) {
-                script.log(getClass(), "Chop stopped: exceeded max chop duration.");
+                script.log("Chop", "Chop stopped: exceeded max chop duration.");
                 return true;
             }
 
             if (noXpTooLong) {
-                script.log(getClass(), "Chop stopped: no XP gain for " + lastXpGain.timeElapsed() + "ms.");
+                script.log("Chop", "Chop stopped: no XP gain for " + lastXpGain.timeElapsed() + "ms.");
                 return true;
             }
 
@@ -381,20 +442,20 @@ public class Chop extends Task {
             });
 
             if (holes.isEmpty()) {
-                script.log(getClass(), "No Hole object found at base tile (3714,3816).");
+                script.log("Chop", "No Hole object found at base tile (3714,3816).");
                 return false;
             }
 
             RSObject hole = (RSObject) script.getUtils().getClosest(holes);
             if (hole == null) {
-                script.log(getClass(), "Closest Hole object is null.");
+                script.log("Chop", "Closest Hole object is null.");
                 return false;
             }
 
             // Interact with Hole
             task = "Climbing through hole";
             if (!hole.interact("Climb through")) {
-                script.log(getClass(), "Failed to climb through Hole.");
+                script.log("Chop", "Failed to climb through Hole.");
                 return false;
             }
 
@@ -431,7 +492,7 @@ public class Chop extends Task {
         });
 
         if (patches.isEmpty()) {
-            script.log(getClass(), "No valid trees found nearby.");
+            script.log("Chop", "No valid trees found nearby.");
             return null;
         }
 
@@ -459,7 +520,7 @@ public class Chop extends Task {
                     .findPixelsOnGameScreen(hull, aliveCluster);
 
             if (matches != null && !matches.isEmpty()) {
-                script.log(getClass(),
+                script.log("Chop",
                         "Tree selected at " + patch.getWorldPosition()
                                 + " (matches=" + matches.size() + ")");
                 return patch;
@@ -474,7 +535,7 @@ public class Chop extends Task {
 
         Polygon hull = targetTree.getConvexHull();
         if (hull == null) {
-            script.log(getClass(), "Target tree has no convex hull anymore.");
+            script.log("Chop", "Target tree has no convex hull anymore.");
             return false;
         }
 
@@ -499,7 +560,7 @@ public class Chop extends Task {
 
         if (!depletedTrees.containsKey(pos)) {
             depletedTrees.put(pos, System.currentTimeMillis());
-            script.log(getClass(),
+            script.log("Chop",
                     "Tree depleted (" + reason + ") at " + pos
             );
         }
@@ -559,7 +620,7 @@ public class Chop extends Task {
         }
 
         task = "Waiting for tree respawn (" + (waitMs / 1000) + "s)";
-        script.log(getClass(),
+        script.log("Chop",
                 "All trees depleted (" + depletedTrees.size() + "/" + treeAmount +
                         "). Waiting " + waitMs + "ms"
         );
@@ -582,7 +643,7 @@ public class Chop extends Task {
 
     private void waitTillStopped() {
         task = "Wait till stopped";
-        script.log(getClass(), "Waiting until player stops moving...");
+        script.log("Chop", "Waiting until player stops moving...");
 
         AtomicReference<WorldPosition> lastPos =
                 new AtomicReference<>(script.getWorldPosition());

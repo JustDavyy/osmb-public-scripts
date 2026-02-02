@@ -20,6 +20,7 @@ public class ScriptUI {
     private static final String PREF_MODE = "dfossilwcer_mode";
     private static final String PREF_KEEP_CLUES = "dfossilwcer_keep_clues";
     private static final String PREF_TREE_COUNT = "dfossilwcer_tree_count";
+    private static final String PREF_SPECIAL_ATTACKS = "dfossilwcer_special_attacks";
 
     private static final String PREF_WEBHOOK_ENABLED = "dfossilwcer_webhook_enabled";
     private static final String PREF_WEBHOOK_URL = "dfossilwcer_webhook_url";
@@ -31,6 +32,7 @@ public class ScriptUI {
     private ComboBox<Integer> treeComboBox;
     private ComboBox<String> modeComboBox;
     private ComboBox<Integer> treeCountComboBox;
+    private CheckBox specialAttackCheckBox;
 
     private CheckBox webhookEnabledCheckBox;
     private TextField webhookUrlField;
@@ -73,6 +75,12 @@ public class ScriptUI {
         modeComboBox.getItems().addAll("Drop", "Bank");
         modeComboBox.getSelectionModel().select(prefs.get(PREF_MODE, "Bank")); // Default to Bank
 
+        // Special attack checkbox
+        specialAttackCheckBox = new CheckBox("Enable Special Attacks");
+        specialAttackCheckBox.setSelected(
+                prefs.getBoolean(PREF_SPECIAL_ATTACKS, false)
+        );
+
         // Trees planted dropdown
         Label treeCountLabel = new Label("Trees Planted");
         treeCountComboBox = new ComboBox<>();
@@ -83,7 +91,7 @@ public class ScriptUI {
                 Integer.valueOf(prefs.getInt(PREF_TREE_COUNT, 3))
         );
 
-        mainBox.getChildren().addAll(treeLabel, treeComboBox, treeCountLabel, treeCountComboBox, modeLabel, modeComboBox);
+        mainBox.getChildren().addAll(treeLabel, treeComboBox, treeCountLabel, treeCountComboBox, modeLabel, modeComboBox, specialAttackCheckBox);
         Tab mainTab = new Tab("Main", mainBox);
         mainTab.setClosable(false);
 
@@ -187,6 +195,7 @@ public class ScriptUI {
         }
         prefs.put(PREF_MODE, getMode());
         prefs.putInt(PREF_TREE_COUNT, getTreeCount());
+        prefs.putBoolean(PREF_SPECIAL_ATTACKS, isSpecialAttacksEnabled());
 
         prefs.putBoolean(PREF_WEBHOOK_ENABLED, isWebhookEnabled());
         prefs.put(PREF_WEBHOOK_URL, getWebhookUrl());
@@ -209,6 +218,10 @@ public class ScriptUI {
 
     public String getMode() {
         return modeComboBox.getSelectionModel().getSelectedItem();
+    }
+
+    public boolean isSpecialAttacksEnabled() {
+        return specialAttackCheckBox != null && specialAttackCheckBox.isSelected();
     }
 
     public boolean isWebhookEnabled() {
