@@ -16,7 +16,6 @@ import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.utils.RandomUtils;
 import com.osmb.api.trackers.experience.XPTracker;
 import com.osmb.api.utils.UIResultList;
-import com.osmb.api.utils.Utils;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.visual.drawing.Canvas;
 import com.osmb.api.visual.image.Image;
@@ -44,14 +43,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @ScriptDefinition(
         name = "dWyrmAgility",
         author = "JustDavyy",
-        version = 2.5,
+        version = 2.6,
         description = "Does the Wyrm basic or advanced agility course.",
         skillCategory = SkillCategory.AGILITY
 )
 public class dWyrmAgility extends Script {
-    public static final String scriptVersion = "2.5";
+    public static final String scriptVersion = "2.6";
     private final String scriptName = "WyrmAgility";
-    private static String sessionId = UUID.randomUUID().toString();
+    private static final String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
     private static final long STATS_INTERVAL_MS = 600_000L;
     private Course selectedCourse;
@@ -75,7 +74,6 @@ public class dWyrmAgility extends Script {
     private volatile long nextWebhookEarliestMs = 0L;
     private final AtomicReference<Image> lastCanvasFrame = new AtomicReference<>();
 
-    public static double levelProgressFraction = 0.0;
     public static int currentLevel = 1;
     public static int startLevel = 1;
     public static boolean levelChecked = false;
@@ -100,7 +98,7 @@ public class dWyrmAgility extends Script {
     // Logo image
     private com.osmb.api.visual.image.Image logoImage = null;
 
-    private int failThreshold = random(4, 6);
+    private int failThreshold = RandomUtils.uniformRandom(4, 6);
     private int failCount = 0;
 
     public dWyrmAgility(Object object) {
@@ -141,12 +139,12 @@ public class dWyrmAgility extends Script {
             return gameObject.canReach(interactDistance);
         });
         if (result.isEmpty()) {
-            core.log(dWyrmAgility.class.getSimpleName(), "ERROR: Obstacle (" + obstacleName + ") does not exist with criteria.");
+            core.log("Main", "ERROR: Obstacle (" + obstacleName + ") does not exist with criteria.");
             return ObstacleHandleResponse.OBJECT_NOT_IN_SCENE;
         }
         RSObject object = result.get();
         if (object.interact(menuOption)) {
-            core.log(dWyrmAgility.class.getSimpleName(), "Interacted successfully, sleeping until conditions are met...");
+            core.log("Main", "Interacted successfully, sleeping until conditions are met...");
             Timer noMovementTimer = new Timer();
             AtomicReference<WorldPosition> previousPosition = new AtomicReference<>();
             if (core.pollFramesHuman(() -> {
@@ -178,12 +176,12 @@ public class dWyrmAgility extends Script {
                 }
                 if (end instanceof Area area) {
                     if (area.contains(currentPos)) {
-                        core.failThreshold = Utils.random(2, 3);
+                        core.failThreshold = RandomUtils.uniformRandom(2, 3);
                         return true;
                     }
                 } else if (end instanceof Position pos) {
                     if (currentPos.equals(pos)) {
-                        core.failThreshold = Utils.random(2, 3);
+                        core.failThreshold = RandomUtils.uniformRandom(2, 3);
                         return true;
                     }
                 }
@@ -196,14 +194,14 @@ public class dWyrmAgility extends Script {
                 return ObstacleHandleResponse.TIMEOUT;
             }
         } else {
-            core.log(dWyrmAgility.class.getSimpleName(), "ERROR: Failed interacting with obstacle (" + obstacleName + ").");
+            core.log("Main", "ERROR: Failed interacting with obstacle (" + obstacleName + ").");
             core.failCount++;
             return ObstacleHandleResponse.FAILED_INTERACTION;
         }
     }
 
     private void printFail() {
-        log(getClass(), "Failed to handle obstacle. Fail count: " + failCount + "/" + failThreshold);
+        log("Main", "Failed to handle obstacle. Fail count: " + failCount + "/" + failThreshold);
     }
 
     @Override
@@ -219,7 +217,7 @@ public class dWyrmAgility extends Script {
         getStageController().show(scene, "dWyrmAgility Settings", false);
 
         this.selectedCourse = ui.selectedCourse();
-        this.nextRunActivate = random(30, 70);
+        this.nextRunActivate = RandomUtils.uniformRandom(30, 70);
 
         webhookEnabled = ui.isWebhookEnabled();
         webhookUrl = ui.getWebhookUrl();
@@ -260,7 +258,7 @@ public class dWyrmAgility extends Script {
             task = "Get agility level";
             SkillsTabComponent.SkillLevel agilitySkillLevel = getWidgetManager().getSkillTab().getSkillLevel(SkillType.AGILITY);
             if (agilitySkillLevel == null) {
-                log(getClass(), "Failed to get skill levels.");
+                log("Main", "Failed to get skill levels.");
                 return 0;
             }
             startLevel = agilitySkillLevel.getLevel();
@@ -273,12 +271,12 @@ public class dWyrmAgility extends Script {
         }
 
         Boolean runEnabled = getWidgetManager().getMinimapOrbs().isRunEnabled();
-        if (runEnabled) {
+        if (!runEnabled) {
             int runEnergy = getWidgetManager().getMinimapOrbs().getRunEnergy();
             if (runEnergy > nextRunActivate) {
                 log("RUN", "Enabling run");
                 getWidgetManager().getMinimapOrbs().setRun(true);
-                nextRunActivate = random(30, 70);
+                nextRunActivate = RandomUtils.uniformRandom(30, 70);
             }
         }
 
@@ -437,7 +435,7 @@ public class dWyrmAgility extends Script {
         curY += lineGap;
         drawStatLine(c, innerX, innerWidth, paddingX, curY, "Task", String.valueOf(task), labelGray, valueWhite, FONT_VALUE_BOLD, FONT_LABEL);
         curY += lineGap;
-        drawStatLine(c, innerX, innerWidth, paddingX, curY, "Course", selectedCourse.name(), labelGray, valueWhite, FONT_VALUE_BOLD, FONT_LABEL);
+        drawStatLine(c, innerX, innerWidth, paddingX, curY, "Course", selectedCourse.displayName(), labelGray, valueWhite, FONT_VALUE_BOLD, FONT_LABEL);
         curY += lineGap;
         drawStatLine(c, innerX, innerWidth, paddingX, curY, "Version", scriptVersion, labelGray, valueWhite, FONT_VALUE_BOLD, FONT_LABEL);
 
@@ -461,13 +459,13 @@ public class dWyrmAgility extends Script {
 
         try (InputStream in = getClass().getResourceAsStream("/logo.png")) {
             if (in == null) {
-                log(getClass(), "Logo '/logo.png' not found on classpath.");
+                log("Main", "Logo '/logo.png' not found on classpath.");
                 return;
             }
 
             BufferedImage src = ImageIO.read(in);
             if (src == null) {
-                log(getClass(), "Failed to decode logo.png");
+                log("Main", "Failed to decode logo.png");
                 return;
             }
 
@@ -508,10 +506,10 @@ public class dWyrmAgility extends Script {
             }
 
             logoImage = new Image(px, w, h);
-            log(getClass(), "Logo loaded: " + w + "x" + h + " premultiplied=" + PREMULTIPLY);
+            log("Main", "Logo loaded: " + w + "x" + h + " premultiplied=" + PREMULTIPLY);
 
         } catch (Exception e) {
-            log(getClass(), "Error loading logo: " + e.getMessage());
+            log("Main", "Error loading logo: " + e.getMessage());
         }
     }
 
@@ -562,7 +560,7 @@ public class dWyrmAgility extends Script {
                     .append(runtime)
                     .append("**.\\n")
                     .append("Make sure to share your proggies in the OSMB proggies channel\\n")
-                    .append("https://discord.com/channels/736938454478356570/789791439487500299")
+                    .append("https://discord.com/channels/272130394655031308/1466620313742741649")
                     .append("\",")
 
                     .append("\"image\": { \"url\": \"attachment://").append(imageFilename).append("\" },")
@@ -720,12 +718,12 @@ public class dWyrmAgility extends Script {
             try {
                 if (chatbox.getActiveFilterTab() != ChatboxFilterTab.GAME) {
                     if (!chatbox.openFilterTab(ChatboxFilterTab.GAME)) {
-                        log(getClass(), "Failed to open chatbox tab (maybe not visible yet).");
+                        log("Main", "Failed to open chatbox tab (maybe not visible yet).");
                     }
                     return;
                 }
             } catch (NullPointerException e) {
-                log(getClass(), "Chatbox not ready for openFilterTab yet, skipping this tick.");
+                log("Main", "Chatbox not ready for openFilterTab yet, skipping this tick.");
                 return;
             }
         }

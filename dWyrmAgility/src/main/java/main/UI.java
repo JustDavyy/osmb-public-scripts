@@ -3,6 +3,7 @@ package main;
 import com.osmb.api.ScriptCore;
 import courses.WyrmAdvanced;
 import courses.WyrmBasic;
+import courses.WyrmProgressive;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -38,7 +39,8 @@ public class UI {
         selectCourseComboBox = new ComboBox<>();
         selectCourseComboBox.getItems().addAll(
                 new WyrmBasic((dWyrmAgility) core),
-                new WyrmAdvanced((dWyrmAgility) core)
+                new WyrmAdvanced((dWyrmAgility) core),
+                new WyrmProgressive((dWyrmAgility) core)
         );
 
         selectCourseComboBox.setConverter(new StringConverter<>() {

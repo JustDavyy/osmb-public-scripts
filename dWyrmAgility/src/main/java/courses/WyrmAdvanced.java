@@ -41,7 +41,7 @@ public class WyrmAdvanced implements Course {
             task = "Obstacle 2";
             ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "tightrope", "cross", AREA_2, 25000);
             if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
-                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.log("Advanced", "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
                 core.getWalker().walkTo(AREA_1.getRandomPosition());
             }
             return 0;
@@ -49,7 +49,7 @@ public class WyrmAdvanced implements Course {
             task = "Obstacle 3";
             ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "ladder", "climb", OBS3_END_POS, 15000);
             if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
-                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.log("Advanced", "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
                 core.getWalker().walkTo(AREA_2.getRandomPosition());
             }
             return 0;
@@ -57,7 +57,7 @@ public class WyrmAdvanced implements Course {
             task = "Obstacle 4";
             ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "edge", "jump", OBS4_END_POS, 15000);
             if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
-                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.log("Advanced", "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
                 core.getWalker().walkTo(AREA_3.getRandomPosition());
             }
             return 0;
@@ -66,7 +66,7 @@ public class WyrmAdvanced implements Course {
             core.noMovementTimeout = RandomUtils.weightedRandom(4000, 6000); // override just for this run (avoid early exit due to timeout)
             ObstacleHandleResponse response = main.dWyrmAgility.handleObstacle(core, "tightrope", "cross", AREA_5, 25000);
             if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
-                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.log("Advanced", "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
                 core.getWalker().walkTo(AREA_4.getRandomPosition());
             }
             return 0;
@@ -76,7 +76,7 @@ public class WyrmAdvanced implements Course {
             if (response == ObstacleHandleResponse.SUCCESS) {
                 main.dWyrmAgility.lapCount++;
             } else if (response == ObstacleHandleResponse.OBJECT_NOT_IN_SCENE) {
-                core.log(getClass().getSimpleName(), "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
+                core.log("Advanced", "Seems we are encountering the RS Agility bug, moving randomly to get unstuck!");
                 core.getWalker().walkTo(AREA_5.getRandomPosition());
             }
             return 0;
@@ -106,6 +106,11 @@ public class WyrmAdvanced implements Course {
 
     @Override
     public String name() {
+        return "WyrmAdvanced";
+    }
+
+    @Override
+    public String displayName() {
         return "WyrmAdvanced";
     }
 }

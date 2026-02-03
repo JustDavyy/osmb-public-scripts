@@ -7,4 +7,8 @@ public interface Course {
     int[] regions();
 
     String name();
+
+    default String displayName() {
+        return name();
+    }
 }
