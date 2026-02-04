@@ -1,5 +1,6 @@
 package main;
 
+import com.osmb.api.input.MenuEntry;
 import com.osmb.api.location.area.Area;
 import com.osmb.api.location.position.Position;
 import com.osmb.api.location.position.types.WorldPosition;
@@ -11,6 +12,7 @@ import com.osmb.api.script.SkillCategory;
 import com.osmb.api.shape.Polygon;
 import com.osmb.api.ui.chatbox.Chatbox;
 import com.osmb.api.ui.chatbox.ChatboxFilterTab;
+import com.osmb.api.ui.component.chatbox.ChatboxComponent;
 import com.osmb.api.ui.component.tabs.skill.SkillType;
 import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.utils.RandomUtils;
@@ -39,16 +41,17 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 
 @ScriptDefinition(
         name = "dWyrmAgility",
         author = "JustDavyy",
-        version = 2.6,
+        version = 2.7,
         description = "Does the Wyrm basic or advanced agility course.",
         skillCategory = SkillCategory.AGILITY
 )
 public class dWyrmAgility extends Script {
-    public static final String scriptVersion = "2.6";
+    public static final String scriptVersion = "2.7";
     private final String scriptName = "WyrmAgility";
     private static final String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -143,15 +146,66 @@ public class dWyrmAgility extends Script {
             return ObstacleHandleResponse.OBJECT_NOT_IN_SCENE;
         }
         RSObject object = result.get();
-        if (object.interact(menuOption)) {
+
+        boolean interacted = false;
+        boolean preferShortTap = RandomUtils.uniformRandom(1, 100) <= 85;
+
+        core.log("Main", preferShortTap
+                ? "Interaction mode: SHORT TAP (preferred)"
+                : "Interaction mode: LONG TAP");
+
+        if (preferShortTap) {
+            Polygon tapPoly = object.getConvexHull() != null
+                    ? object.getConvexHull().getResized(0.6)
+                    : null;
+
+            if (tapPoly != null) {
+                double visibleFactor = core.getWidgetManager().insideGameScreenFactor(
+                        tapPoly,
+                        List.of(ChatboxComponent.class)
+                );
+
+                if (visibleFactor >= 1.0) {
+                    MenuEntry response = core.getFinger().tapGetResponse(true, tapPoly);
+
+                    if (response != null && response.getAction() != null
+                            && response.getAction().equalsIgnoreCase(menuOption)) {
+
+                        core.log("Main", String.format(
+                                "TapGetResponse → entity='%s' action='%s' type=%s",
+                                response.getEntityName(),
+                                response.getAction(),
+                                response.getEntityType()
+                        ));
+                        interacted = true;
+                    } else {
+                        core.log("Main", "TapGetResponse mismatch or null → falling back to interact()");
+                        interacted = object.interact(menuOption);
+                    }
+                } else {
+                    core.log("Main",
+                            String.format("Tap poly only %.2f visible → using interact()", visibleFactor));
+                    interacted = object.interact(menuOption);
+                }
+            } else {
+                interacted = object.interact(menuOption);
+            }
+        } else {
+            interacted = object.interact(menuOption);
+        }
+
+        if (interacted) {
             core.log("Main", "Interacted successfully, sleeping until conditions are met...");
+
             Timer noMovementTimer = new Timer();
             AtomicReference<WorldPosition> previousPosition = new AtomicReference<>();
-            if (core.pollFramesHuman(() -> {
+
+            BooleanSupplier condition = () -> {
                 WorldPosition currentPos = core.getWorldPosition();
                 if (currentPos == null) {
                     return false;
                 }
+
                 // check for being stood still
                 if (previousPosition.get() != null) {
                     if (currentPos.equals(previousPosition.get())) {
@@ -169,11 +223,14 @@ public class dWyrmAgility extends Script {
                 }
                 previousPosition.set(currentPos);
 
-                RSTile tile = core.getSceneManager().getTile(core.getWorldPosition());
-                Polygon poly = tile.getTileCube(120);
-                if (core.getPixelAnalyzer().isAnimating(0.1, poly)) {
-                    return false;
+                RSTile tile = core.getSceneManager().getTile(currentPos);
+                if (tile != null) {
+                    Polygon poly = tile.getTileCube(120);
+                    if (core.getPixelAnalyzer().isAnimating(0.1, poly)) {
+                        return false;
+                    }
                 }
+
                 if (end instanceof Area area) {
                     if (area.contains(currentPos)) {
                         core.failThreshold = RandomUtils.uniformRandom(2, 3);
@@ -185,8 +242,22 @@ public class dWyrmAgility extends Script {
                         return true;
                     }
                 }
+
                 return false;
-            }, timeout)) {
+            };
+
+            boolean useHumanPoll = RandomUtils.uniformRandom(1, 100) <= 30;
+            boolean delayAfter = RandomUtils.uniformRandom(0, 10) > 8;
+
+            core.log("Main", useHumanPoll
+                    ? "Polling mode: HUMAN (30%)"
+                    : "Polling mode: FAST (70%)");
+
+            boolean completed = useHumanPoll
+                    ? core.pollFramesHuman(condition, timeout)
+                    : core.pollFramesUntil(condition, timeout, true, delayAfter);
+
+            if (completed) {
                 return ObstacleHandleResponse.SUCCESS;
             } else {
                 core.failCount++;
