@@ -38,11 +38,11 @@ import java.util.concurrent.atomic.AtomicReference;
         name = "dGemstoneCrabber",
         description = "Trains combat by hunting the gem stone crab",
         skillCategory = SkillCategory.COMBAT,
-        version = 3.0,
+        version = 3.1,
         author = "JustDavyy"
 )
 public class dGemstoneCrabber extends Script implements WebhookSender {
-    public static final String scriptVersion = "3.0";
+    public static final String scriptVersion = "3.1";
     private final String scriptName = "GemstoneCrabber";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -655,6 +655,20 @@ public class dGemstoneCrabber extends Script implements WebhookSender {
             case ItemID.DIVINE_SUPER_STRENGTH_POTION2:
             case ItemID.DIVINE_SUPER_STRENGTH_POTION1:
                 return List.of(ItemID.DIVINE_SUPER_STRENGTH_POTION1, ItemID.DIVINE_SUPER_STRENGTH_POTION2, ItemID.DIVINE_SUPER_STRENGTH_POTION3, ItemID.DIVINE_SUPER_STRENGTH_POTION4);
+
+            // Super attack
+            case ItemID.SUPER_ATTACK1:
+            case ItemID.SUPER_ATTACK2:
+            case ItemID.SUPER_ATTACK3:
+            case ItemID.SUPER_ATTACK4:
+                return List.of(ItemID.SUPER_ATTACK1, ItemID.SUPER_ATTACK2, ItemID.SUPER_ATTACK3, ItemID.SUPER_ATTACK4);
+
+            // Divine super attack
+            case ItemID.DIVINE_SUPER_ATTACK_POTION1:
+            case ItemID.DIVINE_SUPER_ATTACK_POTION2:
+            case ItemID.DIVINE_SUPER_ATTACK_POTION3:
+            case ItemID.DIVINE_SUPER_ATTACK_POTION4:
+                return List.of(ItemID.DIVINE_SUPER_ATTACK_POTION1, ItemID.DIVINE_SUPER_ATTACK_POTION2, ItemID.DIVINE_SUPER_ATTACK_POTION3, ItemID.DIVINE_SUPER_ATTACK_POTION4);
 
             // Ranging
             case ItemID.RANGING_POTION4:
