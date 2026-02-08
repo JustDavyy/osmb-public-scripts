@@ -510,22 +510,18 @@ public class dERLooter extends Script {
             c.setRequestMethod("GET");
             c.setConnectTimeout(3000);
             c.setReadTimeout(3000);
-
-            if (c.getResponseCode() != 200) {
-                return null;
-            }
+            if (c.getResponseCode() != 200) return null;
 
             try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream()))) {
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null) {
-                    sb.append(line);
+                String l;
+                while ((l = r.readLine()) != null) {
+                    if (l.trim().startsWith("version")) {
+                        return l.split("=")[1].replace(",", "").trim();
+                    }
                 }
-                return sb.toString().trim();
             }
-        } catch (Exception e) {
-            return null;
-        }
+        } catch (Exception ignored) {}
+        return null;
     }
 
     public static int compareVersions(String v1, String v2) {
