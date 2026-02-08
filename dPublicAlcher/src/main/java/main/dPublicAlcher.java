@@ -37,14 +37,14 @@ import utils.XPTracking;
 import javax.imageio.ImageIO;
 
 @ScriptDefinition(
-        name = "dPublic Alcher",
-        description = "Alchs items using high or low alch until out of items or runes.",
+name = "dPublic Alcher",
+threadUrl = "https://wiki.osmb.co.uk/article/dpublicalcher",
         skillCategory = SkillCategory.MAGIC,
-        version = 2.6,
+        version = 2.7,
         author = "JustDavyy"
 )
 public class dPublicAlcher extends Script {
-    public static final String scriptVersion = "2.6";
+    public static final String scriptVersion = "2.7";
     private final String scriptName = "PublicAlcher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -72,7 +72,7 @@ public class dPublicAlcher extends Script {
     private static String user = "";
     public static String task = "Initialize";
     private final AtomicBoolean webhookInFlight = new AtomicBoolean(false);
-    final String authorIconUrl = "https://www.osmb.co.uk/lovable-uploads/ad86059b-ce19-4540-8e53-9fd01c61c98b.png";
+    final String authorIconUrl = "https://wiki.osmb.co.uk/assets/logo-Dq53Rvcx.gif";
     private volatile long nextWebhookEarliestMs = 0L;
     private final AtomicReference<Image> lastCanvasFrame = new AtomicReference<>();
 
@@ -462,7 +462,7 @@ public class dPublicAlcher extends Script {
                     .append(runtime)
                     .append("**.\\n")
                     .append("Make sure to share your proggies in the OSMB proggies channel\\n")
-                    .append("https://discord.com/channels/736938454478356570/789791439487500299")
+                    .append("https://discord.com/channels/272130394655031308/1466620313742741649")
                     .append("\",")
 
                     .append("\"image\": { \"url\": \"attachment://").append(imageFilename).append("\" },")

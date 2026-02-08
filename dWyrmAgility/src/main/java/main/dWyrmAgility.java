@@ -44,14 +44,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
 @ScriptDefinition(
-        name = "dWyrmAgility",
+name = "dWyrmAgility",
+threadUrl = "https://wiki.osmb.co.uk/article/dwyrmagility",
         author = "JustDavyy",
-        version = 2.7,
-        description = "Does the Wyrm basic or advanced agility course.",
+        version = 2.8,
         skillCategory = SkillCategory.AGILITY
 )
 public class dWyrmAgility extends Script {
-    public static final String scriptVersion = "2.7";
+    public static final String scriptVersion = "2.8";
     private final String scriptName = "WyrmAgility";
     private static final String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -73,7 +73,7 @@ public class dWyrmAgility extends Script {
     private static long lastWebhookSent = 0;
     private static String user = "";
     private final AtomicBoolean webhookInFlight = new AtomicBoolean(false);
-    final String authorIconUrl = "https://www.osmb.co.uk/lovable-uploads/ad86059b-ce19-4540-8e53-9fd01c61c98b.png";
+    final String authorIconUrl = "https://wiki.osmb.co.uk/assets/logo-Dq53Rvcx.gif";
     private volatile long nextWebhookEarliestMs = 0L;
     private final AtomicReference<Image> lastCanvasFrame = new AtomicReference<>();
 

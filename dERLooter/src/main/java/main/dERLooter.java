@@ -30,14 +30,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.UUID;
 
 @ScriptDefinition(
-        name = "dERLooter",
-        description = "Loots and banks eclipse reds in the hunter guild",
+name = "dERLooter",
+threadUrl = "https://wiki.osmb.co.uk/article/derlooter",
         skillCategory = SkillCategory.OTHER,
-        version = 1.7,
+        version = 1.8,
         author = "JustDavyy"
 )
 public class dERLooter extends Script {
-    public static final String scriptVersion = "1.7";
+    public static final String scriptVersion = "1.8";
     private final String scriptName = "ERLooter";
     public static String latestVersionString = "";
     private static boolean outdated = false;

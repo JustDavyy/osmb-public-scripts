@@ -40,14 +40,14 @@ import utils.XPTracking;
 import javax.imageio.ImageIO;
 
 @ScriptDefinition(
-        name = "dAIOFisher",
-        description = "AIO Fisher that fishes, banks and/or drops to get those gains!",
+name = "dAIOFisher",
+threadUrl = "https://wiki.osmb.co.uk/article/daiofisher",
         skillCategory = SkillCategory.FISHING,
-        version = 4.2,
+        version = 4.3,
         author = "JustDavyy"
 )
 public class dAIOFisher extends Script {
-    public static String scriptVersion = "4.2";
+    public static String scriptVersion = "4.3";
     private final String scriptName = "AIOFisher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -97,7 +97,7 @@ public class dAIOFisher extends Script {
     private static int webhookIntervalMinutes = 5;
     private static String user = "";
     private final AtomicBoolean webhookInFlight = new AtomicBoolean(false);
-    final String authorIconUrl = "https://www.osmb.co.uk/lovable-uploads/ad86059b-ce19-4540-8e53-9fd01c61c98b.png";
+    final String authorIconUrl = "https://wiki.osmb.co.uk/assets/logo-Dq53Rvcx.gif";
     private volatile long nextWebhookEarliestMs = 0L;
     private static long lastWebhookSent = 0;
     private final AtomicReference<Image> lastCanvasFrame = new AtomicReference<>();
@@ -810,7 +810,7 @@ public class dAIOFisher extends Script {
                     .append(runtime)
                     .append("**.\\n")
                     .append("Make sure to share your proggies in the OSMB proggies channel\\n")
-                    .append("https://discord.com/channels/736938454478356570/789791439487500299")
+                    .append("https://discord.com/channels/272130394655031308/1466620313742741649")
                     .append("\",")
 
                     .append("\"image\": { \"url\": \"attachment://").append(imageFilename).append("\" },")

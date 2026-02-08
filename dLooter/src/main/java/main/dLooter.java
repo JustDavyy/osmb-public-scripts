@@ -21,14 +21,14 @@ import java.util.*;
 import java.util.List;
 
 @ScriptDefinition(
-        name = "dLooter",
-        description = "Loots WT/GOTR/Tempoross, seed packs and cwars supply crates",
+name = "dLooter",
+threadUrl = "https://wiki.osmb.co.uk/article/dlooter",
         skillCategory = SkillCategory.OTHER,
-        version = 1.4,
+        version = 1.5,
         author = "JustDavyy"
 )
 public class dLooter extends Script {
-    public static final String scriptVersion = "1.4";
+    public static final String scriptVersion = "1.5";
     public static boolean setupDone = false;
     public static boolean needToStop = false;
     public static boolean RNGEnabled = false;

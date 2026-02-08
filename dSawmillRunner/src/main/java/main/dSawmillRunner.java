@@ -30,14 +30,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @ScriptDefinition(
-        name = "dSawmillRunner",
-        description = "Creates planks of your choice at multiple sawmills",
+name = "dSawmillRunner",
+threadUrl = "https://wiki.osmb.co.uk/article/dsawmillrunner",
         skillCategory = SkillCategory.CONSTRUCTION,
-        version = 2.0,
+        version = 2.1,
         author = "JustDavyy"
 )
 public class dSawmillRunner extends Script {
-    public static final String scriptVersion = "2.0";
+    public static final String scriptVersion = "2.1";
     private final String scriptName = "SawmillRunner";
     public static boolean setupDone = false;
 
@@ -59,7 +59,7 @@ public class dSawmillRunner extends Script {
     private static long lastWebhookSent = 0;
     private static String user = "";
     private final AtomicBoolean webhookInFlight = new AtomicBoolean(false);
-    final String authorIconUrl = "https://www.osmb.co.uk/lovable-uploads/ad86059b-ce19-4540-8e53-9fd01c61c98b.png";
+    final String authorIconUrl = "https://wiki.osmb.co.uk/assets/logo-Dq53Rvcx.gif";
     private volatile long nextWebhookEarliestMs = 0L;
     private final AtomicReference<Image> lastCanvasFrame = new AtomicReference<>();
 
@@ -424,7 +424,7 @@ public class dSawmillRunner extends Script {
                     .append(runtime)
                     .append("**.\\n")
                     .append("Make sure to share your proggies in the OSMB proggies channel\\n")
-                    .append("https://discord.com/channels/736938454478356570/789791439487500299")
+                    .append("https://discord.com/channels/272130394655031308/1466620313742741649")
                     .append("\",")
 
                     .append("\"image\": { \"url\": \"attachment://").append(imageFilename).append("\" },")

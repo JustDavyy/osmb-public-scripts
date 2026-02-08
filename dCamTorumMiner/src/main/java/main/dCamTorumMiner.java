@@ -35,14 +35,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @ScriptDefinition(
-        name = "dCamTorumMiner",
-        description = "Mines blessed bone shards in the Cam Torum mine",
+name = "dCamTorumMiner",
+threadUrl = "https://wiki.osmb.co.uk/article/dcamtorumminer",
         skillCategory = SkillCategory.MINING,
-        version = 2.9,
+        version = 3.0,
         author = "JustDavyy"
 )
 public class dCamTorumMiner extends Script {
-    public static final String scriptVersion = "2.9";
+    public static final String scriptVersion = "3.0";
     private final String scriptName = "CamTorumMiner";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -86,7 +86,7 @@ public class dCamTorumMiner extends Script {
     private static String user = "";
 
     private final AtomicBoolean webhookInFlight = new AtomicBoolean(false);
-    final String authorIconUrl = "https://www.osmb.co.uk/lovable-uploads/ad86059b-ce19-4540-8e53-9fd01c61c98b.png";
+    final String authorIconUrl = "https://wiki.osmb.co.uk/assets/logo-Dq53Rvcx.gif";
     private volatile long nextWebhookEarliestMs = 0L;
     private final AtomicReference<Image> lastCanvasFrame = new AtomicReference<>();
 
@@ -486,7 +486,7 @@ public class dCamTorumMiner extends Script {
                     .append(runtime)
                     .append("**.\\n")
                     .append("Make sure to share your proggies in the OSMB proggies channel\\n")
-                    .append("https://discord.com/channels/736938454478356570/789791439487500299")
+                    .append("https://discord.com/channels/272130394655031308/1466620313742741649")
                     .append("\",")
 
                     .append("\"image\": { \"url\": \"attachment://").append(imageFilename).append("\" },")

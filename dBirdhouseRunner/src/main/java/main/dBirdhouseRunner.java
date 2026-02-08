@@ -27,14 +27,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @ScriptDefinition(
-        name = "dBirdhouseRunner",
-        description = "Does birdhouse runs with optional seaweed farming.",
-        version = 1.0,
+name = "dBirdhouseRunner",
+threadUrl = "",
+        version = 1.1,
         author = "JustDavyy",
         skillCategory = SkillCategory.HUNTER
 )
 public class dBirdhouseRunner extends Script {
-    public static final String scriptVersion = "1.0";
+    public static final String scriptVersion = "1.1";
     public static WorldPosition currentPos;
 
     // Settings from UI
