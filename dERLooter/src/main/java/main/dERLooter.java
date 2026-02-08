@@ -46,6 +46,13 @@ public class dERLooter extends Script {
     private static long lastStatsSent = 0;
     private static final long STATS_INTERVAL_MS = 600_000L;
 
+    // Hop tracking
+    public static final int MAX_SAFE_HOPS = 350;
+    public static final double HOP_REGEN_PER_HOUR = 93.0;
+
+    public static int hopsUsed = 0;
+    public static long hopTrackingStart = System.currentTimeMillis();
+
     // onPaint trackers
     public static int totalEclipseRed = 0;
     public static int previousEclipseRed = 0;
@@ -147,6 +154,11 @@ public class dERLooter extends Script {
         double hours = Math.max(1e-9, elapsed / 3_600_000.0);
         String runtime = formatRuntime(elapsed);
 
+        int hopsAvailable = getAvailableHops();
+
+        String hopStatus;
+        int hopColor;
+
         // --- Wine / profit stats ---
         int eclipseLooted = totalEclipseRed;
         int eclipsePerHour = (int) Math.round(eclipseLooted / hours);
@@ -179,7 +191,18 @@ public class dERLooter extends Script {
         ensureLogoLoaded();
         com.osmb.api.visual.image.Image scaledLogo = (logoImage != null) ? logoImage : null;
 
-        int totalLines = 7;
+        if (hopsAvailable <= 5) {
+            hopStatus = "COOLDOWN";
+            hopColor = new Color(255, 80, 80).getRGB(); // red
+        } else if (hopsAvailable <= 30) {
+            hopStatus = "LOW";
+            hopColor = new Color(255, 170, 0).getRGB(); // orange
+        } else {
+            hopStatus = "OK";
+            hopColor = valueGreen;
+        }
+
+        int totalLines = 9;
         int innerX = x;
         int innerY = baseY;
         int innerWidth = width;
@@ -237,13 +260,28 @@ public class dERLooter extends Script {
                 "GP/hr", fullFormat.format(gpPerHour), labelGray, valueGreen,
                 FONT_VALUE_BOLD, FONT_LABEL);
 
-        // 6) Task
+        // 6) Hops used
+        curY += lineGap;
+        drawStatLine(c, innerX, innerWidth, paddingX, curY,
+                "Hops used", String.valueOf(hopsUsed),
+                labelGray, valueWhite,
+                FONT_VALUE_BOLD, FONT_LABEL);
+
+        // 7) Hop safety
+        curY += lineGap;
+        drawStatLine(c, innerX, innerWidth, paddingX, curY,
+                "Hop status",
+                hopsAvailable + " left (" + hopStatus + ")",
+                labelGray, hopColor,
+                FONT_VALUE_BOLD, FONT_LABEL);
+
+        // 8) Task
         curY += lineGap;
         drawStatLine(c, innerX, innerWidth, paddingX, curY,
                 "Task", String.valueOf(task), labelGray, valueWhite,
                 FONT_VALUE_BOLD, FONT_LABEL);
 
-        // 7) Version
+        // 9) Version
         curY += lineGap;
         drawStatLine(c, innerX, innerWidth, paddingX, curY,
                 "Version", scriptVersion, labelGray, valueWhite,
@@ -557,5 +595,15 @@ public class dERLooter extends Script {
         } catch (Exception e) {
             log("STATS", "Error sending stats: " + e.getMessage());
         }
+    }
+
+    public static int getAvailableHops() {
+        long elapsedMs = System.currentTimeMillis() - hopTrackingStart;
+        double elapsedHours = elapsedMs / 3_600_000.0;
+
+        int regenerated = (int) (elapsedHours * HOP_REGEN_PER_HOUR);
+        int available = MAX_SAFE_HOPS - hopsUsed + regenerated;
+
+        return Math.max(0, available);
     }
 }

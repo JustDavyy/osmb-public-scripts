@@ -293,15 +293,13 @@ public class ERLooter extends Task {
                 boolean eclipseLooted = script.pollFramesUntil(condition, RandomUtils.uniformRandom(3500, 5000));
 
                 if (eclipseLooted) {
-                    script.getProfileManager().forceHop();
-                    return false;
+                    return trySafeHop();
                 }
 
                 return false;
             } else {
                 script.log("ERLooter", "Eclipse red not found in this world, hopping!");
-                script.getProfileManager().forceHop();
-                return false;
+                return trySafeHop();
             }
         }
 
@@ -359,5 +357,34 @@ public class ERLooter extends Task {
 
             return script.getWidgetManager().getBank().isVisible() || positionChangeTimer.get().timeElapsed() > 4000;
         }, RandomUtils.uniformRandom(15000, 17000));
+    }
+
+    private boolean trySafeHop() {
+        int available = getAvailableHops();
+
+        if (available <= 5) {
+            script.log("ERLooter",
+                    "Hop limit nearly reached (" + available + " left). Cooling down instead of hopping.");
+
+            // Log out while we regen
+            script.getWidgetManager().getLogoutTab().logout();
+
+            // Cooldown to regen hops safely
+            int delay = RandomUtils.uniformRandom(90_000, 180_000);
+            task = "Regen hop (" + delay + "ms)";
+            script.pollFramesHuman(
+                    () -> false,
+                    delay , true
+            );
+
+            return false;
+        }
+
+        hopsUsed++;
+        script.log("ERLooter",
+                "Hopping world (" + hopsUsed + " hops used, ~" + available + " remaining)");
+
+        script.getProfileManager().forceHop();
+        return true;
     }
 }
