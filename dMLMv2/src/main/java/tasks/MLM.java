@@ -173,6 +173,10 @@ public class MLM extends Task {
             }
             // If NO free slots AND we have paydirt in our inv deposit to mine cart
             else if (inventorySnapshot.contains(ItemID.PAYDIRT)) {
+                WorldPosition currentPos = script.getWorldPosition();
+                if (useUpperHopper && currentPos != null && !MLMAreaProvider.TOP_FLOOR_AREA.contains(currentPos)) {
+                    return Task.WALK_TO_VEIN_AREA;
+                }
                 return Task.DEPOSIT_PAY_DIRT;
             } else {
                 // if no spaces & no paydirt, open the bank to deposit and make room...
