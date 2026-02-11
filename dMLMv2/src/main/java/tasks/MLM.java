@@ -610,7 +610,12 @@ public class MLM extends Task {
     private RSObject getHopper() {
         paintTask = "Get hopper object";
         // === Upper hopper logic (TOP floor only) ===
-        if (useUpperHopper && selectedMineArea == MineArea.TOP) {
+        WorldPosition currentLoc = null;
+        if (useUpperHopper) {
+            currentLoc = script.getWorldPosition();
+            if (currentLoc == null) return null;
+        }
+        if (useUpperHopper && selectedMineArea == MineArea.TOP && MLMAreaProvider.TOP_FLOOR_AREA.contains(currentLoc)) {
             WorldPosition upperHopperPos = new WorldPosition(3755, 5677, 0);
 
             RSObject upperHopper = script.getObjectManager().getRSObject(obj ->
