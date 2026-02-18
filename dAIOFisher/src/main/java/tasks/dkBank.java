@@ -40,17 +40,17 @@ public class dkBank extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "kBank";
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(ItemID.RAW_KARAMBWANJI, ItemID.KARAMBWAN_VESSEL, ItemID.KARAMBWAN_VESSEL_3159, ItemID.RAW_KARAMBWAN, ItemID.FISH_BARREL, ItemID.OPEN_FISH_BARREL, ItemID.CRAFTING_CAPE, ItemID.CRAFTING_CAPET));
 
         if (inventorySnapshot == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
+            script.log("kBank", "Inventory not visible.");
             return false;
         }
 
         if (!inventorySnapshot.contains(ItemID.RAW_KARAMBWANJI)) {
             missingKarambwanjiCount++;
-            script.log(getClass().getSimpleName(), "❌ Missing Karambwanji (" + missingKarambwanjiCount + "/3)");
+            script.log("kBank", "❌ Missing Karambwanji (" + missingKarambwanjiCount + "/3)");
             script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(2000, 4000));
 
             if (!script.getWidgetManager().getBank().isVisible()) {
@@ -59,7 +59,7 @@ public class dkBank extends Task {
             }
 
             if (missingKarambwanjiCount >= 3) {
-                script.log(getClass().getSimpleName(), "‼ Karambwanji missing 3 times in a row. Stopping script...");
+                script.log("kBank", "‼ Karambwanji missing 3 times in a row. Stopping script...");
                 script.stop();
             }
 
@@ -75,7 +75,7 @@ public class dkBank extends Task {
 
         if (usingBarrel && inventorySnapshot.contains(ItemID.RAW_KARAMBWAN)) {
             task = "Empty fish barrel";
-            script.log(getClass().getSimpleName(), "Emptying fish barrel in the bank");
+            script.log("kBank", "Emptying fish barrel in the bank");
             if (!inventorySnapshot.getItem(ItemID.FISH_BARREL, ItemID.OPEN_FISH_BARREL).interact("Empty")) {
                 return false;
             }
@@ -103,18 +103,18 @@ public class dkBank extends Task {
 
     private void openBank() {
         task = "Open bank";
-        script.log(getClass(), "Searching for a bank...");
+        script.log("kBank", "Searching for a bank...");
 
         // Regular bank object
         List<RSObject> banksFound = script.getObjectManager().getObjects(bankQuery);
         if (banksFound.isEmpty()) {
-            script.log(getClass(), "No bank objects found.");
+            script.log("kBank", "No bank objects found.");
             return;
         }
 
         RSObject bank = (RSObject) script.getUtils().getClosest(banksFound);
         if (!bank.interact(BANK_ACTIONS)) {
-            script.log(getClass(), "Failed to interact with bank object.");
+            script.log("kBank", "Failed to interact with bank object.");
             return;
         }
 

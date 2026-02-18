@@ -66,7 +66,7 @@ public class dkTravel extends Task {
     public boolean activate() {
         inventorySnapshot = script.getWidgetManager().getInventory().search(Collections.emptySet());
         if (inventorySnapshot == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
+            script.log("kTravel", "Inventory not visible.");
             return false;
         }
 
@@ -74,7 +74,7 @@ public class dkTravel extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "kTravel";
 
         if (script.getWidgetManager().getBank().isVisible()) {
             script.getWidgetManager().getBank().close();
@@ -87,20 +87,20 @@ public class dkTravel extends Task {
             // Additional check to make sure we don't early travel
             inventorySnapshot = script.getWidgetManager().getInventory().search(Collections.emptySet());
             if (!inventorySnapshot.isFull()) {
-                script.log(getClass().getSimpleName(), "Travel task ran too early, inventory is not full yet. Returning!");
+                script.log("kTravel", "Travel task ran too early, inventory is not full yet. Returning!");
                 return false;
             }
             if (bankOption.equals("Zanaris")) {
                 task = "Travel to zanaris";
-                script.log(getClass().getSimpleName(), "Traveling to zanaris with fairy ring");
+                script.log("kTravel", "Traveling to zanaris with fairy ring");
                 return handleFishingFairyRing();
             }
             if (bankOption.equals("Crafting Guild")) {
                 task = "Travel to craft guild";
-                script.log(getClass().getSimpleName(), "Traveling to Crafting Guild with " + script.getItemManager().getItemName(teleportCapeId));
+                script.log("kTravel", "Traveling to Crafting Guild with " + script.getItemManager().getItemName(teleportCapeId));
                 return handleFishingCraftingCape();
             } else {
-                script.log(getClass().getSimpleName(), "Invalid bank: " + bankOption);
+                script.log("kTravel", "Invalid bank: " + bankOption);
             }
         }
 
@@ -131,26 +131,26 @@ public class dkTravel extends Task {
                 for (int id : candidates) {
                     if (equipment.interact(id, menuOption)) {
                         usedId = id;
-                        script.log(getClass().getSimpleName(),
+                        script.log("kTravel",
                                 "Teleporting using " + script.getItemManager().getItemName(id) + " (" + id + ")");
                         script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(3500, 4500));
 
                         if (arrivedAtArea(destinationArea)) {
-                            script.log(getClass().getSimpleName(), "Teleport was successful");
+                            script.log("kTravel", "Teleport was successful");
                             doneBanking = false;
-                            script.log(getClass().getSimpleName(), "Marked banking flag to false.");
+                            script.log("kTravel", "Marked banking flag to false.");
                             teleported = true;
                         } else {
-                            script.log(getClass(), "Teleport interaction done, but destination not confirmed yet.");
+                            script.log("kTravel", "Teleport interaction done, but destination not confirmed yet.");
                         }
                         break;
                     } else {
-                        script.log(getClass(), "Cape interaction failed for ID " + id + " — trying next candidate...");
+                        script.log("kTravel", "Cape interaction failed for ID " + id + " — trying next candidate...");
                     }
                 }
 
                 if (!teleported && usedId == -1) {
-                    script.log(getClass(), "Interaction failed in cape slot for all candidate IDs.");
+                    script.log("kTravel", "Interaction failed in cape slot for all candidate IDs.");
                 }
 
                 return false;
@@ -160,7 +160,7 @@ public class dkTravel extends Task {
         // Handle if we're at the zanaris bank (we can only get here with the doneBanking flag)
         if (zanarisBankArea.contains(currentPos)) {
             task = "Travel to zanaris fairy";
-            script.log(getClass().getSimpleName(), "Walking to zanaris fairy ring area from bank area");
+            script.log("kTravel", "Walking to zanaris fairy ring area from bank area");
 
             WalkConfig cfg = new WalkConfig.Builder()
                     .enableRun(true)
@@ -183,7 +183,7 @@ public class dkTravel extends Task {
                 || (zanarisRing != null && zanarisRing.isInteractableOnScreen()))) {
 
             task = "Fairy to fishing area";
-            script.log(getClass().getSimpleName(), "Traveling to Fishing area from Zanaris Fairy Ring");
+            script.log("kTravel", "Traveling to Fishing area from Zanaris Fairy Ring");
             return handleOtherFairyRing();
         }
 
@@ -191,7 +191,7 @@ public class dkTravel extends Task {
         if (zanarisArea.contains(currentPos) ) {
             if (inventorySnapshot.isFull()) {
                 task = "Travel to bank";
-                script.log(getClass().getSimpleName(), "Walking to zanaris bank area");
+                script.log("kTravel", "Walking to zanaris bank area");
 
                 WalkConfig cfg = new WalkConfig.Builder()
                         .enableRun(true)
@@ -204,7 +204,7 @@ public class dkTravel extends Task {
                 return script.getWalker().walkTo(zanarisBankArea.getRandomPosition(), cfg);
             } else {
                 task = "Travel to fairy ring";
-                script.log(getClass().getSimpleName(), "Walking to zanaris fairy ring area");
+                script.log("kTravel", "Walking to zanaris fairy ring area");
 
                 WalkConfig cfg = new WalkConfig.Builder()
                         .enableRun(true)
@@ -225,14 +225,14 @@ public class dkTravel extends Task {
         if (legendsFairyArea.contains(currentPos)
                 || (legendsRing != null && legendsRing.isInteractableOnScreen())) {
             task = "Travel to fishing area";
-            script.log(getClass().getSimpleName(), "Traveling to Fishing area from Legends Fairy Ring");
+            script.log("kTravel", "Traveling to Fishing area from Legends Fairy Ring");
             return handleOtherFairyRing();
         }
 
         // Handle if we're at the Legends guild area (walk until the ring is on screen)
         if (legendsArea.contains(currentPos)) {
             task = "Travel to fairy ring";
-            script.log(getClass().getSimpleName(), "Traveling to Legends Fairy Ring");
+            script.log("kTravel", "Traveling to Legends Fairy Ring");
             WalkConfig cfg = new WalkConfig.Builder()
                     .breakCondition(() -> legendsRing != null && legendsRing.isInteractableOnScreen())
                     .enableRun(true)
@@ -248,14 +248,14 @@ public class dkTravel extends Task {
         if (monasteryFairyArea.contains(currentPos)
                 || (monasteryRing != null && monasteryRing.isInteractableOnScreen())) {
             task = "Travel to fishing area";
-            script.log(getClass().getSimpleName(), "Traveling to Fishing area from Monastery Fairy Ring");
+            script.log("kTravel", "Traveling to Fishing area from Monastery Fairy Ring");
             return handleOtherFairyRing();
         }
 
         // Handle if we're at the Monastery area (walk until the ring is on screen)
         if (monasteryArea.contains(currentPos)) {
             task = "Travel to fairy ring";
-            script.log(getClass().getSimpleName(), "Traveling to Monastery Fairy Ring");
+            script.log("kTravel", "Traveling to Monastery Fairy Ring");
             WalkConfig cfg = new WalkConfig.Builder()
                     .breakCondition(() -> monasteryRing != null && monasteryRing.isInteractableOnScreen())
                     .enableRun(true)
@@ -266,8 +266,8 @@ public class dkTravel extends Task {
         // Fail safe if we're south of the fishing area
         if (fishingFailsafeArea.contains(currentPos)) {
             task = "Fail safe, we're south of fishing area";
-            script.log(getClass().getSimpleName(), "Fail safe triggered, we're south of the fishing area!");
-            script.log(getClass().getSimpleName(), "Pathing back to fishing area!");
+            script.log("kTravel", "Fail safe triggered, we're south of the fishing area!");
+            script.log("kTravel", "Pathing back to fishing area!");
             return script.getWalker().walkTo(fishingFailsafeWalkArea.getRandomPosition());
         }
 
@@ -296,13 +296,13 @@ public class dkTravel extends Task {
         // Get the fairy ring object
         List<RSObject> ringsFound = script.getObjectManager().getObjects(fairyRingQuery);
         if (ringsFound.isEmpty()) {
-            script.log(getClass().getSimpleName(), "No fairy ring objects found.");
+            script.log("kTravel", "No fairy ring objects found.");
             return false;
         }
 
         RSObject ring = (RSObject) script.getUtils().getClosest(ringsFound);
         if (!ring.interact("zanaris")) {
-            script.log(getClass().getSimpleName(), "Failed to interact with fairy ring object.");
+            script.log("kTravel", "Failed to interact with fairy ring object.");
             return false;
         }
 
@@ -336,7 +336,7 @@ public class dkTravel extends Task {
 
         if (inventorySnapshot.contains(teleportCapeId)) {
             if (!inventorySnapshot.getItem(teleportCapeId).interact("Teleport")) {
-                script.log(getClass().getSimpleName(), "Failed to teleport using the crafting cape in our inventory.");
+                script.log("kTravel", "Failed to teleport using the crafting cape in our inventory.");
                 return false;
             }
 
@@ -358,7 +358,7 @@ public class dkTravel extends Task {
                 return craftingGuildBankArea.contains(currentPos) || positionChangeTimer.get().timeElapsed() > 10000;
             }, RandomUtils.uniformRandom(14000, 16000));
         } else {
-            script.log(getClass().getSimpleName(), "It seems the crafting cape is not in our inventory? Re-polling script.");
+            script.log("kTravel", "It seems the crafting cape is not in our inventory? Re-polling script.");
             return false;
         }
 
@@ -370,13 +370,13 @@ public class dkTravel extends Task {
         // Get the fairy ring object
         List<RSObject> ringsFound = script.getObjectManager().getObjects(fairyRingQuery);
         if (ringsFound.isEmpty()) {
-            script.log(getClass().getSimpleName(), "No fairy ring objects found.");
+            script.log("kTravel", "No fairy ring objects found.");
             return false;
         }
 
         RSObject ring = (RSObject) script.getUtils().getClosest(ringsFound);
         if (!ring.interact("last-destination (dkp)")) {
-            script.log(getClass().getSimpleName(), "Failed to interact with fairy ring object.");
+            script.log("kTravel", "Failed to interact with fairy ring object.");
             return false;
         }
 

@@ -43,11 +43,11 @@ import javax.imageio.ImageIO;
 name = "dAIOFisher",
 threadUrl = "https://wiki.osmb.co.uk/article/daiofisher",
         skillCategory = SkillCategory.FISHING,
-        version = 4.3,
+        version = 4.4,
         author = "JustDavyy"
 )
 public class dAIOFisher extends Script {
-    public static String scriptVersion = "4.3";
+    public static String scriptVersion = "4.4";
     private final String scriptName = "AIOFisher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;
@@ -176,6 +176,9 @@ public class dAIOFisher extends Script {
             };
             case Lumbridge_Goblins, Lumbridge_Swamp -> new int[]{
                     12850, 12849
+            };
+            case Al_Kharid -> new int[]{
+                    13105
             };
             case Mor_Ul_Rek_East, Mor_Ul_Rek_West -> new int[]{
                     10064, 10063, 9808, 9807
@@ -487,7 +490,7 @@ public class dAIOFisher extends Script {
         // --- Footer ---
         curY += lineGap;
         drawStatLine(c, innerX, innerWidth, paddingX, curY,
-                "Task", String.valueOf(task), labelGray, valueWhite, FONT_VALUE_BOLD, FONT_LABEL);
+                "State", String.valueOf(task), labelGray, valueWhite, FONT_VALUE_BOLD, FONT_LABEL);
 
         curY += lineGap;
         drawStatLine(c, innerX, innerWidth, paddingX, curY,

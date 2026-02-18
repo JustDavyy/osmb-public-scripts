@@ -2,6 +2,8 @@ package tasks;
 
 import com.osmb.api.item.ItemGroupResult;
 import com.osmb.api.item.ItemID;
+import com.osmb.api.location.area.Area;
+import com.osmb.api.location.position.types.WorldPosition;
 import com.osmb.api.scene.RSObject;
 import com.osmb.api.script.Script;
 import com.osmb.api.shape.Rectangle;
@@ -11,12 +13,14 @@ import com.osmb.api.ui.component.minimap.xpcounter.XPDropsComponent;
 import com.osmb.api.utils.timing.Timer;
 import com.osmb.api.visual.ocr.fonts.Font;
 import com.osmb.api.utils.RandomUtils;
+import com.osmb.api.walker.WalkConfig;
 import data.FishingLocation;
 import utils.Task;
 
 import java.awt.Color;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
 import static main.dAIOFisher.*;
@@ -43,8 +47,38 @@ public class Cook extends Task {
         List<Integer> rawFish = fishingMethod.getCatchableFish();
         ItemGroupResult inventory = script.getWidgetManager().getInventory().search(Set.copyOf(rawFish));
         if (inventory == null || inventory.isEmpty()) {
-            script.log(getClass(), "No raw fish found in inventory.");
+            script.log("Cook", "No raw fish found in inventory.");
             return false;
+        }
+
+        WorldPosition myPos = script.getWorldPosition();
+        if (myPos == null) return false;
+
+        if (fishingMethod.getCookingObjectArea() != null) {
+            script.log("Cook", "Cooking area is defined, we need to move there!");
+            if (!fishingMethod.getCookingObjectArea().contains(myPos)) {
+                script.log("Cook", "Not inside cooking area, moving there!");
+
+                if (fishingMethod.getCookingHasDoor()) {
+                    script.log("Cook", "Cooking area has door, we might need to handle that.");
+                }
+
+                boolean success = moveToArea(fishingMethod.getCookingObjectArea());
+
+                if (!success && fishingMethod.getCookingHasDoor()) {
+                    script.log("Cook", "Handling door logic first!");
+                    RSObject door = getSpecificObjectAt("Door", fishingMethod.getCookingDoorPosition().getX(), fishingMethod.getCookingDoorPosition().getY(), fishingMethod.getCookingDoorPosition().getPlane());
+
+                    if (door == null) {
+                        script.log("Cook", "Door is null, we need to move closer!");
+                        return script.getWalker().walkTo(fishingMethod.getCookingDoorPosition());
+                    }
+
+                    return door.interact("Open");
+                }
+
+                return success;
+            }
         }
 
         // Different cooking method for eels
@@ -63,7 +97,7 @@ public class Cook extends Task {
             task = "Start cooking action";
             inventory = script.getWidgetManager().getInventory().search(Set.of(fishToUse, toolToUse));
             if (inventory == null) {
-                script.log(getClass(), "Inventory could not be found");
+                script.log("Cook", "Inventory could not be found");
                 return false;
             }
 
@@ -96,25 +130,25 @@ public class Cook extends Task {
             if (!inventory.contains(rawId)) continue;
 
             if (rawId == ItemID.RAW_SALMON && currentCookingLevel < 25) {
-                script.log(getClass(), "Not high enough cooking level to cook salmon. Have: " + currentCookingLevel + " need: 25");
-                script.log(getClass(), "Dropping raw salmon since we cannot cook them yet.");
+                script.log("Cook", "Not high enough cooking level to cook salmon. Have: " + currentCookingLevel + " need: 25");
+                script.log("Cook", "Dropping raw salmon since we cannot cook them yet.");
                 script.getWidgetManager().getInventory().dropItems(rawId);
             }
             if (rawId == ItemID.RAW_TROUT && currentCookingLevel < 15) {
-                script.log(getClass(), "Not high enough cooking level to cook trout. Have: " + currentCookingLevel + " need: 25");
-                script.log(getClass(), "Dropping raw trout since we cannot cook them yet.");
+                script.log("Cook", "Not high enough cooking level to cook trout. Have: " + currentCookingLevel + " need: 25");
+                script.log("Cook", "Dropping raw trout since we cannot cook them yet.");
                 script.getWidgetManager().getInventory().dropItems(rawId);
             }
 
             RSObject cookObject = getClosestCookObject(fishingMethod.getCookingObjectName(), fishingMethod.getCookingObjectAction());
             if (cookObject == null) {
-                script.log(getClass(), "No cookable object found nearby (" + fishingMethod.getCookingObjectName() + ").");
+                script.log("Cook", "No cookable object found nearby (" + fishingMethod.getCookingObjectName() + ").");
                 return false;
             }
 
             task = "Interact with object";
             if (!cookObject.interact(fishingMethod.getCookingObjectAction())) {
-                script.log(getClass(), "Failed to interact with cooking object. Retrying...");
+                script.log("Cook", "Failed to interact with cooking object. Retrying...");
                 if (!cookObject.interact(fishingMethod.getCookingObjectAction())) {
                     return false;
                 }
@@ -131,7 +165,7 @@ public class Cook extends Task {
                         || script.getWidgetManager().getDialogue().selectItem(cookedId);
 
                 if (!selected) {
-                    script.log(getClass(), "Initial food selection failed, retrying...");
+                    script.log("Cook", "Initial food selection failed, retrying...");
                     script.pollFramesHuman(() -> false, RandomUtils.uniformRandom(150, 300));
 
                     selected = script.getWidgetManager().getDialogue().selectItem(rawId)
@@ -139,11 +173,11 @@ public class Cook extends Task {
                 }
 
                 if (!selected) {
-                    script.log(getClass(), "Failed to select food item in dialogue after retry.");
+                    script.log("Cook", "Failed to select food item in dialogue after retry.");
                     continue;
                 }
 
-                script.log(getClass(), "Selected food to cook: " + rawId + "/" + cookedId);
+                script.log("Cook", "Selected food to cook: " + rawId + "/" + cookedId);
                 waitUntilFinishedCooking(Set.of(rawId), cookedId);
 
                 return false; // let next execution handle next type
@@ -162,13 +196,13 @@ public class Cook extends Task {
         });
 
         if (objects.isEmpty()) {
-            script.log(getClass(), "No objects found matching query for: " + name + " with action: " + requiredAction);
+            script.log("Cook", "No objects found matching query for: " + name + " with action: " + requiredAction);
             return null;
         }
 
         RSObject closest = (RSObject) script.getUtils().getClosest(objects);
         if (closest == null) {
-            script.log(getClass(), "Closest object is null.");
+            script.log("Cook", "Closest object is null.");
         }
         return closest;
     }
@@ -199,7 +233,7 @@ public class Cook extends Task {
             return itemIdsToWatch.stream().noneMatch(inventorySnapshot::contains);
         };
 
-        script.log(getClass(), "Using human task to wait until cooking finishes.");
+        script.log("Cook", "Using human task to wait until cooking finishes.");
         script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
     }
 
@@ -230,7 +264,104 @@ public class Cook extends Task {
             return !inventorySnapshot.contains(itemIdToWatch);
         };
 
-        script.log(getClass(), "Using human task to wait until cooking finishes.");
+        script.log("Cook", "Using human task to wait until cooking finishes.");
         script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
+    }
+
+    private boolean moveToArea(Area destinationArea) {
+
+        WorldPosition currentPos = script.getWorldPosition();
+        if (currentPos == null) {
+            script.log("Cook", "Player position is null, cannot move to area.");
+            return false;
+        }
+
+        // Already inside the area
+        if (destinationArea.contains(currentPos)) {
+            waitTillStopped();
+            return true;
+        }
+
+        WalkConfig cfg = new WalkConfig.Builder()
+                .breakCondition(() -> {
+                    WorldPosition pos = script.getWorldPosition();
+                    return pos != null && destinationArea.contains(pos);
+                })
+                .disableWalkScreen(true)
+                .enableRun(true)
+                .build();
+
+        boolean walking = script.getWalker().walkTo(
+                destinationArea.getRandomPosition(),
+                cfg
+        );
+
+        if (!walking) {
+            script.log("Cook", "Failed to initiate walk to destination area.");
+            return false;
+        }
+
+        // Ensure we fully stop after entering the area
+        waitTillStopped();
+
+        return true;
+    }
+
+    private void waitTillStopped() {
+        task = "Wait till stopped";
+        script.log("Cook", "Waiting until player stops moving...");
+
+        AtomicReference<WorldPosition> lastPos =
+                new AtomicReference<>(script.getWorldPosition());
+
+        long[] stillStart = { System.currentTimeMillis() };
+        long[] animClearSince = { -1 };
+
+        int delay = RandomUtils.uniformRandom(750, 1050);
+
+        java.util.function.BooleanSupplier stopCondition = () -> {
+
+            WorldPosition now = script.getWorldPosition();
+            WorldPosition prev = lastPos.get();
+
+            if (now == null || prev == null) {
+                stillStart[0] = System.currentTimeMillis();
+                animClearSince[0] = -1;
+                lastPos.set(now);
+                return false;
+            }
+
+            boolean sameTile =
+                    now.getX() == prev.getX() &&
+                            now.getY() == prev.getY() &&
+                            now.getPlane() == prev.getPlane();
+
+            if (!sameTile) {
+                stillStart[0] = System.currentTimeMillis();
+                animClearSince[0] = -1;
+                lastPos.set(now);
+                return false;
+            }
+
+            long nowMs = System.currentTimeMillis();
+
+            return nowMs - stillStart[0] >= delay;
+        };
+
+        script.pollFramesUntil(
+                stopCondition,
+                RandomUtils.uniformRandom(4000, 7500));
+    }
+
+    private RSObject getSpecificObjectAt(String name, int worldX, int worldY, int plane) {
+        task = "Get RSObject";
+        return script.getObjectManager().getRSObject(obj ->
+                obj != null
+                        && obj.getName() != null
+                        && name.equalsIgnoreCase(obj.getName())
+                        && obj.getWorldX() == worldX
+                        && obj.getWorldY() == worldY
+                        && obj.getPlane() == plane
+        );
     }
 }

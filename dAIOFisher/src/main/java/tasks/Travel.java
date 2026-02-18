@@ -38,7 +38,7 @@ public class Travel extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "Travel";
 
         WorldPosition myPos = script.getWorldPosition();
 

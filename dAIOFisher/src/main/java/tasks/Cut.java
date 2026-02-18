@@ -30,19 +30,19 @@ public class Cut extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "Cut";
 
         ItemGroupResult inv = script.getWidgetManager().getInventory().search(Set.of(31553, 31561, ItemID.KNIFE));
         if (inv == null) return false;
 
         if (!inv.containsAny(31553, 31561)) {
-            script.log(getClass(), "Inventory did not contain any squids... which shouldn't happen. Stopping script!");
+            script.log("Cut", "Inventory did not contain any squids... which shouldn't happen. Stopping script!");
             script.stop();
             return false;
         }
 
         if (!inv.contains(ItemID.KNIFE)) {
-            script.log(getClass(), "Inventory does not contain a knife, we can't perform the cut task. Stopping script!");
+            script.log("Cut", "Inventory does not contain a knife, we can't perform the cut task. Stopping script!");
             script.stop();
             return false;
         }
@@ -99,7 +99,7 @@ public class Cut extends Task {
     private boolean useKnife(ItemGroupResult inv) {
         boolean success = inv.getItem(ItemID.KNIFE).interact();
         if (!success) {
-            script.log(getClass(), "Failed to interact with knife, re-polling...");
+            script.log("Cut", "Failed to interact with knife, re-polling...");
         }
         return success;
     }
@@ -107,7 +107,7 @@ public class Cut extends Task {
     private boolean useSquid(ItemGroupResult inv, int squidId) {
         boolean success = inv.getItem(squidId).interact();
         if (!success) {
-            script.log(getClass(), "Failed to interact with squid " + squidId + ", re-polling...");
+            script.log("Cut", "Failed to interact with squid " + squidId + ", re-polling...");
         }
         return success;
     }
@@ -132,7 +132,7 @@ public class Cut extends Task {
             return !inventorySnapshot.contains(squidId);
         };
 
-        script.log(getClass(), "Using human task to wait until cutting finishes.");
+        script.log("Cut", "Using human task to wait until cutting finishes.");
         return script.pollFramesHuman(condition, RandomUtils.uniformRandom(66000, 70000));
     }
 }

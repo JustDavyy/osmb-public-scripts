@@ -38,7 +38,7 @@ public class FailSafe extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "FailSafe";
 
         WorldPosition myPos = script.getWorldPosition();
 

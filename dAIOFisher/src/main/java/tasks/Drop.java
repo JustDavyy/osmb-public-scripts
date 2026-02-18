@@ -37,7 +37,7 @@ public class Drop extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
+        task = "Drop";
 
         List<Integer> relevantFishIds = new ArrayList<>(
                 cookMode ? fishingMethod.getCookedFish() : fishingMethod.getCatchableFish()

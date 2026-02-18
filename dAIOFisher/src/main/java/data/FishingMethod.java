@@ -2,6 +2,7 @@ package data;
 
 import com.osmb.api.item.ItemID;
 import com.osmb.api.location.position.types.WorldPosition;
+import com.osmb.api.location.area.Area;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +18,9 @@ public class FishingMethod {
     private final List<Integer> burntFish;
     private final String menuEntry;
     private final Set<WorldPosition> fishingSpots;
+    private final Area cookingObjectArea;
+    private final boolean cookingHasDoor;
+    private final WorldPosition cookingDoorPosition;
     private final String cookingObjectName;
     private final String cookingObjectAction;
     private final String bankObjectName;
@@ -39,6 +43,9 @@ public class FishingMethod {
                          List<Integer> burntFish,
                          String menuEntry,
                          Set<WorldPosition> fishingSpots,
+                         Area cookingObjectArea,
+                         boolean cookingHasDoor,
+                         WorldPosition cookingDoorPosition,
                          String cookingObjectName,
                          String cookingObjectAction,
                          String bankObjectName,
@@ -53,6 +60,9 @@ public class FishingMethod {
         this.burntFish = burntFish;
         this.menuEntry = menuEntry;
         this.fishingSpots = fishingSpots;
+        this.cookingObjectArea = cookingObjectArea;
+        this.cookingHasDoor = cookingHasDoor;
+        this.cookingDoorPosition = cookingDoorPosition;
         this.cookingObjectName = cookingObjectName;
         this.cookingObjectAction = cookingObjectAction;
         this.bankObjectName = bankObjectName;
@@ -99,6 +109,12 @@ public class FishingMethod {
     public Set<WorldPosition> getFishingSpots() {
         return fishingSpots;
     }
+
+    public Area getCookingObjectArea() {return cookingObjectArea;}
+
+    public boolean getCookingHasDoor() {return cookingHasDoor;}
+
+    public WorldPosition getCookingDoorPosition() {return cookingDoorPosition;}
 
     public String getCookingObjectName() {
         return cookingObjectName;

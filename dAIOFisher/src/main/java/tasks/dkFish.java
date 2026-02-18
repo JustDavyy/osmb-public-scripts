@@ -61,7 +61,7 @@ public class dkFish extends Task {
     public boolean activate() {
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Set.copyOf(fishingMethod.getRequiredTools()));
         if (inventorySnapshot == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
+            script.log("kFish", "Inventory not visible.");
             return false;
         }
 
@@ -77,7 +77,7 @@ public class dkFish extends Task {
 
         // Require all tools
         if (!inventorySnapshot.containsAll(Set.copyOf(fishingMethod.getRequiredTools()))) {
-            script.log(getClass().getSimpleName(), "Not all required tools could be located in inventory, stopping script!");
+            script.log("kFish", "Not all required tools could be located in inventory, stopping script!");
             script.getWidgetManager().getLogoutTab().logout();
             script.stop();
             return false;
@@ -104,7 +104,7 @@ public class dkFish extends Task {
         long idleTime = System.currentTimeMillis() - lastAnimationDetected;
 
         if (idleTime >= currentIdleThreshold) {
-            script.log(getClass().getSimpleName(), "No animation detected for " + idleTime + "ms. Re-initiating fishing.");
+            script.log("kFish", "No animation detected for " + idleTime + "ms. Re-initiating fishing.");
             boolean initiated = initiateFishingAction();
             if (initiated) {
                 lastAnimationDetected = System.currentTimeMillis(); // reset timer
@@ -119,18 +119,18 @@ public class dkFish extends Task {
     private boolean earlyExitCheck() {
         task = "Monitor wait condition";
         if (script.getWidgetManager().getDialogue().getDialogueType() == DialogueType.TAP_HERE_TO_CONTINUE) {
-            script.log(getClass().getSimpleName(), "Early exit, TAP_HERE_TO_CONTINUE dialogue detected (inventory full or leveled up)");
+            script.log("kFish", "Early exit, TAP_HERE_TO_CONTINUE dialogue detected (inventory full or leveled up)");
             return true;
         }
 
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Collections.emptySet());
         if (inventorySnapshot == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
+            script.log("kFish", "Inventory not visible.");
             return false;
         }
 
         if (inventorySnapshot.isFull()) {
-            script.log(getClass().getSimpleName(), "Early exit, Inventory is full");
+            script.log("kFish", "Early exit, Inventory is full");
             return true;
         }
 
@@ -143,7 +143,7 @@ public class dkFish extends Task {
 
         long idleTime = System.currentTimeMillis() - lastAnimationDetected;
         if (idleTime >= currentIdleThreshold) {
-            script.log(getClass().getSimpleName(), "Early exit due to inactivity for " + idleTime + "ms.");
+            script.log("kFish", "Early exit due to inactivity for " + idleTime + "ms.");
             return true;
         }
 
@@ -164,9 +164,9 @@ public class dkFish extends Task {
             return attemptFishing(fishingSpot);
         }
 
-        script.log(getClass(), "No visible fishing spots, walking to another area...");
+        script.log("kFish", "No visible fishing spots, walking to another area...");
         if (fishingMethod.getName().equals("Small Fishing Net (SafeMode/10HP)")) {
-            script.log(getClass(), "SafeMode method in use, skipping relocation and hopping immediately.");
+            script.log("kFish", "SafeMode method in use, skipping relocation and hopping immediately.");
             script.getProfileManager().forceHop();
             relocationAttempts = 0;
             consecutiveNoSpotChecks = 0;
@@ -177,7 +177,7 @@ public class dkFish extends Task {
         script.getWalker().walkTo(getDestination(), new WalkConfig.Builder().disableWalkScreen(true).breakDistance(5).build());
 
         if (relocationAttempts >= 3) {
-            script.log(getClass(), "Still no fishing spots after 3 relocations. Forcing world hop...");
+            script.log("kFish", "Still no fishing spots after 3 relocations. Forcing world hop...");
             script.getProfileManager().forceHop();
             relocationAttempts = 0;
             consecutiveNoSpotChecks = 0;
@@ -190,18 +190,18 @@ public class dkFish extends Task {
             relocationAttempts = 0;
             return attemptFishing(fishingSpot);
         } else {
-            script.log(getClass(), "Still no fishing spots after relocating.");
+            script.log("kFish", "Still no fishing spots after relocating.");
         }
 
         return false;
     }
 
     private boolean interactWithFishingSpot(FishingSpot fishingSpot) {
-        script.log(getClass(), "Interacting with fishing spot at " + fishingSpot.getPosition());
+        script.log("kFish", "Interacting with fishing spot at " + fishingSpot.getPosition());
 
         boolean clicked = script.getFinger().tap(fishingSpot.getFishingSpotPoly().getResized(0.85), menuHook);
         if (!clicked) {
-            script.log(getClass(), "Failed to click fishing spot.");
+            script.log("kFish", "Failed to click fishing spot.");
             lastFishingSpot = null;
             return false;
         }
@@ -214,10 +214,10 @@ public class dkFish extends Task {
         RSTile spotTile = script.getSceneManager().getTile(fishingSpot.getPosition());
 
         if (spotTile != null && spotTile.isOnGameScreen()) {
-            script.log(getClass(), "Fishing spot is on game screen, interacting directly.");
+            script.log("kFish", "Fishing spot is on game screen, interacting directly.");
             return interactWithFishingSpot(fishingSpot);
         } else {
-            script.log(getClass(), "Fishing spot is not on screen, walking to it...");
+            script.log("kFish", "Fishing spot is not on screen, walking to it...");
             WalkConfig.Builder walkConfig = new WalkConfig.Builder();
             walkConfig.breakCondition(() -> {
                 RSTile t = script.getSceneManager().getTile(fishingSpot.getPosition());
@@ -243,10 +243,10 @@ public class dkFish extends Task {
         List<FishingSpot> activeFishingSpotsOnScreen = getFishingSpots(fishingSpotPositions);
         if (activeFishingSpotsOnScreen.isEmpty()) {
             consecutiveNoSpotChecks++;
-            script.log(getClass(), "No fishing spots found (" + consecutiveNoSpotChecks + " check(s) in a row)");
+            script.log("kFish", "No fishing spots found (" + consecutiveNoSpotChecks + " check(s) in a row)");
 
             if (fishingMethod.getName().equals("Small Fishing Net (SafeMode/10HP)")) {
-                script.log(getClass(), "SafeMode method detected, forcing hop immediately...");
+                script.log("kFish", "SafeMode method detected, forcing hop immediately...");
                 script.getProfileManager().forceHop();
                 consecutiveNoSpotChecks = 0;
                 relocationAttempts = 0;
@@ -254,7 +254,7 @@ public class dkFish extends Task {
             }
 
             if (consecutiveNoSpotChecks >= 3) {
-                script.log(getClass(), "No fishing spots found for 3 consecutive checks. Forcing world hop...");
+                script.log("kFish", "No fishing spots found for 3 consecutive checks. Forcing world hop...");
                 script.getProfileManager().forceHop();
                 consecutiveNoSpotChecks = 0;
                 relocationAttempts = 0;
@@ -266,7 +266,7 @@ public class dkFish extends Task {
         consecutiveNoSpotChecks = 0;
 
         long end = System.currentTimeMillis();
-        script.log(getClass(), "Fishing spots found in: " + (end - start) + "ms");
+        script.log("kFish", "Fishing spots found in: " + (end - start) + "ms");
 
         FishingSpot closest = activeFishingSpotsOnScreen.get(0);
         for (FishingSpot spot : activeFishingSpotsOnScreen) {
@@ -327,13 +327,13 @@ public class dkFish extends Task {
         WorldPosition myPosition = script.getWorldPosition();
 
         if (myPosition == null) {
-            script.log(getClass(), "Failed to get position, as it is null");
+            script.log("kFish", "Failed to get position, as it is null");
             return new WorldPosition(1, 1, 0);
         }
 
         List<Area> fishingSpots = fishingLocation.getFishingSpotAreas();
         if (fishingSpots.isEmpty()) {
-            script.log(getClass(), "No fishing spot areas defined.");
+            script.log("kFish", "No fishing spot areas defined.");
             return myPosition;
         }
 

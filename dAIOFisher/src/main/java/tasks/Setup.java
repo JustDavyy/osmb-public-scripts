@@ -61,8 +61,8 @@ public class Setup extends Task {
     }
 
     public boolean execute() {
-        task = getClass().getSimpleName();
-        script.log(getClass().getSimpleName(), "We are now inside the Setup task logic");
+        task = "Setup";
+        script.log("Setup", "We are now inside the Setup task logic");
 
         // Check if we have all the necessary tools in our inventory
         ItemGroupResult inventorySnapshot = script.getWidgetManager().getInventory().search(Collections.emptySet());
@@ -74,13 +74,13 @@ public class Setup extends Task {
 
         task = "Check equipped tools";
         if (hasAnyRequiredEquipped(fishingMethod.getRequiredTools())) {
-            script.log(getClass(), "Equipped fishing tool detected, marking as true!");
+            script.log("Setup", "Equipped fishing tool detected, marking as true!");
             hasToolEquipped = true;
         }
 
         task = "Check required tools";
         if (!hasAllRequirements(fishingMethod.getRequiredTools())) {
-            script.log(getClass().getSimpleName(), "Not all required tools could be located in inventory, stopping script!");
+            script.log("Setup", "Not all required tools could be located in inventory, stopping script!");
             script.getWidgetManager().getLogoutTab().logout();
             script.stop();
             return false;
@@ -92,9 +92,9 @@ public class Setup extends Task {
             if (invCheck == null) {return false;}
 
             task = "Check karambwanji start count";
-            script.log(getClass(), "Checking initial Karambwanji count.");
+            script.log("Setup", "Checking initial Karambwanji count.");
             startAmount = invCheck.getAmount(ItemID.RAW_KARAMBWANJI);
-            script.log(getClass(), "Karambwanji start count detected: " + startAmount);
+            script.log("Setup", "Karambwanji start count detected: " + startAmount);
         }
         if (fishingLocation.equals(FishingLocation.Minnows)) {
             ItemGroupResult invCheck = script.getWidgetManager().getInventory().search(Set.of(ItemID.MINNOW));
@@ -102,9 +102,9 @@ public class Setup extends Task {
             if (invCheck == null) {return false;}
 
             task = "Check minnow start count";
-            script.log(getClass(), "Checking initial Minnow count.");
+            script.log("Setup", "Checking initial Minnow count.");
             startAmount = invCheck.getAmount(ItemID.MINNOW);
-            script.log(getClass(), "Minnow start count detected: " + startAmount);
+            script.log("Setup", "Minnow start count detected: " + startAmount);
         }
 
         // Check if we have a fishing barrel in our inventory
@@ -115,10 +115,10 @@ public class Setup extends Task {
         // Check if we're using fishing barrel
         task = "Check fish barrel";
         if (inventorySnapshot2.containsAny(ItemID.FISH_BARREL, ItemID.OPEN_FISH_BARREL)) {
-            script.log(getClass().getSimpleName(), "Fishing barrel detected in inventory, marking usage as TRUE");
+            script.log("Setup", "Fishing barrel detected in inventory, marking usage as TRUE");
             usingBarrel = true;
         } else {
-            script.log(getClass(), "No fishing barrel detected (closed or opened), usage kept marked as FALSE.");
+            script.log("Setup", "No fishing barrel detected (closed or opened), usage kept marked as FALSE.");
         }
 
         // Reset timer
@@ -132,23 +132,23 @@ public class Setup extends Task {
             // Check if we have Ardougne cloak equipped if we use that fairy ring option
             if (fairyOption.equals("Ardougne cloak")) {
                 task = "Check ardy cloak";
-                script.log(getClass().getSimpleName(), "Ardougne cloak option is selected, checking if it's equipped...");
+                script.log("Setup", "Ardougne cloak option is selected, checking if it's equipped...");
                 Equipment equipment = script.getWidgetManager().getEquipment();
                 UIResult<Boolean> result = equipment.isEquipped(cloakIds);
 
                 if (result.isFound()) {
-                    script.log(getClass().getSimpleName(), "One of the ardougne cloaks is found to be equipped.");
+                    script.log("Setup", "One of the ardougne cloaks is found to be equipped.");
                     // One of the cloaks is equipped, find which one
                     for (int cloakId : cloakIds) {
                         UIResult<Boolean> check = equipment.isEquipped(cloakId);
                         if (check.isFound()) {
                             equippedCloakId = cloakId;
-                            script.log(getClass().getSimpleName(), "Ardougne cloak equipped: " + script.getItemManager().getItemName(equippedCloakId) + " (" + equippedCloakId + ").");
+                            script.log("Setup", "Ardougne cloak equipped: " + script.getItemManager().getItemName(equippedCloakId) + " (" + equippedCloakId + ").");
                             break;
                         }
                     }
                 } else {
-                    script.log(getClass().getSimpleName(), "Ardougne cloak is not equipped. Please make sure it is and restart the script.");
+                    script.log("Setup", "Ardougne cloak is not equipped. Please make sure it is and restart the script.");
                     script.stop();
                     return false;
                 }
@@ -157,23 +157,23 @@ public class Setup extends Task {
             // Check if we have Quest cape equipped if we use that fairy ring option
             if (fairyOption.equals("Quest cape")) {
                 task = "Check quest cape";
-                script.log(getClass().getSimpleName(), "Quest cape option is selected, checking if it's equipped...");
+                script.log("Setup", "Quest cape option is selected, checking if it's equipped...");
                 Equipment equipment = script.getWidgetManager().getEquipment();
                 UIResult<Boolean> result = equipment.isEquipped(qcapeIds);
 
                 if (result.isFound()) {
-                    script.log(getClass().getSimpleName(), "One of the quest capes is found to be equipped.");
+                    script.log("Setup", "One of the quest capes is found to be equipped.");
                     // One of the capes is equipped, find which one
                     for (int cloakId : qcapeIds) {
                         UIResult<Boolean> check = equipment.isEquipped(cloakId);
                         if (check.isFound()) {
                             equippedCloakId = cloakId;
-                            script.log(getClass().getSimpleName(), "Quest cape equipped: " + script.getItemManager().getItemName(equippedCloakId) + " (" + equippedCloakId + ").");
+                            script.log("Setup", "Quest cape equipped: " + script.getItemManager().getItemName(equippedCloakId) + " (" + equippedCloakId + ").");
                             break;
                         }
                     }
                 } else {
-                    script.log(getClass().getSimpleName(), "Quest cape is not equipped. Please make sure it is and restart the script.");
+                    script.log("Setup", "Quest cape is not equipped. Please make sure it is and restart the script.");
                     script.stop();
                     return false;
                 }
@@ -182,7 +182,7 @@ public class Setup extends Task {
             // Check if we have a crafting cape in our inventory if we use that bank option
             if (bankOption.equals("Crafting Guild")) {
                 task = "Check crafting cape";
-                script.log(getClass().getSimpleName(), "Crafting Guild bank option is selected, checking if we have the cape.");
+                script.log("Setup", "Crafting Guild bank option is selected, checking if we have the cape.");
                 inventorySnapshot = script.getWidgetManager().getInventory().search(Set.of(ItemID.CRAFTING_CAPE, ItemID.CRAFTING_CAPET));
 
                 if (inventorySnapshot == null) {
@@ -191,15 +191,15 @@ public class Setup extends Task {
                 }
 
                 if (inventorySnapshot.contains(ItemID.CRAFTING_CAPE)) {
-                    script.log(getClass().getSimpleName(), "Untrimmed crafting cape found in inventory, storing item ID...");
+                    script.log("Setup", "Untrimmed crafting cape found in inventory, storing item ID...");
                     teleportCapeId = ItemID.CRAFTING_CAPE;
-                    script.log(getClass().getSimpleName(), "Teleport item: " + script.getItemManager().getItemName(teleportCapeId) + "(" + teleportCapeId + ").");
+                    script.log("Setup", "Teleport item: " + script.getItemManager().getItemName(teleportCapeId) + "(" + teleportCapeId + ").");
                 } else if (inventorySnapshot.contains(ItemID.CRAFTING_CAPET)) {
-                    script.log(getClass().getSimpleName(), "Trimmed crafting cape found in inventory, storing item ID...");
+                    script.log("Setup", "Trimmed crafting cape found in inventory, storing item ID...");
                     teleportCapeId = ItemID.CRAFTING_CAPET;
-                    script.log(getClass().getSimpleName(), "Teleport item: " + script.getItemManager().getItemName(teleportCapeId) + "(" + teleportCapeId + ").");
+                    script.log("Setup", "Teleport item: " + script.getItemManager().getItemName(teleportCapeId) + "(" + teleportCapeId + ").");
                 } else {
-                    script.log(getClass().getSimpleName(), "Crafting cape is not in inventory while option is selected. Please make sure it is and restart the script.");
+                    script.log("Setup", "Crafting cape is not in inventory while option is selected. Please make sure it is and restart the script.");
                     script.stop();
                     return false;
                 }
@@ -210,7 +210,7 @@ public class Setup extends Task {
         task = "Get fishing level";
         SkillsTabComponent.SkillLevel fishingSkillLevel = script.getWidgetManager().getSkillTab().getSkillLevel(SkillType.FISHING);
         if (fishingSkillLevel == null) {
-            script.log(getClass(), "Failed to get skill levels.");
+            script.log("Setup", "Failed to get skill levels.");
             return false;
         }
         startFishingLevel = fishingSkillLevel.getLevel();
@@ -220,14 +220,14 @@ public class Setup extends Task {
         task = "Get cooking level";
         SkillsTabComponent.SkillLevel cookingSkillLevel = script.getWidgetManager().getSkillTab().getSkillLevel(SkillType.COOKING);
         if (cookingSkillLevel == null) {
-            script.log(getClass(), "Failed to get skill levels.");
+            script.log("Setup", "Failed to get skill levels.");
             return false;
         }
         startCookingLevel = cookingSkillLevel.getLevel();
         currentCookingLevel = cookingSkillLevel.getLevel();
 
         task = "Open inventory";
-        script.log(getClass().getSimpleName(), "Opening inventory tab");
+        script.log("Setup", "Opening inventory tab");
         script.getWidgetManager().getTabManager().openTab(Tab.Type.INVENTORY);
 
         task = "Finish set up";
@@ -284,7 +284,7 @@ public class Setup extends Task {
 
         ItemGroupResult inv = script.getWidgetManager().getInventory().search(Set.copyOf(searchIds));
         if (inv == null) {
-            script.log(getClass().getSimpleName(), "Inventory not visible.");
+            script.log("Setup", "Inventory not visible.");
             return false;
         }
 

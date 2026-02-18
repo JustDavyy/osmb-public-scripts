@@ -2,6 +2,7 @@ package data;
 
 import com.osmb.api.item.ItemID;
 import com.osmb.api.location.area.Area;
+import com.osmb.api.location.area.impl.PolyArea;
 import com.osmb.api.location.area.impl.RectangleArea;
 import com.osmb.api.location.position.types.WorldPosition;
 
@@ -32,6 +33,9 @@ public enum FishingLocation {
                                     new WorldPosition(3110, 3433, 0),
                                     new WorldPosition(3110, 3434, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "Fire",
                             "Cook",
                             "Bank booth",
@@ -54,6 +58,9 @@ public enum FishingLocation {
                                     new WorldPosition(3110, 3433, 0),
                                     new WorldPosition(3110, 3434, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "Fire",
                             "Cook",
                             "Bank booth",
@@ -98,6 +105,9 @@ public enum FishingLocation {
                                     new WorldPosition(2506, 3494, 0),
                                     new WorldPosition(2506, 3493, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -136,6 +146,9 @@ public enum FishingLocation {
                                     new WorldPosition(1272, 3546, 0),
                                     new WorldPosition(1272, 3547, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -169,6 +182,9 @@ public enum FishingLocation {
                                     // South
                                     new WorldPosition(2801, 3010, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -189,6 +205,9 @@ public enum FishingLocation {
                                     new WorldPosition(2807, 3021, 0),
                                     new WorldPosition(2810, 3017, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -223,6 +242,9 @@ public enum FishingLocation {
                                     new WorldPosition(2836, 2971, 0),
                                     new WorldPosition(2841, 2971, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -248,6 +270,9 @@ public enum FishingLocation {
                                     new WorldPosition(2841, 2971, 0)
 
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -286,6 +311,9 @@ public enum FishingLocation {
                                     new WorldPosition(2200, 3066, 0),
                                     new WorldPosition(2199, 3066, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -323,6 +351,9 @@ public enum FishingLocation {
                                     // East
                                     new WorldPosition(1840, 3776, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -363,6 +394,9 @@ public enum FishingLocation {
                                     new WorldPosition(1764, 3796, 0),
                                     new WorldPosition(1765, 3796, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -393,6 +427,9 @@ public enum FishingLocation {
                                     new WorldPosition(1764, 3796, 0),
                                     new WorldPosition(1765, 3796, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -423,6 +460,9 @@ public enum FishingLocation {
                                     new WorldPosition(1764, 3796, 0),
                                     new WorldPosition(1765, 3796, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -453,6 +493,9 @@ public enum FishingLocation {
                                     new WorldPosition(1764, 3796, 0),
                                     new WorldPosition(1765, 3796, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -486,6 +529,9 @@ public enum FishingLocation {
                                     new WorldPosition(1722, 3684, 0)
 
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -510,6 +556,9 @@ public enum FishingLocation {
                                     new WorldPosition(1722, 3684, 0)
 
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -540,6 +589,9 @@ public enum FishingLocation {
                                     new WorldPosition(1273, 3707, 0),
                                     new WorldPosition(1267, 3703, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -561,6 +613,9 @@ public enum FishingLocation {
                                     new WorldPosition(1273, 3707, 0),
                                     new WorldPosition(1267, 3703, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -592,6 +647,9 @@ public enum FishingLocation {
                                     new WorldPosition(2562, 3374, 0),
                                     new WorldPosition(2568, 3365, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -614,6 +672,9 @@ public enum FishingLocation {
                                     new WorldPosition(2562, 3374, 0),
                                     new WorldPosition(2568, 3365, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -652,6 +713,9 @@ public enum FishingLocation {
                                     new WorldPosition(3239, 3242, 0),
                                     new WorldPosition(3239, 3241, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -680,6 +744,9 @@ public enum FishingLocation {
                                     new WorldPosition(3239, 3242, 0),
                                     new WorldPosition(3239, 3241, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -715,6 +782,9 @@ public enum FishingLocation {
                                     new WorldPosition(3240, 3147, 0),
                                     new WorldPosition(3242, 3143, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -740,12 +810,75 @@ public enum FishingLocation {
                                     new WorldPosition(3240, 3147, 0),
                                     new WorldPosition(3242, 3143, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
                             "None",
                             FishingMethod.BankObjectType.NONE,
+                            55000
+                    )
+            )
+    ),
+    Al_Kharid(
+            new PolyArea(List.of(new WorldPosition(3265, 3153, 0),new WorldPosition(3264, 3147, 0),new WorldPosition(3268, 3144, 0),new WorldPosition(3271, 3139, 0),new WorldPosition(3275, 3138, 0),new WorldPosition(3280, 3138, 0),new WorldPosition(3279, 3142, 0),new WorldPosition(3277, 3147, 0),new WorldPosition(3273, 3153, 0))), // Main fishing area
+            List.of(
+                    new RectangleArea(3266, 3149, 4, 2, 0),
+                    new RectangleArea(3274, 3142, 3, 2, 0)
+            ), // Fishing spot areas
+            new RectangleArea(3269, 3161, 3, 9, 0), // Bank area
+            List.of(
+                    new FishingMethod(
+                            "Fishing Rod (Bait)",
+                            List.of(ItemID.RAW_SARDINE, ItemID.RAW_HERRING),
+                            List.of(HandlingMode.COOK, HandlingMode.BANK, HandlingMode.DROP, HandlingMode.COOKnBANK),
+                            List.of(ItemID.FISHING_ROD, ItemID.FISHING_BAIT),
+                            List.of(ItemID.SARDINE, ItemID.HERRING),
+                            List.of(ItemID.BURNT_FISH_369, ItemID.BURNT_FISH_357),
+                            "Bait",
+                            Set.of(
+                                    new WorldPosition(3277, 3139, 0),
+                                    new WorldPosition(3276, 3140, 0),
+                                    new WorldPosition(3267, 3148, 0),
+                                    new WorldPosition(3266, 3148, 0),
+                                    new WorldPosition(3268, 3147, 0)
+                            ),
+                            new RectangleArea(3271, 3179, 4, 4, 0),
+                            true,
+                            new WorldPosition(3276, 3180, 0),
+                            "Range",
+                            "Cook",
+                            "Bank booth",
+                            "Bank",
+                            FishingMethod.BankObjectType.BANK,
                             25000
+                    ),
+                    new FishingMethod(
+                            "Small Fishing Net",
+                            List.of(ItemID.RAW_SHRIMPS, ItemID.RAW_ANCHOVIES),
+                            List.of(HandlingMode.COOK, HandlingMode.BANK, HandlingMode.DROP, HandlingMode.COOKnBANK),
+                            List.of(ItemID.SMALL_FISHING_NET),
+                            List.of(ItemID.SHRIMPS, ItemID.ANCHOVIES),
+                            List.of(ItemID.BURNT_SHRIMP, ItemID.BURNT_FISH),
+                            "Small Net",
+                            Set.of(
+                                    new WorldPosition(3277, 3139, 0),
+                                    new WorldPosition(3276, 3140, 0),
+                                    new WorldPosition(3267, 3148, 0),
+                                    new WorldPosition(3266, 3148, 0),
+                                    new WorldPosition(3268, 3147, 0)
+                            ),
+                            new RectangleArea(3271, 3179, 4, 4, 0),
+                            true,
+                            new WorldPosition(3276, 3180, 0),
+                            "Range",
+                            "Cook",
+                            "Bank booth",
+                            "Bank",
+                            FishingMethod.BankObjectType.BANK,
+                            55000
                     )
             )
     ),
@@ -777,6 +910,9 @@ public enum FishingLocation {
                                     new WorldPosition(2727, 2524, 0),
                                     new WorldPosition(2728, 3524, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -804,6 +940,9 @@ public enum FishingLocation {
                                     new WorldPosition(2727, 2524, 0),
                                     new WorldPosition(2728, 3524, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -837,6 +976,9 @@ public enum FishingLocation {
                                     new WorldPosition(2633, 3688, 0),
                                     new WorldPosition(2633, 3687, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -861,6 +1003,9 @@ public enum FishingLocation {
                                     new WorldPosition(2633, 3688, 0),
                                     new WorldPosition(2633, 3687, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -898,6 +1043,9 @@ public enum FishingLocation {
                                     new WorldPosition(2642, 3694, 0),
                                     new WorldPosition(2642, 3693, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -926,6 +1074,9 @@ public enum FishingLocation {
                                     new WorldPosition(2642, 3694, 0),
                                     new WorldPosition(2642, 3693, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -964,6 +1115,9 @@ public enum FishingLocation {
                                     new WorldPosition(2640, 3710, 0),
                                     new WorldPosition(2640, 3709, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -993,6 +1147,9 @@ public enum FishingLocation {
                                     new WorldPosition(2640, 3710, 0),
                                     new WorldPosition(2640, 3709, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1051,6 +1208,9 @@ public enum FishingLocation {
                                     new WorldPosition(2417, 3780, 0),
                                     new WorldPosition(2418, 3780, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1100,6 +1260,9 @@ public enum FishingLocation {
                                     new WorldPosition(2417, 3780, 0),
                                     new WorldPosition(2418, 3780, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1149,6 +1312,9 @@ public enum FishingLocation {
                                     new WorldPosition(2417, 3780, 0),
                                     new WorldPosition(2418, 3780, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1181,6 +1347,9 @@ public enum FishingLocation {
                                     new WorldPosition(1714, 3607, 0),
                                     new WorldPosition(1714, 3606, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -1204,6 +1373,9 @@ public enum FishingLocation {
                                     new WorldPosition(1714, 3607, 0),
                                     new WorldPosition(1714, 3606, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -1240,6 +1412,9 @@ public enum FishingLocation {
                                     new WorldPosition(1542, 3417, 0),
                                     new WorldPosition(1543, 3417, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1266,6 +1441,9 @@ public enum FishingLocation {
                                     new WorldPosition(1542, 3417, 0),
                                     new WorldPosition(1543, 3417, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1301,6 +1479,9 @@ public enum FishingLocation {
                                     new WorldPosition(1485, 3432, 0),
                                     new WorldPosition(1485, 3431, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1326,6 +1507,9 @@ public enum FishingLocation {
                                     new WorldPosition(1485, 3432, 0),
                                     new WorldPosition(1485, 3431, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1351,6 +1535,9 @@ public enum FishingLocation {
                                     new WorldPosition(1485, 3432, 0),
                                     new WorldPosition(1485, 3431, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1376,6 +1563,9 @@ public enum FishingLocation {
                                     new WorldPosition(1485, 3432, 0),
                                     new WorldPosition(1485, 3431, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1401,6 +1591,9 @@ public enum FishingLocation {
                                     new WorldPosition(1485, 3432, 0),
                                     new WorldPosition(1485, 3431, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -1432,6 +1625,9 @@ public enum FishingLocation {
                                     new WorldPosition(2164, 2782, 0),
                                     new WorldPosition(2166, 2781, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1454,6 +1650,9 @@ public enum FishingLocation {
                                     new WorldPosition(2164, 2782, 0),
                                     new WorldPosition(2166, 2781, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1490,6 +1689,9 @@ public enum FishingLocation {
                                     new WorldPosition(2280, 2837, 0),
                                     new WorldPosition(2280, 2836, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1516,6 +1718,9 @@ public enum FishingLocation {
                                     new WorldPosition(2280, 2837, 0),
                                     new WorldPosition(2280, 2836, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1550,6 +1755,9 @@ public enum FishingLocation {
                                     new WorldPosition(2286, 2974, 0),
                                     new WorldPosition(2287, 2974, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1574,6 +1782,9 @@ public enum FishingLocation {
                                     new WorldPosition(2286, 2974, 0),
                                     new WorldPosition(2287, 2974, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1602,6 +1813,9 @@ public enum FishingLocation {
                                     new WorldPosition(2472, 3156, 0),
                                     new WorldPosition(2474, 3153, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1621,6 +1835,9 @@ public enum FishingLocation {
                                     new WorldPosition(2472, 3156, 0),
                                     new WorldPosition(2474, 3153, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1653,6 +1870,9 @@ public enum FishingLocation {
                                     new WorldPosition(2461, 3150, 0),
                                     new WorldPosition(2461, 3151, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1675,6 +1895,9 @@ public enum FishingLocation {
                                     new WorldPosition(2461, 3150, 0),
                                     new WorldPosition(2461, 3151, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1727,6 +1950,9 @@ public enum FishingLocation {
                                     new WorldPosition(3497, 3175, 0),
                                     new WorldPosition(3498, 3175, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -1768,6 +1994,9 @@ public enum FishingLocation {
                                     new WorldPosition(3497, 3175, 0),
                                     new WorldPosition(3498, 3175, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -1810,6 +2039,9 @@ public enum FishingLocation {
                                     new WorldPosition(2341, 3702, 0),
                                     new WorldPosition(2340, 3702, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -1842,6 +2074,9 @@ public enum FishingLocation {
                                     new WorldPosition(2341, 3702, 0),
                                     new WorldPosition(2340, 3702, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -1874,6 +2109,9 @@ public enum FishingLocation {
                                     new WorldPosition(2228, 3429, 0),
                                     new WorldPosition(2228, 3428, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1897,6 +2135,9 @@ public enum FishingLocation {
                                     new WorldPosition(2228, 3429, 0),
                                     new WorldPosition(2228, 3428, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1920,6 +2161,9 @@ public enum FishingLocation {
                                     new WorldPosition(2228, 3429, 0),
                                     new WorldPosition(2228, 3428, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1948,6 +2192,9 @@ public enum FishingLocation {
                                     new WorldPosition(2264, 3258, 0),
                                     new WorldPosition(2265, 3258, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1967,6 +2214,9 @@ public enum FishingLocation {
                                     new WorldPosition(2264, 3258, 0),
                                     new WorldPosition(2265, 3258, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -1995,6 +2245,9 @@ public enum FishingLocation {
                                     new WorldPosition(2266, 3253, 0),
                                     new WorldPosition(2267, 3253, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2014,6 +2267,9 @@ public enum FishingLocation {
                                     new WorldPosition(2266, 3253, 0),
                                     new WorldPosition(2267, 3253, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2045,6 +2301,9 @@ public enum FishingLocation {
                                     new WorldPosition(2516, 2838, 0),
                                     new WorldPosition(2515, 2838, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -2067,6 +2326,9 @@ public enum FishingLocation {
                                     new WorldPosition(2516, 2838, 0),
                                     new WorldPosition(2515, 2838, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank deposit box",
@@ -2107,6 +2369,9 @@ public enum FishingLocation {
                                     new WorldPosition(2455, 2893, 0),
                                     new WorldPosition(2454, 2893, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2138,6 +2403,9 @@ public enum FishingLocation {
                                     new WorldPosition(2455, 2893, 0),
                                     new WorldPosition(2454, 2893, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2167,6 +2435,9 @@ public enum FishingLocation {
                                     new WorldPosition(1552, 3188, 0),
                                     new WorldPosition(1553, 3188, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2187,6 +2458,9 @@ public enum FishingLocation {
                                     new WorldPosition(1552, 3188, 0),
                                     new WorldPosition(1553, 3188, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2218,6 +2492,9 @@ public enum FishingLocation {
                                     new WorldPosition(2843, 3359, 0),
                                     new WorldPosition(2842, 3359, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2240,6 +2517,9 @@ public enum FishingLocation {
                                     new WorldPosition(2843, 3359, 0),
                                     new WorldPosition(2842, 3359, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2276,6 +2556,9 @@ public enum FishingLocation {
                                     new WorldPosition(2876, 3342, 0),
                                     new WorldPosition(2875, 3342, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2303,6 +2586,9 @@ public enum FishingLocation {
                                     new WorldPosition(2876, 3342, 0),
                                     new WorldPosition(2875, 3342, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2346,6 +2632,9 @@ public enum FishingLocation {
                                     new WorldPosition(2859, 3426, 0),
                                     new WorldPosition(2860, 3426, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2378,6 +2667,9 @@ public enum FishingLocation {
                                     new WorldPosition(2859, 3426, 0),
                                     new WorldPosition(2860, 3426, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2410,6 +2702,9 @@ public enum FishingLocation {
                                     new WorldPosition(2859, 3426, 0),
                                     new WorldPosition(2860, 3426, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2442,6 +2737,9 @@ public enum FishingLocation {
                                     new WorldPosition(2859, 3426, 0),
                                     new WorldPosition(2860, 3426, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2474,6 +2772,9 @@ public enum FishingLocation {
                                     new WorldPosition(2859, 3426, 0),
                                     new WorldPosition(2860, 3426, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2504,6 +2805,9 @@ public enum FishingLocation {
                                     new WorldPosition(2539, 5088, 0),
                                     new WorldPosition(2536, 5086, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2533,6 +2837,9 @@ public enum FishingLocation {
                                     new WorldPosition(2478, 5078, 0),
                                     new WorldPosition(2477, 5078, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2560,6 +2867,9 @@ public enum FishingLocation {
                             Set.of(
                                     new WorldPosition(2899, 3119, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2609,6 +2919,9 @@ public enum FishingLocation {
                                     new WorldPosition(2607, 3410, 0),
                                     new WorldPosition(2608, 3410, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2648,6 +2961,9 @@ public enum FishingLocation {
                                     new WorldPosition(2607, 3410, 0),
                                     new WorldPosition(2608, 3410, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2687,6 +3003,9 @@ public enum FishingLocation {
                                     new WorldPosition(2607, 3410, 0),
                                     new WorldPosition(2608, 3410, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2737,6 +3056,9 @@ public enum FishingLocation {
                                     new WorldPosition(2598, 3424, 0),
                                     new WorldPosition(2598, 3423, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2777,6 +3099,9 @@ public enum FishingLocation {
                                     new WorldPosition(2598, 3424, 0),
                                     new WorldPosition(2598, 3423, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2817,6 +3142,9 @@ public enum FishingLocation {
                                     new WorldPosition(2598, 3424, 0),
                                     new WorldPosition(2598, 3423, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank Deposit Box",
@@ -2854,6 +3182,9 @@ public enum FishingLocation {
                                     new WorldPosition(3002, 2270, 0),
                                     new WorldPosition(3001, 2268, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "Bank chest",
@@ -2881,6 +3212,9 @@ public enum FishingLocation {
                             Set.of(
                                     new WorldPosition(0, 0, 0)
                             ),
+                            null,
+                            false,
+                            null,
                             "None",
                             "None",
                             "None",
@@ -2911,6 +3245,7 @@ public enum FishingLocation {
 //                                    new WorldPosition(3183, 3927, 0),
 //                                    new WorldPosition(3181, 3927, 0)
 //                            ),
+//                            null,
 //                            "Fire",
 //                            "None",
 //                            "Piles",

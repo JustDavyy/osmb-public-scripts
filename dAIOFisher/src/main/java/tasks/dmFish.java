@@ -43,25 +43,25 @@ public class dmFish extends Task {
     }
 
     public boolean execute() {
-        script.log(getClass(), "Getting fishing spots...");
+        script.log("mFish", "Getting fishing spots...");
         task = "Get world position";
         WorldPosition myPosition = script.getWorldPosition();
         if (myPosition == null) {
-            script.log(getClass(), "Failed to get position.");
+            script.log("mFish", "Failed to get position.");
             return false;
         }
 
         task = "Get fishing spots";
         List<WorldPosition> activeFishingSpots = getFishingSpots();
         if (activeFishingSpots.isEmpty()) {
-            script.log(getClass(), "No active fishing spots found.");
+            script.log("mFish", "No active fishing spots found.");
             if (WEST_FISHING_SPOT_AREA.distanceTo(myPosition) > 1 && EAST_FISHING_SPOT_AREA.distanceTo(myPosition) > 1) {
-                script.log(getClass(), "Walking to fishing area...");
+                script.log("mFish", "Walking to fishing area...");
                 walkToFishingArea(myPosition);
             }
             return false;
         }
-        script.log(getClass(), "Found active fishing spots on screen: " + activeFishingSpots.size());
+        script.log("mFish", "Found active fishing spots on screen: " + activeFishingSpots.size());
         WorldPosition closestFishingSpot;
 
         if (justDodgedFlyingFish && lastFishingSpot != null && activeFishingSpots.size() > 1) {
@@ -70,7 +70,7 @@ public class dmFish extends Task {
             List<WorldPosition> filteredSpots = new ArrayList<>(activeFishingSpots);
             filteredSpots.remove(lastFishingSpot);
             closestFishingSpot = myPosition.getClosest(filteredSpots);
-            script.log(getClass(), "Avoiding previous spot (flying fish). Using alternate fishing spot: " + closestFishingSpot);
+            script.log("mFish", "Avoiding previous spot (flying fish). Using alternate fishing spot: " + closestFishingSpot);
             justDodgedFlyingFish = false; // reset flag
         } else {
             task = "Determine closest spot";
@@ -80,12 +80,12 @@ public class dmFish extends Task {
         task = "Get fishing poly";
         Polygon tilePoly = script.getSceneProjector().getTilePoly(closestFishingSpot);
         if (tilePoly == null) {
-            script.log(getClass(), "No tile polygon found for closest fishing spot: " + closestFishingSpot);
+            script.log("mFish", "No tile polygon found for closest fishing spot: " + closestFishingSpot);
             return false;
         }
         task = "Start fishing action";
         if (!script.getFinger().tap(tilePoly, "small net")) {
-            script.log(getClass(), "Failed to tap on fishing spot: " + closestFishingSpot);
+            script.log("mFish", "Failed to tap on fishing spot: " + closestFishingSpot);
             return false;
         }
         lastFishingSpot = closestFishingSpot;
@@ -106,16 +106,16 @@ public class dmFish extends Task {
 
     private boolean waitUntilAdjacentToFishingSpot() {
         task = "Wait to arrive at spot";
-        script.log(getClass(), "Waiting until we arrive at the fishing spot...");
+        script.log("mFish", "Waiting until we arrive at the fishing spot...");
         return script.pollFramesHuman(() -> {
             WorldPosition myPosition = script.getWorldPosition();
             if (myPosition == null) {
-                script.log(getClass(), "Failed to get position");
+                script.log("mFish", "Failed to get position");
                 return false;
             }
             List<WorldPosition> fishingSpots = getFishingSpots();
             if (fishingSpots.isEmpty()) {
-                script.log(getClass(), "No fishing spots found...");
+                script.log("mFish", "No fishing spots found...");
                 return false;
             }
             return getAdjacentFishingSpot(fishingSpots, myPosition) != null;
@@ -124,29 +124,29 @@ public class dmFish extends Task {
 
     private void waitUntilFinishedFishing() {
         task = "Wait until finished fishing";
-        script.log(getClass(), "Waiting until finished fishing...");
+        script.log("mFish", "Waiting until finished fishing...");
 
         script.pollFramesHuman(() -> {
 
             if (isFlyingFish()) {
-                script.log(getClass(), "Flying fish text detected, dodging...");
+                script.log("mFish", "Flying fish text detected, dodging...");
                 justDodgedFlyingFish = true;
                 return true;
             }
 
             WorldPosition myPosition = script.getWorldPosition();
             if (myPosition == null) {
-                script.log(getClass(), "Failed to get position");
+                script.log("mFish", "Failed to get position");
                 return false;
             }
             List<WorldPosition> fishingSpots = getFishingSpots();
             if (fishingSpots.isEmpty()) {
-                script.log(getClass(), "No fishing spots found...");
+                script.log("mFish", "No fishing spots found...");
                 return false;
             }
             boolean isAdjacent = getAdjacentFishingSpot(fishingSpots, myPosition) != null;
             if (!isAdjacent) {
-                script.log(getClass(), "Not adjacent to fishing spot");
+                script.log("mFish", "Not adjacent to fishing spot");
                 return true;
             }
 
@@ -168,12 +168,12 @@ public class dmFish extends Task {
         int randomDelay = RandomUtils.gaussianRandom(300, 5000, 500, 1500);
         if (!skipMinnowDelay) {
             if (!justDodgedFlyingFish) {
-                script.log(getClass(), "⏳ - Executing humanised delay before next fishing attempt: " + randomDelay + "ms");
+                script.log("mFish", "⏳ - Executing humanised delay before next fishing attempt: " + randomDelay + "ms");
                 script.pollFramesUntil(() -> false, randomDelay);
             } else {
                 int dodgeDelay = RandomUtils.gaussianRandom(5, 300, 140, 40);
                 dodgeDelay = Math.max(5, Math.min(300, dodgeDelay));
-                script.log(getClass(), "Dodging fish, using smaller humanised delay for speed! Delay: " + dodgeDelay + "ms");
+                script.log("mFish", "Dodging fish, using smaller humanised delay for speed! Delay: " + dodgeDelay + "ms");
                 script.pollFramesUntil(() -> false, dodgeDelay);
             }
         }
@@ -218,7 +218,7 @@ public class dmFish extends Task {
     private boolean checkForTileItem(WorldPosition tilePosition) {
         Point point = script.getSceneProjector().getTilePoint(tilePosition, null/*null means center point*/, FISH_TILE_HEIGHT);
         if (point == null) {
-            script.log(getClass(), "No tile point found for position: " + tilePosition);
+            script.log("mFish", "No tile point found for position: " + tilePosition);
             return false;
         }
         Point tileItemPoint = new Point(point.x - (minnowTileImageTop.width / 2), point.y - (minnowTileImageTop.height / 2) - 20);
