@@ -398,10 +398,10 @@ public class dkTravel extends Task {
                 previousPosition.set(currentPos);
             }
 
-            return fishingArea.contains(currentPos) || positionChangeTimer.get().timeElapsed() > 15000;
+            return currentPos.getPlane() == 11568 || positionChangeTimer.get().timeElapsed() > 15000;
         }, RandomUtils.uniformRandom(20000, 25000));
         dkFish.lastAnimationDetected = System.currentTimeMillis() - 10_000L;
-        return fishingArea.contains(currentPos);
+        return currentPos.getPlane() == 11568;
     }
 
     private boolean withinBankArea() {

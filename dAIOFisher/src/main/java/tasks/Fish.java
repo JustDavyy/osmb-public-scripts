@@ -225,7 +225,11 @@ public class Fish extends Task {
         }
 
         relocationAttempts++;
-        script.getWalker().walkTo(getDestination(), new WalkConfig.Builder().disableWalkScreen(true).breakDistance(5).build());
+        int breakDistance = 5;
+        if (fishingLocation.equals(FishingLocation.Al_Kharid)) {
+            breakDistance = 2;
+        }
+        script.getWalker().walkTo(getDestination(), new WalkConfig.Builder().disableWalkScreen(true).breakDistance(breakDistance).build());
 
         if (relocationAttempts >= 3) {
             script.log("Fish", "Still no fishing spots after 3 relocations. Forcing world hop...");

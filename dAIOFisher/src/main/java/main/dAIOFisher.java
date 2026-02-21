@@ -43,11 +43,11 @@ import javax.imageio.ImageIO;
 name = "dAIOFisher",
 threadUrl = "https://wiki.osmb.co.uk/article/daiofisher",
         skillCategory = SkillCategory.FISHING,
-        version = 4.4,
+        version = 4.5,
         author = "JustDavyy"
 )
 public class dAIOFisher extends Script {
-    public static String scriptVersion = "4.4";
+    public static String scriptVersion = "4.5";
     private final String scriptName = "AIOFisher";
     private static String sessionId = UUID.randomUUID().toString();
     private static long lastStatsSent = 0;

@@ -3,6 +3,7 @@ package tasks;
 import com.osmb.api.item.ItemGroupResult;
 import com.osmb.api.item.ItemID;
 import com.osmb.api.script.Script;
+import com.osmb.api.ui.component.tabs.SettingsTabComponent;
 import com.osmb.api.ui.component.tabs.skill.SkillType;
 import com.osmb.api.ui.component.tabs.skill.SkillsTabComponent;
 import com.osmb.api.ui.tabs.Equipment;
@@ -225,6 +226,48 @@ public class Setup extends Task {
         }
         startCookingLevel = cookingSkillLevel.getLevel();
         currentCookingLevel = cookingSkillLevel.getLevel();
+
+        // Check zoom level and set if needed
+        task = "Get zoom level";
+
+        // Open Display subtab
+        if (!script.getWidgetManager().getSettings()
+                .openSubTab(SettingsTabComponent.SettingsSubTabType.DISPLAY_TAB)) {
+            script.log("Setup", "Failed to open settings display subtab... returning!");
+            return false;
+        }
+
+        UIResult<Integer> zoomLevel = script.getWidgetManager().getSettings().getZoomLevel();
+
+        if (zoomLevel.get() == null) {
+            script.log("Setup", "Failed to get zoom level... returning!");
+            return false;
+        }
+
+        int currentZoom = zoomLevel.get();
+        script.log("Setup", "Current zoom level is: " + currentZoom);
+
+        // Desired range: 1–15
+        int minZoom = 1;
+        int maxZoom = 15;
+
+        // If already valid, do nothing
+        if (currentZoom >= minZoom && currentZoom <= maxZoom) {
+            script.log("Setup", "Zoom is within acceptable range (" + currentZoom + ")");
+        } else {
+            // Pick a new zoom level in desired range
+            int zoomSet = RandomUtils.uniformRandom(minZoom, maxZoom);
+            task = "Set zoom level " + zoomSet;
+
+            script.log("Setup", "Zoom is out of range (" + currentZoom + "). Setting new level: " + zoomSet);
+
+            if (!script.getWidgetManager().getSettings().setZoomLevel(zoomSet)) {
+                script.log("Setup", "Failed to set zoom level!");
+                return false;
+            }
+
+            script.log("Setup", "Zoom successfully set to: " + zoomSet);
+        }
 
         task = "Open inventory";
         script.log("Setup", "Opening inventory tab");
