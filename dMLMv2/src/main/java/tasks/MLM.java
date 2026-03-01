@@ -563,6 +563,11 @@ public class MLM extends Task {
             recoverFromInaccessibleBottomArea();
             return;
         }
+
+        if (MLMAreaProvider.TOP_FLOOR_AREA.contains(myPosition) && !useUpperHopper) {
+            if (!climbDownLadder()) return;
+        }
+
         RSObject hopper = getHopper();
         if (hopper == null) {
             script.log("MLM", "Can't find the hopper in our loaded scene...");
@@ -628,13 +633,17 @@ public class MLM extends Task {
             return upperHopper;
         }
 
-        // === Default behavior: closest reachable hopper ===
-        return script.getObjectManager().getRSObject(rsObject -> {
-            if (rsObject.getName() == null || !rsObject.getName().equalsIgnoreCase("hopper")) {
-                return false;
-            }
-            return rsObject.canReach();
-        });
+        // === Lower level hopper ===
+        WorldPosition lowerHopperPos = new WorldPosition(3748, 5672, 0);
+
+        RSObject lowerHopper = script.getObjectManager().getRSObject(obj ->
+                obj.getWorldPosition().equals(lowerHopperPos)
+                        && obj.getName() != null
+                        && obj.getName().equalsIgnoreCase("hopper")
+                        && obj.canReach()
+        );
+
+        return lowerHopper;
     }
 
     private RSObject getSack() {

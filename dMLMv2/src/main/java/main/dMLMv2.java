@@ -39,11 +39,11 @@ import java.util.concurrent.atomic.AtomicReference;
     name = "dMLMv2",
     threadUrl = "https://wiki.osmb.co.uk/article/dmlmv2",
     skillCategory = SkillCategory.MINING,
-    version = 1.2,
+    version = 1.3,
     author = "JustDavyy"
 )
 public class dMLMv2 extends Script {
-    public static final String scriptVersion = "1.2";
+    public static final String scriptVersion = "1.3";
     private final String scriptName = "MLMv2";
     public static String latestVersionString = "";
     private static boolean outdated = false;
